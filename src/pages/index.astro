@@ -1,70 +1,204 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import GhostWatermark from '../components/GhostWatermark.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SermonCard from '../components/SermonCard.astro';
+import Map from '../components/Map.astro';
+
+// Placeholder latest sermon + recent episodes. Live RSS wiring = Week 3.
+const latest = {
+	title: 'Lord, Deliver Me From Me',
+	date: 'April 14, 2026',
+	dateEyebrow: 'April 14',
+	episode: 279,
+	scripture: 'Romans 7:14–25',
+};
+
+const recent = [
+	{
+		title: 'The Weight of Glory',
+		date: 'Apr 7, 2026',
+		episode: 278,
+		scripture: '2 Corinthians 4:16–18',
+	},
+	{
+		title: 'Come to the Table',
+		date: 'Mar 31, 2026',
+		episode: 277,
+		scripture: 'Luke 22:14–20',
+	},
+	{
+		title: 'Resurrection Morning',
+		date: 'Mar 24, 2026',
+		episode: 276,
+		scripture: 'John 20:1–18',
+	},
+];
 ---
 
 <BaseLayout>
-	<!-- Hero -->
-	<section class="relative overflow-hidden bg-ink-deep text-bone">
-		<div class="section-shell relative py-28 md:py-36">
-			<div class="font-mono text-xs uppercase tracking-[0.2em] text-bone/60">
-				Latest Sermon · April 14, 2026
-			</div>
-			<h1 class="mt-6 max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-tight text-bone md:text-7xl">
-				Lord, Deliver Me From Me
-			</h1>
-			<p class="mt-5 text-sm text-bone/70">Pastor Brad Lindsey</p>
+	<!-- ───── Hero ───── -->
+	<section class="relative overflow-hidden bg-ink-deep text-bone noise-grain">
+		<div class="absolute inset-0 hero-glow"></div>
 
-			<div class="mt-10 flex flex-wrap items-center gap-4">
+		<div class="section-shell relative z-10 py-28 md:py-40">
+			<div class="font-mono text-[11px] uppercase tracking-[0.28em] text-bone/55">
+				Latest Sermon
+				<span class="mx-2 text-bone/25">·</span>
+				{latest.date}
+			</div>
+
+			<h1 class="mt-7 max-w-4xl font-display text-5xl font-medium leading-[1.02] tracking-tight text-bone md:text-7xl lg:text-[5.5rem]">
+				{latest.title}
+			</h1>
+
+			<div class="mt-6 flex items-center gap-5 text-sm text-bone/70">
+				<span>Pastor Brad Lindsey</span>
+				<span aria-hidden="true" class="h-px w-8 bg-bone/25"></span>
+				<span class="font-display italic">{latest.scripture}</span>
+			</div>
+
+			<div class="mt-12 flex flex-wrap items-center gap-4">
 				<a
 					href="/watch"
-					class="inline-flex items-center gap-2 rounded-full bg-oxblood px-6 py-3 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover"
+					class="group inline-flex items-center gap-3 rounded-full bg-oxblood px-7 py-3.5 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover"
 				>
-					<span aria-hidden="true">▶</span> Watch Sermon
+					<span
+						aria-hidden="true"
+						class="flex h-6 w-6 items-center justify-center rounded-full bg-bone/20 transition-transform group-hover:scale-110"
+					>
+						<svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor"><path d="M0 0l8 5-8 5V0z"/></svg>
+					</span>
+					Watch Sermon
 				</a>
 				<a
 					href="/visit"
-					class="inline-flex items-center rounded-full border border-bone/30 px-6 py-3 text-sm font-medium text-bone transition-colors hover:border-bone"
+					class="inline-flex items-center gap-2 rounded-full border border-bone/25 px-7 py-3.5 text-sm font-medium text-bone transition-colors hover:border-bone hover:bg-bone/5"
 				>
 					Plan a Visit
+					<span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
 				</a>
 			</div>
 
-			<p class="mt-12 text-xs uppercase tracking-[0.15em] text-bone/50">
-				Sundays 10:45 AM · Wednesdays 6:30 PM · 200 Cardiff St, Brookside, AL
-			</p>
+			<div class="mt-16 flex flex-wrap gap-x-8 gap-y-2 border-t border-bone/10 pt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/55">
+				<span><span class="text-bone/40">Sun</span> &nbsp;10:45 AM</span>
+				<span><span class="text-bone/40">Wed</span> &nbsp;6:30 PM</span>
+				<span class="hidden md:inline"><span class="text-bone/40">@</span> &nbsp;200 Cardiff St, Brookside, AL</span>
+			</div>
 		</div>
 	</section>
 
-	<!-- Our hope -->
-	<section class="relative overflow-hidden py-24 md:py-32">
-		<GhostWatermark text="Our Hope" />
-		<div class="section-shell relative">
-			<div class="text-xs uppercase tracking-[0.2em] text-oxblood">Our hope</div>
-			<p class="mt-6 max-w-3xl font-display text-2xl leading-snug text-ink md:text-4xl">
-				Brookside exists to preach Christ crucified and to help people
-				know him, trust him, and live by his gospel. Whatever brought
-				you here — welcome.
+	<!-- ───── Our Hope ───── -->
+	<section class="py-28 md:py-36">
+		<div class="section-shell">
+			<SectionHeading
+				eyebrow="Our hope"
+				heading="Preaching Christ crucified."
+				watermark="Our Hope"
+			/>
+			<p class="mt-10 max-w-3xl font-display text-2xl leading-snug text-ink md:text-[28px]">
+				Brookside exists to preach Christ crucified and to help people know him, trust
+				him, and live by his gospel. Whatever brought you here — welcome.
 			</p>
-			<a href="/about" class="mt-8 inline-block text-sm text-oxblood underline underline-offset-4 hover:text-oxblood-hover">
-				What we believe →
+			<div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+				<a
+					href="/about"
+					class="group inline-flex items-center gap-2 text-oxblood hover:text-oxblood-hover"
+				>
+					<span class="relative">
+						What we believe
+						<span aria-hidden="true" class="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-100 bg-oxblood transition-transform duration-300 group-hover:scale-x-0"></span>
+					</span>
+					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+				</a>
+				<a href="/visit" class="text-muted hover:text-ink">Plan a visit</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- ───── Recent sermons ───── -->
+	<section class="border-t hairline bg-stone/30 py-28 md:py-32">
+		<div class="section-shell">
+			<div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+				<SectionHeading eyebrow="Recent sermons" heading="Sit under the Word." />
+				<a
+					href="/watch"
+					class="group hidden items-center gap-2 text-sm font-medium text-oxblood md:inline-flex"
+				>
+					View full archive
+					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+				</a>
+			</div>
+
+			<div class="mt-12 grid gap-6 md:grid-cols-3">
+				<SermonCard
+					title={recent[0].title}
+					date={recent[0].date}
+					episode={recent[0].episode}
+					scripture={recent[0].scripture}
+				/>
+				<SermonCard
+					title={recent[1].title}
+					date={recent[1].date}
+					episode={recent[1].episode}
+					scripture={recent[1].scripture}
+				/>
+				<SermonCard
+					title={recent[2].title}
+					date={recent[2].date}
+					episode={recent[2].episode}
+					scripture={recent[2].scripture}
+				/>
+			</div>
+
+			<a
+				href="/watch"
+				class="mt-10 inline-flex items-center gap-2 text-sm font-medium text-oxblood md:hidden"
+			>
+				View full archive <span aria-hidden="true">→</span>
 			</a>
 		</div>
 	</section>
 
-	<!-- Scaffolding notice (remove as pages land) -->
-	<section class="section-shell mb-20">
-		<div class="rounded-2xl border hairline bg-stone/40 p-8">
-			<p class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
-				Scaffold · April 2026
-			</p>
-			<h2 class="mt-2 font-display text-2xl text-ink">Week 1 foundation</h2>
-			<p class="mt-3 max-w-2xl text-sm text-charcoal/80">
-				Base layout, palette, and typography are live. Home, Visit, Watch,
-				About, and Give pages arrive in Weeks 2–4. See the internal
-				<a href="/design-system" class="text-oxblood underline underline-offset-4">design system reference</a>
-				for the component library.
-			</p>
+	<!-- ───── Gather with us ───── -->
+	<section class="py-28 md:py-36">
+		<div class="section-shell grid gap-14 md:grid-cols-5">
+			<div class="md:col-span-2">
+				<SectionHeading eyebrow="Gather with us" heading="Sundays, 10:45." />
+
+				<dl class="mt-10 divide-y divide-[color:var(--color-stone)] border-y hairline">
+					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
+						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Sunday</dt>
+						<dd class="font-display text-lg text-ink">Worship · 10:45 AM</dd>
+					</div>
+					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
+						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Wed</dt>
+						<dd class="font-display text-lg text-ink">Bible Study · 6:30 PM</dd>
+					</div>
+					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
+						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Kids</dt>
+						<dd class="text-[15px] text-charcoal/85">Kids Church &amp; Children's Nursery, both Sunday AM.</dd>
+					</div>
+					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
+						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Where</dt>
+						<dd class="text-[15px] text-charcoal/85">
+							200 Cardiff Street<br />
+							Brookside, AL
+						</dd>
+					</div>
+				</dl>
+
+				<a
+					href="/visit"
+					class="group mt-10 inline-flex items-center gap-2 text-sm font-medium text-oxblood"
+				>
+					What to expect on your first visit
+					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+				</a>
+			</div>
+
+			<div class="md:col-span-3">
+				<Map />
+			</div>
 		</div>
 	</section>
 </BaseLayout>

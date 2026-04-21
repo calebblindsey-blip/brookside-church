@@ -1,0 +1,36 @@
+---
+import GhostWatermark from './GhostWatermark.astro';
+
+interface Props {
+	eyebrow?: string;
+	heading: string;
+	watermark?: string;
+	align?: 'left' | 'right';
+	tone?: 'ink' | 'bone';
+}
+
+const {
+	eyebrow,
+	heading,
+	watermark,
+	align = 'left',
+	tone = 'ink',
+} = Astro.props;
+
+const eyebrowColor = tone === 'bone' ? 'text-bone/60' : 'text-oxblood';
+const headingColor = tone === 'bone' ? 'text-bone' : 'text-ink';
+---
+
+<div class="relative">
+	{watermark && <GhostWatermark text={watermark} align={align} tone={tone} />}
+	<div class="relative">
+		{eyebrow && (
+			<div class:list={['font-mono text-xs uppercase tracking-[0.2em]', eyebrowColor]}>
+				{eyebrow}
+			</div>
+		)}
+		<h2 class:list={['mt-4 font-display text-4xl leading-tight tracking-tight md:text-5xl', headingColor]}>
+			{heading}
+		</h2>
+	</div>
+</div>

@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Map from '../components/Map.astro';
+import FAQ from '../components/FAQ.astro';
+
+const faq = [
+	{
+		q: 'What should I wear?',
+		a: 'Whatever you\'re most comfortable in. Some folks come in jeans and a t-shirt, others in chinos and a button-down — both feel at home.',
+	},
+	{
+		q: 'How long is the service?',
+		a: 'Sunday worship starts at 10:45 AM and wraps up around 12:15 or 12:30.',
+	},
+	{
+		q: 'What about my kids?',
+		a: 'We have a Children\'s Nursery and Kids Church running during Sunday morning worship. <!-- NEEDS CONFIRM: ages, check-in process --> Stop by the welcome area when you arrive and a greeter will walk you through check-in.',
+	},
+	{
+		q: 'Where do I park?',
+		a: 'Lot is on-site with plenty of space. No overflow, no juggling — just pull in and come on in.',
+	},
+	{
+		q: 'What\'s the music like?',
+		a: 'Contemporary worship with hymns sprinkled throughout the set list. A live band leads, and the lyrics are up on screen.',
+	},
+	{
+		q: 'Do you take communion?',
+		a: '<!-- NEEDS CONFIRM: communion frequency + open/closed table. Placeholder copy follows. --> We celebrate the Lord\'s Supper together regularly as a church. All believers who trust in Christ are welcome at the table.',
+	},
+	{
+		q: 'I\'m not religious — is that okay?',
+		a: 'Yes. Sit where you like, take it in, leave when it\'s done if you want. No pressure, no singling anyone out.',
+	},
+];
+---
+
+<BaseLayout
+	title="Visit"
+	description="Plan your visit to Brookside Church of God. Sundays 10:45 AM at 200 Cardiff Street, Brookside, Alabama."
+>
+	<!-- ───── Page header ───── -->
+	<section class="relative overflow-hidden bg-ink-deep text-bone noise-grain">
+		<div class="absolute inset-0 hero-glow"></div>
+		<div class="section-shell relative z-10 py-24 md:py-32">
+			<div class="font-mono text-[11px] uppercase tracking-[0.28em] text-bone/55">
+				Plan a Visit
+			</div>
+			<h1 class="mt-6 max-w-3xl font-display text-5xl leading-[1.05] tracking-tight text-bone md:text-7xl">
+				We'd love to meet you.
+			</h1>
+			<p class="mt-8 max-w-xl text-lg leading-relaxed text-bone/75">
+				Walk in. Sit where you want. By the time service starts, you'll have
+				shaken half a dozen hands.
+			</p>
+		</div>
+	</section>
+
+	<!-- ───── What to expect ───── -->
+	<section class="py-28 md:py-36">
+		<div class="section-shell grid gap-14 md:grid-cols-12">
+			<div class="md:col-span-4">
+				<SectionHeading
+					eyebrow="What to expect"
+					heading="It's simpler than you think."
+					watermark="Expect"
+				/>
+			</div>
+
+			<div class="md:col-span-8 md:pt-2">
+				<div class="space-y-10 text-[17px] leading-[1.65] text-charcoal/90">
+					<p>
+						A lot of churches put first-time visitors through a gauntlet. We don't.
+						Walk in, and you'll find greeters at the door and people already moving
+						around the sanctuary — shaking hands, catching up, saving seats. Jump in
+						or hang back. Both work.
+					</p>
+					<p>
+						At 10:45 the band starts. Music is contemporary, with a hymn or two woven
+						into most set lists. After worship, Pastor Brad preaches expositionally —
+						a text, the context around it, and what it means for you this week. We
+						land around 12:15 or 12:30.
+					</p>
+					<p>
+						Dress is casual across the board. Jeans and a t-shirt, chinos and a
+						button-down, Sunday best — you'll see all of it.
+					</p>
+				</div>
+
+				<div class="mt-12 grid gap-6 sm:grid-cols-3">
+					<div class="rounded-xl border hairline bg-bone p-5">
+						<div class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+							Service
+						</div>
+						<div class="mt-2 font-display text-lg text-ink">10:45 AM</div>
+						<div class="mt-1 text-sm text-muted">Sundays · ~1h 30m</div>
+					</div>
+					<div class="rounded-xl border hairline bg-bone p-5">
+						<div class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+							Parking
+						</div>
+						<div class="mt-2 font-display text-lg text-ink">On-site</div>
+						<div class="mt-1 text-sm text-muted">Plenty of space</div>
+					</div>
+					<div class="rounded-xl border hairline bg-bone p-5">
+						<div class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+							Kids
+						</div>
+						<div class="mt-2 font-display text-lg text-ink">Covered</div>
+						<div class="mt-1 text-sm text-muted">Nursery + Kids Church</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ───── Service times (dark accent) ───── -->
+	<section class="relative overflow-hidden bg-ink-deep text-bone noise-grain">
+		<div class="section-shell relative py-24 md:py-28">
+			<div class="font-mono text-[11px] uppercase tracking-[0.28em] text-bone/55">
+				Service times
+			</div>
+			<div class="mt-10 grid gap-10 border-t border-bone/15 pt-10 md:grid-cols-2">
+				<div>
+					<div class="flex items-baseline gap-5">
+						<div class="font-display text-5xl text-bone md:text-6xl">10:45</div>
+						<div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/55">AM</div>
+					</div>
+					<div class="mt-4 font-display text-xl text-bone/80">Sunday Worship</div>
+					<p class="mt-3 max-w-sm text-sm leading-relaxed text-bone/60">
+						Music, preaching, and communion on scheduled Sundays. Nursery and Kids
+						Church run alongside.
+					</p>
+				</div>
+				<div>
+					<div class="flex items-baseline gap-5">
+						<div class="font-display text-5xl text-bone md:text-6xl">6:30</div>
+						<div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/55">PM</div>
+					</div>
+					<div class="mt-4 font-display text-xl text-bone/80">Wednesday Bible Study</div>
+					<p class="mt-3 max-w-sm text-sm leading-relaxed text-bone/60">
+						Adult Bible study plus a parallel study for kids. Mid-week rhythm, same
+						building.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ───── Where we are ───── -->
+	<section class="py-28 md:py-32">
+		<div class="section-shell grid gap-12 md:grid-cols-5">
+			<div class="md:col-span-2">
+				<SectionHeading
+					eyebrow="Where we are"
+					heading="200 Cardiff Street."
+				/>
+				<address class="mt-8 not-italic">
+					<div class="font-display text-2xl leading-tight text-ink">
+						Brookside Church of God
+					</div>
+					<div class="mt-2 text-[15px] leading-relaxed text-charcoal/80">
+						200 Cardiff Street<br />
+						Brookside, AL
+					</div>
+				</address>
+				<a
+					href="https://www.google.com/maps?q=200+Cardiff+St,+Brookside,+AL"
+					target="_blank"
+					rel="noopener"
+					class="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-oxblood"
+				>
+					Get directions
+					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+				</a>
+			</div>
+			<div class="md:col-span-3">
+				<Map />
+			</div>
+		</div>
+	</section>
+
+	<!-- ───── FAQ ───── -->
+	<section class="border-t hairline bg-stone/30 py-28 md:py-32">
+		<div class="section-shell">
+			<SectionHeading
+				eyebrow="Before you come"
+				heading="Honest answers."
+				watermark="FAQ"
+			/>
+			<div class="mt-14 max-w-3xl">
+				<FAQ items={faq} />
+			</div>
+		</div>
+	</section>
+
+	<!-- ───── Closer ───── -->
+	<section class="py-28 md:py-32">
+		<div class="section-shell">
+			<div class="relative overflow-hidden rounded-3xl bg-ink-deep px-8 py-16 text-bone noise-grain md:px-16 md:py-20">
+				<div class="absolute inset-0 hero-glow"></div>
+				<div class="relative z-10 max-w-2xl">
+					<div class="font-mono text-[11px] uppercase tracking-[0.28em] text-bone/55">
+						We want to meet you
+					</div>
+					<h2 class="mt-6 font-display text-4xl leading-tight text-bone md:text-5xl">
+						Questions before Sunday? Ask.
+					</h2>
+					<p class="mt-6 text-[17px] leading-relaxed text-bone/75">
+						Not sure where to park, worried about your kids, wondering if what
+						you're walking into is the real thing — it's okay to ask. We answer.
+					</p>
+					<div class="mt-10 flex flex-wrap gap-8 border-t border-bone/15 pt-10">
+						<div>
+							<div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/50">
+								Email
+							</div>
+							<a
+								href="mailto:info@brooksidecog.com"
+								class="mt-2 block font-display text-xl text-bone hover:text-bone/80"
+							>
+								info@brooksidecog.com
+							</a>
+						</div>
+						<div>
+							<div class="font-mono text-[11px] uppercase tracking-[0.22em] text-bone/50">
+								Or stop by
+							</div>
+							<div class="mt-2 font-display text-xl text-bone">Sunday, 10:45 AM</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>
