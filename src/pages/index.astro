@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GhostWatermark from '../components/GhostWatermark.astro';
+---
+
+<BaseLayout>
+	<!-- Hero -->
+	<section class="relative overflow-hidden bg-ink-deep text-bone">
+		<div class="section-shell relative py-28 md:py-36">
+			<div class="font-mono text-xs uppercase tracking-[0.2em] text-bone/60">
+				Latest Sermon · April 14, 2026
+			</div>
+			<h1 class="mt-6 max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-tight text-bone md:text-7xl">
+				Lord, Deliver Me From Me
+			</h1>
+			<p class="mt-5 text-sm text-bone/70">Pastor Brad Lindsey</p>
+
+			<div class="mt-10 flex flex-wrap items-center gap-4">
+				<a
+					href="/watch"
+					class="inline-flex items-center gap-2 rounded-full bg-oxblood px-6 py-3 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover"
+				>
+					<span aria-hidden="true">▶</span> Watch Sermon
+				</a>
+				<a
+					href="/visit"
+					class="inline-flex items-center rounded-full border border-bone/30 px-6 py-3 text-sm font-medium text-bone transition-colors hover:border-bone"
+				>
+					Plan a Visit
+				</a>
+			</div>
+
+			<p class="mt-12 text-xs uppercase tracking-[0.15em] text-bone/50">
+				Sundays 10:45 AM · Wednesdays 6:30 PM · 200 Cardiff St, Brookside, AL
+			</p>
+		</div>
+	</section>
+
+	<!-- Our hope -->
+	<section class="relative overflow-hidden py-24 md:py-32">
+		<GhostWatermark text="Our Hope" />
+		<div class="section-shell relative">
+			<div class="text-xs uppercase tracking-[0.2em] text-oxblood">Our hope</div>
+			<p class="mt-6 max-w-3xl font-display text-2xl leading-snug text-ink md:text-4xl">
+				Brookside exists to preach Christ crucified and to help people
+				know him, trust him, and live by his gospel. Whatever brought
+				you here — welcome.
+			</p>
+			<a href="/about" class="mt-8 inline-block text-sm text-oxblood underline underline-offset-4 hover:text-oxblood-hover">
+				What we believe →
+			</a>
+		</div>
+	</section>
+
+	<!-- Scaffolding notice (remove as pages land) -->
+	<section class="section-shell mb-20">
+		<div class="rounded-2xl border hairline bg-stone/40 p-8">
+			<p class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+				Scaffold · April 2026
+			</p>
+			<h2 class="mt-2 font-display text-2xl text-ink">Week 1 foundation</h2>
+			<p class="mt-3 max-w-2xl text-sm text-charcoal/80">
+				Base layout, palette, and typography are live. Home, Visit, Watch,
+				About, and Give pages arrive in Weeks 2–4. See the internal
+				<a href="/design-system" class="text-oxblood underline underline-offset-4">design system reference</a>
+				for the component library.
+			</p>
+		</div>
+	</section>
+</BaseLayout>

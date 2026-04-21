@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+	/* Brookside — Reverent & Modern palette */
+	--color-bone: #FAF7F2;
+	--color-stone: #E8E3D8;
+	--color-muted: #6E6A63;
+	--color-charcoal: #2A2A2A;
+	--color-ink: #1F2B4D;
+	--color-ink-deep: #141B2E;
+	--color-oxblood: #6B2D2D;
+	--color-oxblood-hover: #5A2626;
+
+	/* Typography */
+	--font-display: "Fraunces", ui-serif, Georgia, serif;
+	--font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+	/* Display scale tuned for Fraunces */
+	--text-display-xl: 4.5rem;
+	--text-display-xl--line-height: 1;
+	--text-display-xl--letter-spacing: -0.02em;
+	--text-display-lg: 3.5rem;
+	--text-display-lg--line-height: 1.05;
+	--text-display-lg--letter-spacing: -0.015em;
+	--text-display-md: 2.5rem;
+	--text-display-md--line-height: 1.1;
+	--text-display-md--letter-spacing: -0.01em;
+
+	/* Spacing rhythm */
+	--spacing-section: 6rem;
+}
+
+@layer base {
+	html {
+		font-family: var(--font-body);
+		color: var(--color-charcoal);
+		background-color: var(--color-bone);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	body {
+		@apply font-body antialiased;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		font-family: var(--font-display);
+		color: var(--color-ink);
+		font-weight: 500;
+		letter-spacing: -0.01em;
+	}
+
+	::selection {
+		background-color: var(--color-ink);
+		color: var(--color-bone);
+	}
+}
+
+@utility section-shell {
+	@apply mx-auto max-w-6xl px-6 md:px-10;
+}
+
+@utility hairline {
+	border-color: var(--color-stone);
+}

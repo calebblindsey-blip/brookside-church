@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GhostWatermark from '../components/GhostWatermark.astro';
+
+const swatches = [
+	{ name: 'bone', hex: '#FAF7F2', role: 'Background' },
+	{ name: 'stone', hex: '#E8E3D8', role: 'Hairline / surface' },
+	{ name: 'muted', hex: '#6E6A63', role: 'Muted text' },
+	{ name: 'charcoal', hex: '#2A2A2A', role: 'Body text' },
+	{ name: 'ink', hex: '#1F2B4D', role: 'Primary ink' },
+	{ name: 'ink-deep', hex: '#141B2E', role: 'Hero / dark sections' },
+	{ name: 'oxblood', hex: '#6B2D2D', role: 'Primary CTA' },
+];
+---
+
+<BaseLayout title="Design System">
+	<section class="section-shell py-16">
+		<div class="text-xs uppercase tracking-[0.2em] text-oxblood">Internal</div>
+		<h1 class="mt-2 font-display text-5xl text-ink">Design System</h1>
+		<p class="mt-3 max-w-2xl text-charcoal/80">
+			Single visual reference for the Brookside site. Not linked in nav.
+			Kept in sync as components land.
+		</p>
+	</section>
+
+	<!-- Palette -->
+	<section class="relative overflow-hidden py-16">
+		<GhostWatermark text="Palette" />
+		<div class="section-shell relative">
+			<h2 class="font-display text-3xl text-ink">Palette</h2>
+			<div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				{swatches.map((s) => (
+					<div class="overflow-hidden rounded-xl border hairline bg-bone">
+						<div class="h-24" style={`background:${s.hex}`}></div>
+						<div class="p-4">
+							<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+								{s.name}
+							</div>
+							<div class="mt-1 text-sm text-charcoal">{s.role}</div>
+							<div class="mt-1 font-mono text-xs text-muted">{s.hex}</div>
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Typography -->
+	<section class="section-shell py-16">
+		<h2 class="font-display text-3xl text-ink">Typography</h2>
+		<div class="mt-8 space-y-8">
+			<div>
+				<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+					Display · Fraunces
+				</div>
+				<p class="mt-2 font-display text-6xl text-ink">Preaching Christ Crucified</p>
+			</div>
+			<div>
+				<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+					Heading · Fraunces
+				</div>
+				<p class="mt-2 font-display text-3xl text-ink">
+					Gather with us on Sunday
+				</p>
+			</div>
+			<div>
+				<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+					Body · Inter
+				</div>
+				<p class="mt-2 max-w-2xl text-base text-charcoal/90 leading-relaxed">
+					Brookside is a gospel-focused church in Brookside, Alabama with
+					contemporary-but-rooted worship and expository preaching from
+					Pastor Brad Lindsey.
+				</p>
+			</div>
+			<div>
+				<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+					Pull quote · Fraunces italic
+				</div>
+				<blockquote class="mt-2 max-w-2xl border-l-2 border-oxblood pl-5 font-display text-xl italic text-ink">
+					"For I determined not to know any thing among you, save Jesus
+					Christ, and him crucified." — 1 Corinthians 2:2
+				</blockquote>
+			</div>
+			<div>
+				<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+					Mono · JetBrains Mono
+				</div>
+				<p class="mt-2 font-mono text-sm text-charcoal">
+					Episode 279 · April 14, 2026
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Buttons -->
+	<section class="section-shell py-16">
+		<h2 class="font-display text-3xl text-ink">Buttons & Links</h2>
+		<div class="mt-8 flex flex-wrap items-center gap-4">
+			<a href="#" class="inline-flex items-center rounded-full bg-oxblood px-6 py-3 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover">
+				Primary · Oxblood
+			</a>
+			<a href="#" class="inline-flex items-center rounded-full border border-ink/30 px-6 py-3 text-sm font-medium text-ink transition-colors hover:border-ink">
+				Secondary · Outline
+			</a>
+			<a href="#" class="text-sm text-oxblood underline underline-offset-4 hover:text-oxblood-hover">
+				Inline link →
+			</a>
+		</div>
+	</section>
+
+	<!-- Sermon card -->
+	<section class="section-shell py-16">
+		<h2 class="font-display text-3xl text-ink">Sermon card</h2>
+		<div class="mt-8 grid gap-6 md:grid-cols-3">
+			{[1,2,3].map((i) => (
+				<article class="group rounded-2xl border hairline bg-bone p-6 transition-colors hover:border-ink/30">
+					<div class="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+						Apr {14 - i*7}, 2026 · Ep {279 - i + 1}
+					</div>
+					<h3 class="mt-3 font-display text-xl text-ink leading-snug">
+						Lord, Deliver Me From Me
+					</h3>
+					<p class="mt-2 text-sm text-muted">Pastor Brad Lindsey</p>
+					<div class="mt-5 inline-flex items-center gap-2 text-sm text-oxblood">
+						<span aria-hidden="true">▶</span> Listen
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+
+	<!-- Dark section demo -->
+	<section class="bg-ink-deep text-bone">
+		<div class="section-shell py-20">
+			<h2 class="font-display text-3xl text-bone">Dark section pacing</h2>
+			<p class="mt-4 max-w-2xl text-bone/80">
+				Off-white body, dark hero, dark accent sections. Don't flatten
+				to one value — pacing is the design.
+			</p>
+		</div>
+	</section>
+</BaseLayout>

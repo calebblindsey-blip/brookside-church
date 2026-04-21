@@ -1,0 +1,22 @@
+---
+interface Props {
+	text: string;
+	align?: 'left' | 'right';
+	tone?: 'ink' | 'bone';
+}
+const { text, align = 'left', tone = 'ink' } = Astro.props;
+const color = tone === 'ink' ? 'text-ink' : 'text-bone';
+const side = align === 'left' ? 'left-0 -translate-x-4' : 'right-0 translate-x-4';
+---
+
+<span
+	aria-hidden="true"
+	class:list={[
+		'pointer-events-none absolute top-1/2 -translate-y-1/2 select-none whitespace-nowrap font-display font-semibold uppercase tracking-tight opacity-[0.06]',
+		color,
+		side,
+		'text-[clamp(6rem,18vw,18rem)]',
+	]}
+>
+	{text}
+</span>

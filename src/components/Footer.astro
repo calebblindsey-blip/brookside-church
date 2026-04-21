@@ -1,0 +1,44 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 bg-ink-deep text-bone">
+	<div class="section-shell grid gap-10 py-16 md:grid-cols-4">
+		<div class="md:col-span-2">
+			<div class="font-display text-2xl tracking-tight">Brookside Church of God</div>
+			<p class="mt-3 max-w-sm text-sm text-bone/70">
+				Preaching Christ crucified in Brookside, Alabama.
+			</p>
+			<address class="mt-6 not-italic text-sm text-bone/70 leading-relaxed">
+				200 Cardiff Street<br />
+				Brookside, AL<br />
+				<a href="mailto:info@brooksidecog.com" class="hover:text-bone">info@brooksidecog.com</a>
+			</address>
+		</div>
+
+		<div>
+			<div class="text-xs uppercase tracking-[0.15em] text-bone/50">Gather</div>
+			<ul class="mt-4 space-y-2 text-sm text-bone/80">
+				<li>Sundays · 10:45 AM</li>
+				<li>Wednesdays · 6:30 PM</li>
+			</ul>
+		</div>
+
+		<div>
+			<div class="text-xs uppercase tracking-[0.15em] text-bone/50">Explore</div>
+			<ul class="mt-4 space-y-2 text-sm text-bone/80">
+				<li><a href="/visit" class="hover:text-bone">Plan a Visit</a></li>
+				<li><a href="/watch" class="hover:text-bone">Sermons</a></li>
+				<li><a href="/about" class="hover:text-bone">About</a></li>
+				<li><a href="/give" class="hover:text-bone">Give</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="border-t border-bone/10">
+		<div class="section-shell flex flex-col justify-between gap-2 py-6 text-xs text-bone/50 md:flex-row">
+			<span>© {year} Brookside Church of God</span>
+			<span class="font-mono">A 501(c)(3) nonprofit</span>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,40 @@
+---
+const nav = [
+	{ href: '/', label: 'Home' },
+	{ href: '/visit', label: 'Visit' },
+	{ href: '/watch', label: 'Watch' },
+	{ href: '/about', label: 'About' },
+];
+const pathname = Astro.url.pathname;
+const isActive = (href: string) =>
+	href === '/' ? pathname === '/' : pathname.startsWith(href);
+---
+
+<header class="sticky top-0 z-40 border-b hairline bg-bone/85 backdrop-blur">
+	<div class="section-shell flex items-center justify-between py-5">
+		<a href="/" class="font-display text-xl tracking-tight text-ink">
+			Brookside <span class="text-oxblood">/</span> COG
+		</a>
+
+		<nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
+			{nav.map((item) => (
+				<a
+					href={item.href}
+					class:list={[
+						'text-sm transition-colors hover:text-ink',
+						isActive(item.href) ? 'text-ink' : 'text-muted',
+					]}
+				>
+					{item.label}
+				</a>
+			))}
+		</nav>
+
+		<a
+			href="/give"
+			class="inline-flex items-center rounded-full bg-oxblood px-5 py-2 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover"
+		>
+			Give
+		</a>
+	</div>
+</header>
