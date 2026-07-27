@@ -118,9 +118,20 @@ const spanWord = WORDS[span] ?? String(span);
 		<div class="feature__lead">
 			<p class="eyebrow" id="latest-heading">Most recent</p>
 			<h2 class="headline">{latest.title}</h2>
+			{/*
+				The speaker comes from the feed, never hardcoded. About one Sunday
+				in five is a guest (51 of the 247 episodes that name anyone), so a
+				fixed "Brad Lindsey" here credits the pastor for other people's
+				preaching regularly. When the feed names nobody the line is dropped
+				rather than filled in with an assumption.
+			*/}
 			<p class="feature__meta">
-				<span>Brad Lindsey</span>
-				<span aria-hidden="true">·</span>
+				{latest.speaker && (
+					<>
+						<span>{latest.speaker}</span>
+						<span aria-hidden="true">·</span>
+					</>
+				)}
 				<span>{longDate(latest.date)}</span>
 				<span aria-hidden="true">·</span>
 				<span class="feature__tag">{clock(latest.seconds)}</span>
