@@ -1,0 +1,437 @@
+---
+/**
+ * DIRECTION A — "The Record"
+ *
+ * Thesis: this church has published a sermon every week since March 2020,
+ * unbroken. That record is the most characteristic thing it owns, so the
+ * archive itself is the hero rather than a photograph or a tagline.
+ *
+ * Signature: a departure board. On load the archive rows shuffle through real
+ * sermon titles and decelerate into place, newest first.
+ */
+import '@fontsource-variable/archivo';
+import '@fontsource/jetbrains-mono/400.css';
+import BrooksideMark from '../../components/BrooksideMark.astro';
+import data from '../../data/sermons.json';
+
+const latest = data.recent[0];
+const rest = data.recent.slice(1, 13);
+
+const fmt = (iso: string) => {
+	const [y, m, d] = iso.split('-');
+	const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+	return { day: d, mon: months[Number(m) - 1], year: y };
+};
+const L = fmt(latest.date);
+
+/**
+ * The record, made literal: one tick per week from the first published sermon
+ * to the most recent one. Weeks with a sermon are lit; weeks without are not.
+ * This is the archive's real shape, not a decoration.
+ */
+const preached = new Set<string>();
+for (const iso of data.dates) {
+	const d = new Date(iso + 'T12:00:00Z');
+	// Snap to that week's Sunday so a Monday upload lands on its own service.
+	d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+	preached.add(d.toISOString().slice(0, 10));
+}
+const first = new Date(data.oldest + 'T12:00:00Z');
+first.setUTCDate(first.getUTCDate() - first.getUTCDay());
+const last = new Date(data.newest + 'T12:00:00Z');
+last.setUTCDate(last.getUTCDate() - last.getUTCDay());
+
+const weeks: { key: string; year: number; on: boolean }[] = [];
+for (let d = new Date(first); d <= last; d.setUTCDate(d.getUTCDate() + 7)) {
+	const key = d.toISOString().slice(0, 10);
+	weeks.push({ key, year: d.getUTCFullYear(), on: preached.has(key) });
+}
+const years = [...new Set(weeks.map((w) => w.year))];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Direction A · The Record</title>
+		<meta name="robots" content="noindex" />
+	</head>
+	<body>
+		<header class="chrome">
+			<a class="chrome__brand" href="/directions/">
+				<BrooksideMark class="chrome__mark" letter="#D9D9D9" cross="#FF5757" />
+				<span class="chrome__word">Brookside</span>
+			</a>
+			<nav class="chrome__nav">
+				<a href="#">Visit</a>
+				<a href="#">Watch</a>
+				<a href="#">About</a>
+				<a href="#" class="chrome__give">Give</a>
+			</nav>
+		</header>
+
+		<main>
+			<section class="hero">
+				<div class="hero__main">
+				<p class="hero__meta">
+					<span class="tag">Latest</span>
+					<span>Season {latest.season}</span><i>/</i>
+					<span>Episode {latest.episode}</span><i>/</i>
+					<span>{L.mon} {L.day}, {L.year}</span>
+				</p>
+
+				<h1 class="hero__title" data-split>{latest.title}</h1>
+
+				<p class="hero__by">Preached by Brad Lindsey</p>
+
+				<div class="hero__actions">
+					<a class="btn btn--solid" href="#">Listen now</a>
+					<a class="btn btn--ghost" href="#">Plan a visit</a>
+				</div>
+				</div>
+
+				<aside class="record" aria-labelledby="record-h">
+					<h2 id="record-h" class="record__h">Preached and published since March 2020</h2>
+					<svg
+						class="record__grid"
+						viewBox={`0 0 ${Math.ceil(weeks.length / 7) * 4} 28`}
+						role="img"
+						aria-label={`${data.total} sermons published across ${weeks.length} weeks since March 2020`}
+					>
+						{weeks.map((w, i) => (
+							<rect
+								data-wk
+								x={Math.floor(i / 7) * 4}
+								y={(i % 7) * 4}
+								width="3"
+								height="3"
+								rx="0.5"
+								fill={w.on ? '#FF5757' : '#1F1F1F'}
+							/>
+						))}
+					</svg>
+					<div class="record__scale">
+						{years.map((y) => <span>{String(y).slice(2)}</span>)}
+					</div>
+					<p class="record__note">
+						<strong>{data.total}</strong> sermons over six years. Every one of them
+						is still here, and free to listen to.
+					</p>
+				</aside>
+
+				<dl class="hero__facts">
+					<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
+					<div><dt>Sunday Worship</dt><dd>10:45 AM</dd></div>
+					<div><dt>Wednesday</dt><dd>6:30 PM</dd></div>
+					<div><dt>Where</dt><dd>200 Cardiff St, Brookside, Alabama</dd></div>
+				</dl>
+			</section>
+
+			<section class="board" aria-label="Sermon archive">
+				<div class="board__head">
+					<h2>The record</h2>
+					<p>
+						Six years of preaching, kept in one place. Start anywhere.
+					</p>
+				</div>
+
+				<ol class="board__list">
+					{rest.map((s) => {
+						const f = fmt(s.date);
+						return (
+							<li class="row" data-row>
+								<span class="row__id">S{s.season}·E{s.episode}</span>
+								<span class="row__date">{f.mon} {f.day}</span>
+								<span class="row__title" data-scramble={s.title}>{s.title}</span>
+								<span class="row__go" aria-hidden="true">Listen</span>
+							</li>
+						);
+					})}
+				</ol>
+
+				<a class="board__all" href="#">See all {data.total} sermons</a>
+			</section>
+		</main>
+
+		<style is:global>
+			:root {
+				--ink: #050505;
+				--iron: #2f2f2f;
+				--ash: #d9d9d9;
+				--coral: #ff5757;
+				--bone: #f2f0ed;
+				--display: 'Archivo Variable', system-ui, sans-serif;
+				--mono: 'JetBrains Mono', ui-monospace, monospace;
+			}
+			* { box-sizing: border-box; }
+			html { -webkit-text-size-adjust: 100%; }
+			body {
+				margin: 0;
+				background: var(--ink);
+				color: var(--ash);
+				font-family: var(--display);
+				font-variation-settings: 'wght' 400;
+				-webkit-font-smoothing: antialiased;
+			}
+			a { color: inherit; text-decoration: none; }
+			:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+
+			/* ---------- chrome ---------- */
+			.chrome {
+				position: sticky; top: 0; z-index: 20;
+				display: flex; align-items: center; justify-content: space-between;
+				gap: 1rem;
+				padding: 1rem clamp(1rem, 4vw, 3rem);
+				background: color-mix(in srgb, var(--ink) 82%, transparent);
+				backdrop-filter: blur(10px);
+				border-bottom: 1px solid #1a1a1a;
+			}
+			.chrome__brand { display: flex; align-items: center; gap: 0.6rem; }
+			.chrome__mark { width: 26px; height: 26px; display: block; }
+			.chrome__word {
+				font-variation-settings: 'wght' 700;
+				letter-spacing: -0.02em; font-size: 1.05rem; color: var(--bone);
+			}
+			.chrome__nav { display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 1.75rem); }
+			.chrome__nav a { font-size: 0.85rem; letter-spacing: 0.01em; color: var(--ash); }
+			.chrome__nav a:hover { color: var(--bone); }
+			.chrome__give {
+				padding: 0.4rem 0.9rem; border: 1px solid var(--coral);
+				border-radius: 999px; color: var(--coral) !important;
+			}
+			.chrome__give:hover { background: var(--coral); color: var(--ink) !important; }
+
+			/* ---------- hero ---------- */
+			.hero {
+				padding: clamp(3.5rem, 9vw, 6.5rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
+				max-width: 1240px; margin: 0 auto;
+				display: grid; gap: clamp(2rem, 5vw, 3.5rem);
+				grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+				align-items: start;
+			}
+			.hero__facts { grid-column: 1 / -1; }
+			@media (max-width: 900px) {
+				.hero { grid-template-columns: 1fr; }
+			}
+
+			/* ---------- the record ---------- */
+			.record { padding-top: 0.4rem; }
+			.record__h {
+				margin: 0 0 1rem; font-family: var(--mono);
+				font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+				color: #7a7a7a; font-weight: 400;
+			}
+			.record__grid { display: block; width: 100%; height: auto; }
+			.record__scale {
+				display: flex; justify-content: space-between; margin-top: 0.7rem;
+				font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: #5a5a5a;
+			}
+			.record__note {
+				margin: 1.1rem 0 0; font-size: 0.86rem; color: #8a8a8a;
+			}
+			.record__note strong { color: var(--bone); font-variation-settings: 'wght' 600; }
+			.hero__meta {
+				display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem;
+				font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em;
+				text-transform: uppercase; color: #8a8a8a; margin: 0 0 1.5rem;
+			}
+			.hero__meta i { color: #3a3a3a; font-style: normal; }
+			.tag {
+				display: inline-flex; align-items: center; gap: 0.4rem;
+				color: var(--coral);
+			}
+			.tag::before {
+				content: ''; width: 6px; height: 6px; border-radius: 50%;
+				background: var(--coral); animation: pulse 2.4s ease-in-out infinite;
+			}
+			@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+			.hero__title {
+				margin: 0; color: var(--bone);
+				font-size: clamp(2.75rem, 7.4vw, 6.5rem);
+				font-variation-settings: 'wght' 800;
+				line-height: 0.9; letter-spacing: -0.045em; text-wrap: balance;
+			}
+			.hero__by {
+				margin: 1.25rem 0 0; font-size: clamp(0.95rem, 1.6vw, 1.15rem); color: #9a9a9a;
+			}
+			.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+			.btn {
+				display: inline-flex; align-items: center; justify-content: center;
+				padding: 0.85rem 1.6rem; border-radius: 999px;
+				font-size: 0.9rem; font-variation-settings: 'wght' 600;
+				transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+			}
+			.btn--solid { background: var(--coral); color: #140606; }
+			.btn--solid:hover { background: #ff7373; }
+			.btn--ghost { border: 1px solid #3a3a3a; color: var(--ash); }
+			.btn--ghost:hover { border-color: var(--ash); color: var(--bone); }
+
+			.hero__facts {
+				display: grid; gap: 1px; margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+				grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+				background: #1a1a1a; border: 1px solid #1a1a1a;
+			}
+			.hero__facts > div { background: var(--ink); padding: 1.1rem 1.25rem; }
+			.hero__facts dt {
+				font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em;
+				text-transform: uppercase; color: #7a7a7a;
+			}
+			.hero__facts dd {
+				margin: 0.45rem 0 0; font-size: 1.02rem; color: var(--bone);
+				font-variation-settings: 'wght' 500;
+			}
+
+			/* ---------- the board ---------- */
+			.board {
+				border-top: 1px solid #1a1a1a;
+				padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem);
+				max-width: 1240px; margin: 0 auto;
+			}
+			.board__head {
+				display: flex; flex-wrap: wrap; align-items: baseline;
+				justify-content: space-between; gap: 1rem; margin-bottom: 2.5rem;
+			}
+			.board__head h2 {
+				margin: 0; font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+				font-variation-settings: 'wght' 700; letter-spacing: -0.03em; color: var(--bone);
+			}
+			.board__head p { margin: 0; color: #8a8a8a; font-size: 0.95rem; max-width: 34ch; }
+			.board__head strong { color: var(--coral); font-variation-settings: 'wght' 600; }
+
+			.board__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid #1a1a1a; }
+			.row {
+				display: grid; align-items: center; gap: 1rem;
+				grid-template-columns: 5.5rem 4.5rem 1fr auto;
+				padding: 1.05rem 0.5rem; border-bottom: 1px solid #1a1a1a;
+				transition: background 0.18s ease, padding-left 0.18s ease;
+			}
+			.row:hover { background: #101010; padding-left: 1rem; }
+			.row__id, .row__date {
+				font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; color: #6f6f6f;
+			}
+			.row__title {
+				font-size: clamp(1rem, 2.1vw, 1.35rem); color: var(--ash);
+				font-variation-settings: 'wght' 500; letter-spacing: -0.015em;
+			}
+			.row:hover .row__title { color: var(--bone); }
+			.row__go {
+				font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em;
+				text-transform: uppercase; color: var(--coral);
+				opacity: 0; transform: translateX(-6px); transition: all 0.18s ease;
+			}
+			.row:hover .row__go { opacity: 1; transform: none; }
+
+			.board__all {
+				display: inline-block; margin-top: 2.25rem;
+				font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.16em;
+				text-transform: uppercase; color: var(--coral);
+				border-bottom: 1px solid currentColor; padding-bottom: 0.3rem;
+			}
+
+			@media (max-width: 700px) {
+				.row { grid-template-columns: 4.5rem 1fr; row-gap: 0.35rem; }
+				.row__date { display: none; }
+				.row__go { display: none; }
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after {
+					animation-duration: 0.001ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.001ms !important;
+				}
+			}
+		</style>
+
+		<script>
+			import gsap from 'gsap';
+			import ScrollTrigger from 'gsap/ScrollTrigger';
+			import SplitText from 'gsap/SplitText';
+			import Lenis from 'lenis';
+
+			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			gsap.registerPlugin(ScrollTrigger, SplitText);
+
+			if (!reduced) {
+				const lenis = new Lenis({ duration: 1.05 });
+				lenis.on('scroll', ScrollTrigger.update);
+				gsap.ticker.add((t) => lenis.raf(t * 1000));
+				gsap.ticker.lagSmoothing(0);
+
+				// Hero title: mask-reveal per line.
+				const heading = document.querySelector<HTMLElement>('[data-split]');
+				if (heading) {
+					const split = new SplitText(heading, {
+						type: 'lines',
+						linesClass: 'line',
+						mask: 'lines',
+					});
+					gsap.from(split.lines, {
+						yPercent: 115,
+						duration: 1.05,
+						ease: 'power4.out',
+						stagger: 0.08,
+						delay: 0.15,
+					});
+				}
+
+				gsap.from('.hero__meta, .hero__by, .hero__actions', {
+					opacity: 0, y: 14, duration: 0.7, ease: 'power2.out',
+					stagger: 0.09, delay: 0.5,
+				});
+				gsap.from('.hero__facts > div', {
+					opacity: 0, y: 18, duration: 0.6, ease: 'power2.out',
+					stagger: 0.06, delay: 0.75,
+				});
+
+				// The record fills in chronologically, oldest week to newest.
+				gsap.from('[data-wk]', {
+					opacity: 0, scale: 0.4, duration: 0.5, ease: 'power2.out',
+					stagger: { each: 0.004, from: 'start' }, delay: 0.45,
+				});
+				gsap.from('.record__h, .record__scale, .record__note', {
+					opacity: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1, delay: 0.4,
+				});
+
+				// The departure board: rows scramble through real titles, then settle.
+				const rows = gsap.utils.toArray<HTMLElement>('[data-row]');
+				const pool = rows
+					.map((r) => r.querySelector<HTMLElement>('.row__title')?.dataset.scramble ?? '')
+					.filter(Boolean);
+
+				rows.forEach((row, i) => {
+					const cell = row.querySelector<HTMLElement>('.row__title');
+					if (!cell) return;
+					const settled = cell.dataset.scramble ?? cell.textContent ?? '';
+
+					ScrollTrigger.create({
+						trigger: row,
+						start: 'top 88%',
+						once: true,
+						onEnter: () => {
+							const flips = 5 + (i % 3);
+							let n = 0;
+							gsap.fromTo(row, { opacity: 0, y: 12 }, {
+								opacity: 1, y: 0, duration: 0.45, ease: 'power2.out',
+							});
+							const tick = () => {
+								if (n < flips) {
+									cell.textContent = pool[(i + n * 3) % pool.length];
+									cell.style.opacity = '0.45';
+									n += 1;
+									gsap.delayedCall(0.045, tick);
+								} else {
+									cell.textContent = settled;
+									cell.style.opacity = '1';
+								}
+							};
+							gsap.delayedCall(0.12 + i * 0.035, tick);
+						},
+					});
+				});
+			}
+		</script>
+	</body>
+</html>

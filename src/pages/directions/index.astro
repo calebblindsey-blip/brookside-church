@@ -1,0 +1,131 @@
+---
+/** Internal chooser for the design direction round. Not linked from the site. */
+import '@fontsource-variable/archivo';
+import '@fontsource/jetbrains-mono/400.css';
+
+const directions = [
+	{
+		id: 'a',
+		name: 'The Record',
+		thesis:
+			'The archive is the hero. 291 sermons since March 2020 rendered as a six-year chart, with this week’s sermon pulled to the front.',
+		look: 'Near-black, Archivo, mono metadata. Systematic and precise.',
+		signature: 'A departure board: archive rows shuffle through real titles, then settle.',
+		risk: 'The hero is a list, not a picture. Rewards weekly return visits.',
+	},
+	{
+		id: 'b',
+		name: 'The Line',
+		thesis:
+			'One coral line runs the whole page. It meanders like the creek the town is named for, then straightens and grows an arm to become the cross.',
+		look: 'Warm white, Bricolage Grotesque, Public Sans. Open and confident.',
+		signature: 'The line, drawn in step with your scroll.',
+		risk: 'Light instead of dark, when everyone reaches for black to look bold.',
+	},
+	{
+		id: 'c',
+		name: 'The Word',
+		thesis:
+			'1 Corinthians 2:2 set at a scale you cannot ignore, in three layers moving at three speeds. Exactly one word on the page is coral.',
+		look: 'True black, Big Shoulders condensed gothic. Loud and industrial.',
+		signature: 'Scripture as the surface of the page itself.',
+		risk: 'Maximalist. The most likely to divide opinion.',
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Brookside · Three directions</title>
+		<meta name="robots" content="noindex" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<p class="kicker">Brookside Church of God · design round</p>
+				<h1>Three directions. Pick one.</h1>
+				<p class="intro">
+					Each one is a real running page, not a mockup, built on the church's own
+					colours: the coral, gray and black from the existing logo. Open them,
+					scroll them, then tell me which one to build the site on.
+				</p>
+			</header>
+
+			<ol class="list">
+				{directions.map((d) => (
+					<li class="card">
+						<a href={`/directions/${d.id}`}>
+							<span class="card__id">{d.id.toUpperCase()}</span>
+							<h2>{d.name}</h2>
+							<p class="card__thesis">{d.thesis}</p>
+							<dl>
+								<div><dt>Look</dt><dd>{d.look}</dd></div>
+								<div><dt>Signature</dt><dd>{d.signature}</dd></div>
+								<div><dt>The risk</dt><dd>{d.risk}</dd></div>
+							</dl>
+							<span class="card__go">Open direction {d.id.toUpperCase()} &rarr;</span>
+						</a>
+					</li>
+				))}
+			</ol>
+
+			<p class="foot">
+				Photography is deliberately absent. Every direction is built to stand on
+				type, colour and motion alone, so it still works before the livestream
+				stills land.
+			</p>
+		</main>
+
+		<style is:global>
+			* { box-sizing: border-box; }
+			body {
+				margin: 0; background: #0a0a0a; color: #d9d9d9;
+				font-family: 'Archivo Variable', system-ui, sans-serif;
+				-webkit-font-smoothing: antialiased;
+			}
+			a { color: inherit; text-decoration: none; }
+			:focus-visible { outline: 2px solid #ff5757; outline-offset: 4px; }
+			main { max-width: 1080px; margin: 0 auto; padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2.5rem) 5rem; }
+			.kicker {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+				letter-spacing: 0.18em; text-transform: uppercase; color: #ff5757; margin: 0 0 1rem;
+			}
+			h1 {
+				margin: 0; font-size: clamp(2.2rem, 6vw, 4rem); color: #f2f0ed;
+				font-variation-settings: 'wght' 700; letter-spacing: -0.035em; line-height: 1;
+			}
+			.intro { margin: 1.5rem 0 0; max-width: 60ch; color: #8f8f8f; line-height: 1.6; }
+			.list { list-style: none; margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; display: grid; gap: 1px; background: #1c1c1c; border: 1px solid #1c1c1c; }
+			.card { background: #0a0a0a; transition: background 0.2s; }
+			.card:hover { background: #101010; }
+			.card a { display: block; padding: clamp(1.5rem, 3vw, 2.25rem); }
+			.card__id {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+				letter-spacing: 0.2em; color: #ff5757;
+			}
+			.card h2 {
+				margin: 0.6rem 0 0.75rem; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+				color: #f2f0ed; font-variation-settings: 'wght' 700; letter-spacing: -0.03em;
+			}
+			.card__thesis { margin: 0 0 1.5rem; max-width: 62ch; line-height: 1.6; color: #b4b4b4; }
+			.card dl { margin: 0 0 1.5rem; display: grid; gap: 0.6rem; }
+			.card dl > div { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: baseline; }
+			.card dt {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.64rem;
+				letter-spacing: 0.16em; text-transform: uppercase; color: #6f6f6f;
+			}
+			.card dd { margin: 0; font-size: 0.93rem; color: #9a9a9a; line-height: 1.5; }
+			.card__go {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+				letter-spacing: 0.16em; text-transform: uppercase; color: #ff5757;
+			}
+			.foot { margin: 2.5rem 0 0; color: #6f6f6f; font-size: 0.88rem; max-width: 62ch; line-height: 1.6; }
+			@media (max-width: 620px) {
+				.card dl > div { grid-template-columns: 1fr; gap: 0.2rem; }
+			}
+		</style>
+	</body>
+</html>

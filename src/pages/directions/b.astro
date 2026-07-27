@@ -1,0 +1,372 @@
+---
+/**
+ * DIRECTION B — "The Line"
+ *
+ * Thesis: the town is named for a creek, and the church is named for the
+ * cross. One coral line does both jobs. It enters at the top of the page,
+ * runs the whole length of it like water finding its way down a hill, and at
+ * the moment the page says "Christ crucified" it straightens and grows an arm,
+ * becoming the cross from the church's own mark.
+ *
+ * Light rather than dark, on purpose: the brief asked for bold, and everyone
+ * reaches for black to get there.
+ */
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/public-sans';
+import '@fontsource/jetbrains-mono/400.css';
+import BrooksideMark from '../../components/BrooksideMark.astro';
+import data from '../../data/sermons.json';
+
+const latest = data.recent[0];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const [ly, lm, ld] = latest.date.split('-');
+const latestLong = `${months[Number(lm) - 1]} ${Number(ld)}, ${ly}`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Direction B · The Line</title>
+		<meta name="robots" content="noindex" />
+	</head>
+	<body>
+		<!--
+			The line. Lives in the left gutter, draws itself as you scroll, and
+			grows a crossbar when the scripture comes into view.
+		-->
+		<svg class="thread" viewBox="0 0 40 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+			<path
+				id="thread-path"
+				d="M20 0 C20 80, 32 115, 32 180 C32 245, 9 275, 9 345 C9 410, 28 435, 28 505 C28 575, 20 595, 20 640 L20 900"
+				fill="none" stroke="#FF5757" stroke-width="7" stroke-linecap="butt"
+			/>
+			<path
+				id="thread-bar"
+				d="M1 615 L39 615"
+				fill="none" stroke="#FF5757" stroke-width="7" stroke-linecap="butt"
+			/>
+		</svg>
+
+		<header class="chrome">
+			<a class="chrome__brand" href="/directions/">
+				<BrooksideMark class="chrome__mark" letter="#101010" cross="#FF5757" />
+				<span class="chrome__word">Brookside</span>
+			</a>
+			<nav class="chrome__nav">
+				<a href="#">Visit</a>
+				<a href="#">Watch</a>
+				<a href="#">About</a>
+				<a href="#" class="chrome__give">Give</a>
+			</nav>
+		</header>
+
+		<main>
+			<section class="hero">
+				<p class="eyebrow">Brookside, Alabama · since 1948</p>
+				<h1 class="hero__title" data-split>
+					Preaching<br />Christ<br /><em>crucified</em>
+				</h1>
+				<p class="hero__lede">
+					One church on Cardiff Street, working through the Bible a passage at a
+					time. Come as you are, sit where you like, leave knowing what the text
+					said.
+				</p>
+				<div class="actions">
+					<a class="btn btn--solid" href="#">Plan your visit</a>
+					<a class="btn btn--line" href="#">Hear this week's sermon</a>
+				</div>
+				<p class="hero__when">
+					<span>Sunday School <b>9:45</b></span>
+					<span>Worship <b>10:45</b></span>
+					<span>Wednesday <b>6:30</b></span>
+				</p>
+			</section>
+
+			<section class="latest">
+				<p class="eyebrow">This week</p>
+				<div class="latest__row">
+					<h2 class="latest__title">{latest.title}</h2>
+					<div class="latest__meta">
+						<p>Brad Lindsey</p>
+						<p>{latestLong}</p>
+						<a class="link" href="#">Listen &rarr;</a>
+					</div>
+				</div>
+			</section>
+
+			<section class="verse">
+				<blockquote>
+					<p>
+						For I determined not to know any thing among you, save Jesus Christ,
+						and him <em>crucified</em>.
+					</p>
+					<cite>1 Corinthians 2:2</cite>
+				</blockquote>
+			</section>
+
+			<section class="grid">
+				<article>
+					<h3>New here?</h3>
+					<p>
+						Park anywhere, come in the front doors, and someone will point you the
+						rest of the way. Nobody will ask you to stand up.
+					</p>
+					<a class="link" href="#">What a Sunday looks like &rarr;</a>
+				</article>
+				<article>
+					<h3>{data.total} sermons</h3>
+					<p>
+						Six years of preaching, all of it free, on Apple Podcasts, Spotify, and
+						right here.
+					</p>
+					<a class="link" href="#">Browse the archive &rarr;</a>
+				</article>
+				<article>
+					<h3>Kids on Sunday</h3>
+					<p>
+						Nursery and Kids Church both run during the 10:45 service, staffed by
+						people the church knows.
+					</p>
+					<a class="link" href="#">Kids and childcare &rarr;</a>
+				</article>
+			</section>
+		</main>
+
+		<style is:global>
+			:root {
+				--paper: #fafaf8;
+				--ink: #101010;
+				--iron: #2f2f2f;
+				--ash: #d9d9d9;
+				--coral: #ff5757;
+				--display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+				--body: 'Public Sans Variable', system-ui, sans-serif;
+				--mono: 'JetBrains Mono', ui-monospace, monospace;
+			}
+			* { box-sizing: border-box; }
+			body {
+				margin: 0; background: var(--paper); color: var(--ink);
+				font-family: var(--body); -webkit-font-smoothing: antialiased;
+			}
+			a { color: inherit; text-decoration: none; }
+			:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+			em { font-style: normal; color: var(--coral); }
+
+			.thread {
+				position: fixed; top: 0; bottom: 0; left: 0;
+				width: clamp(2.5rem, 8vw, 6.5rem); height: 100%;
+				z-index: 0; pointer-events: none;
+			}
+			/* No room for the gutter on a phone, so the line steps out and the
+			   content reclaims its indent. */
+			@media (max-width: 700px) {
+				.thread { display: none; }
+				.hero, .latest, .verse, .grid { padding-left: 1rem; }
+			}
+			main, .chrome { position: relative; z-index: 1; }
+
+			/* ---------- chrome ---------- */
+			.chrome {
+				display: flex; align-items: center; justify-content: space-between;
+				padding: 1.15rem clamp(1rem, 4vw, 3.5rem);
+				position: sticky; top: 0;
+				background: color-mix(in srgb, var(--paper) 85%, transparent);
+				backdrop-filter: blur(8px);
+			}
+			.chrome__brand { display: flex; align-items: center; gap: 0.6rem; }
+			.chrome__mark { width: 24px; height: 24px; display: block; }
+			.chrome__word {
+				font-family: var(--display); font-variation-settings: 'wght' 700;
+				font-size: 1.08rem; letter-spacing: -0.03em;
+			}
+			.chrome__nav { display: flex; align-items: center; gap: clamp(0.9rem, 2vw, 2rem); }
+			.chrome__nav a { font-size: 0.9rem; color: var(--iron); }
+			.chrome__nav a:hover { color: var(--ink); }
+			.chrome__give {
+				color: var(--coral) !important; font-weight: 600;
+				border-bottom: 2px solid var(--coral); padding-bottom: 2px;
+			}
+
+			.eyebrow {
+				font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
+				text-transform: uppercase; color: var(--iron); margin: 0 0 1.25rem;
+			}
+
+			/* ---------- hero ---------- */
+			.hero {
+				padding: clamp(3.5rem, 10vw, 7rem) clamp(1rem, 4vw, 3.5rem) clamp(3rem, 8vw, 5rem);
+				padding-left: clamp(3.5rem, 12vw, 9rem);
+				max-width: 1180px; margin: 0 auto;
+			}
+			.hero__title {
+				margin: 0; font-family: var(--display);
+				font-size: clamp(3.2rem, 11vw, 8.5rem);
+				font-variation-settings: 'wght' 800, 'opsz' 48;
+				line-height: 0.88; letter-spacing: -0.045em;
+			}
+			.hero__lede {
+				margin: 2rem 0 0; max-width: 46ch;
+				font-size: clamp(1.02rem, 1.5vw, 1.2rem); line-height: 1.6; color: var(--iron);
+			}
+			.actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.25rem; }
+			.btn {
+				display: inline-flex; align-items: center; padding: 0.9rem 1.7rem;
+				border-radius: 999px; font-size: 0.92rem; font-weight: 600;
+				transition: background 0.2s, color 0.2s, border-color 0.2s;
+			}
+			.btn--solid { background: var(--ink); color: var(--paper); }
+			.btn--solid:hover { background: var(--coral); color: #180707; }
+			.btn--line { border: 1.5px solid var(--ash); color: var(--ink); }
+			.btn--line:hover { border-color: var(--ink); }
+			.hero__when {
+				display: flex; flex-wrap: wrap; gap: 1.75rem; margin: 2.75rem 0 0;
+				font-size: 0.92rem; color: var(--iron);
+			}
+			.hero__when b { font-weight: 700; color: var(--ink); }
+
+			/* ---------- latest ---------- */
+			.latest {
+				padding: clamp(3rem, 8vw, 5.5rem) clamp(1rem, 4vw, 3.5rem);
+				padding-left: clamp(3.5rem, 12vw, 9rem);
+				max-width: 1180px; margin: 0 auto;
+				border-top: 1px solid var(--ash);
+			}
+			.latest__row {
+				display: flex; flex-wrap: wrap; align-items: flex-end;
+				justify-content: space-between; gap: 1.5rem;
+			}
+			.latest__title {
+				margin: 0; font-family: var(--display); max-width: 18ch;
+				font-size: clamp(2rem, 5.2vw, 4rem);
+				font-variation-settings: 'wght' 600, 'opsz' 36;
+				line-height: 1; letter-spacing: -0.035em;
+			}
+			.latest__meta { text-align: right; color: var(--iron); font-size: 0.95rem; }
+			.latest__meta p { margin: 0 0 0.3rem; }
+			.link {
+				font-weight: 600; color: var(--coral);
+				border-bottom: 1.5px solid transparent; transition: border-color 0.2s;
+			}
+			.link:hover { border-color: var(--coral); }
+
+			/* ---------- verse ---------- */
+			.verse {
+				padding: clamp(4rem, 12vw, 9rem) clamp(1rem, 4vw, 3.5rem);
+				padding-left: clamp(3.5rem, 12vw, 9rem);
+				max-width: 1180px; margin: 0 auto;
+			}
+			.verse blockquote { margin: 0; max-width: 22ch; }
+			.verse p {
+				margin: 0; font-family: var(--display);
+				font-size: clamp(1.9rem, 5vw, 3.6rem);
+				font-variation-settings: 'wght' 500, 'opsz' 36;
+				line-height: 1.08; letter-spacing: -0.03em;
+			}
+			.verse cite {
+				display: block; margin-top: 1.5rem; font-style: normal;
+				font-family: var(--mono); font-size: 0.7rem;
+				letter-spacing: 0.18em; text-transform: uppercase; color: var(--iron);
+			}
+
+			/* ---------- grid ---------- */
+			.grid {
+				display: grid; gap: clamp(2rem, 4vw, 3.5rem);
+				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+				padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 3.5rem) clamp(5rem, 10vw, 8rem);
+				padding-left: clamp(3.5rem, 12vw, 9rem);
+				max-width: 1180px; margin: 0 auto;
+				border-top: 1px solid var(--ash);
+			}
+			.grid h3 {
+				margin: 0 0 0.75rem; font-family: var(--display);
+				font-size: 1.4rem; font-variation-settings: 'wght' 700;
+				letter-spacing: -0.025em;
+			}
+			.grid p { margin: 0 0 1rem; color: var(--iron); line-height: 1.6; font-size: 0.97rem; }
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after {
+					animation-duration: 0.001ms !important;
+					transition-duration: 0.001ms !important;
+				}
+			}
+		</style>
+
+		<script>
+			import gsap from 'gsap';
+			import ScrollTrigger from 'gsap/ScrollTrigger';
+			import SplitText from 'gsap/SplitText';
+			import Lenis from 'lenis';
+
+			gsap.registerPlugin(ScrollTrigger, SplitText);
+			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			const path = document.querySelector<SVGPathElement>('#thread-path');
+			const bar = document.querySelector<SVGPathElement>('#thread-bar');
+			const len = path?.getTotalLength() ?? 0;
+			const barLen = bar?.getTotalLength() ?? 0;
+
+			if (path) {
+				path.style.strokeDasharray = `${len}`;
+				path.style.strokeDashoffset = reduced ? '0' : `${len}`;
+			}
+			if (bar) {
+				bar.style.strokeDasharray = `${barLen}`;
+				bar.style.strokeDashoffset = reduced ? '0' : `${barLen}`;
+			}
+
+			if (!reduced) {
+				const lenis = new Lenis({ duration: 1.05 });
+				lenis.on('scroll', ScrollTrigger.update);
+				gsap.ticker.add((t) => lenis.raf(t * 1000));
+				gsap.ticker.lagSmoothing(0);
+
+				// The line enters with the page, then the scroll draws the rest of it.
+				if (path) {
+					const head = len * 0.84;
+					gsap.fromTo(path,
+						{ strokeDashoffset: len },
+						{ strokeDashoffset: head, duration: 1.4, ease: 'power2.out', delay: 0.2 },
+					);
+					gsap.fromTo(path,
+						{ strokeDashoffset: head },
+						{
+							strokeDashoffset: 0, ease: 'none', immediateRender: false,
+							scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.6 },
+						},
+					);
+				}
+
+				// At the scripture, the line becomes the cross.
+				const verse = document.querySelector('.verse');
+				if (bar && verse) {
+					gsap.to(bar, {
+						strokeDashoffset: 0, duration: 0.9, ease: 'power3.inOut',
+						scrollTrigger: { trigger: verse, start: 'top 62%', once: true },
+					});
+				}
+
+				const heading = document.querySelector<HTMLElement>('[data-split]');
+				if (heading) {
+					const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
+					gsap.from(split.lines, {
+						yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
+					});
+				}
+
+				gsap.from('.hero .eyebrow, .hero__lede, .actions, .hero__when', {
+					opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.45,
+				});
+
+				gsap.utils.toArray<HTMLElement>('.latest, .verse, .grid > article').forEach((el) => {
+					gsap.from(el, {
+						opacity: 0, y: 28, duration: 0.8, ease: 'power2.out',
+						scrollTrigger: { trigger: el, start: 'top 82%', once: true },
+					});
+				});
+			}
+		</script>
+	</body>
+</html>
