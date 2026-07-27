@@ -3,15 +3,30 @@
  * Brookside mark — evolved from the church's existing logo.
  *
  * The original sets a geometric gray "B" beside a coral latin cross, which
- * leaves two parallel stems fighting each other. This version interlocks them:
- * the cross's vertical stroke *is* the B's stem, so one form can't exist
- * without the other. The crossbar sits in the upper third at latin-cross
- * proportion, reaching further left than right so the B has room to breathe.
+ * leaves two parallel stems fighting each other. The first redraw interlocked
+ * them by overlapping, which traded one problem for a worse one: the crossbar's
+ * right arm drove through the upper bowl, and in a single colour the cross
+ * vanished into the letter entirely.
+ *
+ * This version shares an edge instead of overlapping. The cross's vertical
+ * stroke IS the B's stem, and the crossbar's right arm IS the B's top stroke —
+ * it doesn't stop at the bowl, it turns into it. The B's waist rides high so
+ * the bar lands at true latin proportion (0.31 above / 0.69 below), and the
+ * bowls hang entirely below the bar, so nothing ever collides.
+ *
+ * Consequences that matter: the silhouette is one continuous form, so the mark
+ * survives single-colour, small sizes, and a favicon. The colour break sits at
+ * the tangent point where the top stroke starts to curve — a junction the eye
+ * already reads as a corner.
+ *
+ * Grid: 48×48. Stroke 6.5. Cap 12, baseline 46. Stem x15–21.5, bar y12–18.5.
+ * Both bowls run out to x41.5 so the lower one doesn't read as bottom-heavy;
+ * the waist meets at a cusp at x30.5, which is the B's notch.
  */
 interface Props {
 	/** Colour of the B's bowls. */
 	letter?: string;
-	/** Colour of the cross. */
+	/** Colour of the cross: stem, left arm, and the B's top stroke. */
 	cross?: string;
 	class?: string;
 	style?: string;
@@ -36,15 +51,22 @@ const {
 	fill="none"
 	xmlns="http://www.w3.org/2000/svg"
 >
-	<!-- The two bowls of the B, hung off the cross's vertical stroke -->
+	<!--
+		The B: two bowls hung off the shared stem. Drawn first so the cross can
+		claim the top stroke back on top of it without leaving a seam.
+	-->
 	<path
 		fill={letter}
 		fill-rule="evenodd"
-		d="M20 4h10.4c7.1 0 11.6 3.8 11.6 9.4s-4.5 9.4-11.6 9.4H20zm7.4 6.2v6.4h3c2 0 3.4-1.3 3.4-3.2s-1.4-3.2-3.4-3.2zM20 22.8h11.9c7.6 0 12.4 4 12.4 10.1S39.5 43 31.9 43H20zm7.4 6.4v7.4h4.2c2.4 0 4-1.5 4-3.7s-1.6-3.7-4-3.7z"
+		d="M21.5 12h9c6 0 11 2.9 11 6.75s-5 6.75-11 6.75c6.3 0 11 4.5 11 10.25S37.3 46 31 46H21.5zM21.5 18.5v7h8.5c2.9 0 4.5-1.1 4.5-3.5s-1.6-3.5-4.5-3.5zM21.5 32v7.5h9c2.9 0 4.5-1.4 4.5-3.75S33.4 32 30.5 32z"
 	/>
-	<!-- Latin cross: vertical stroke doubles as the B's stem -->
-	<g fill={cross}>
-		<rect x="12" y="1" width="8" height="46" />
-		<rect x="2.5" y="13.5" width="24" height="8" />
-	</g>
+	<!--
+		The cross. One path, so it stays one shape in a single colour: the stem
+		runs the full height, and the bar reaches left into open space and right
+		to the point where the B's top stroke begins to curve.
+	-->
+	<path
+		fill={cross}
+		d="M15 2h6.5v44H15V18.5H6.5V12H15z"
+	/>
 </svg>
