@@ -1,0 +1,29 @@
+---
+import BrooksideMark from './BrooksideMark.astro';
+
+interface Props {
+	/** Path of the current page, used to mark the active nav item. */
+	path?: string;
+}
+
+const { path = Astro.url.pathname } = Astro.props;
+const nav = [
+	{ href: '/visit', label: 'Visit' },
+	{ href: '/watch', label: 'Watch' },
+	{ href: '/about', label: 'About' },
+];
+const here = (href: string) => path === href || path === `${href}/`;
+---
+
+<header class="chrome">
+	<a class="chrome__brand" href="/" aria-label="Brookside Church of God, home">
+		<BrooksideMark class="chrome__mark" letter="#101010" cross="#FF5757" />
+		<span class="chrome__word">Brookside</span>
+	</a>
+	<nav class="chrome__nav" aria-label="Main">
+		{nav.map((item) => (
+			<a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+		))}
+		<a class="chrome__give" href="/give" aria-current={here('/give') ? 'page' : undefined}>Give</a>
+	</nav>
+</header>

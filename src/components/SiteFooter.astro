@@ -1,0 +1,48 @@
+---
+import BrooksideMark from './BrooksideMark.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bay rule rule--heavy foot">
+	<div class="foot__brand">
+		<BrooksideMark class="foot__mark" letter="#101010" cross="#FF5757" />
+		<p class="foot__name">Brookside<br />Church of God</p>
+	</div>
+	<div class="foot__cols">
+		<div>
+			<h4>Find us</h4>
+			<p>200 Cardiff Street<br />Brookside, Alabama 35036</p>
+			<a
+				class="link"
+				href="https://www.google.com/maps/search/?api=1&query=200+Cardiff+Street+Brookside+AL+35036"
+				target="_blank"
+				rel="noopener"
+			>Directions &rarr;</a>
+		</div>
+		<div>
+			<h4>Reach us</h4>
+			<p>
+				<a href="tel:+12056750703">(205) 675-0703</a><br />
+				<a href="mailto:info@brooksidecog.com">info@brooksidecog.com</a>
+			</p>
+		</div>
+		<div>
+			<h4>Gather</h4>
+			<p>
+				Sunday School 9:45 AM<br />
+				Sunday Worship 10:45 AM<br />
+				Wednesday 6:30 PM
+			</p>
+		</div>
+		<div>
+			<h4>Follow</h4>
+			<p>
+				<a href="https://facebook.com/BrooksideChurchofGod" target="_blank" rel="noopener">Facebook</a><br />
+				<a href="https://instagram.com/brooksidechurchofgod" target="_blank" rel="noopener">Instagram</a><br />
+				<a href="https://www.youtube.com/channel/UCFVvTNQHSyICAekmJdQ47Eg" target="_blank" rel="noopener">YouTube</a>
+			</p>
+		</div>
+	</div>
+	<p class="foot__legal">&copy; {year} Brookside Church of God</p>
+</footer>

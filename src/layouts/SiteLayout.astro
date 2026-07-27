@@ -1,0 +1,59 @@
+---
+/**
+ * The Direction B layout. New pages use this.
+ *
+ * `BaseLayout.astro` is the legacy Reverent & Modern shell and still carries
+ * /visit and /design-system until those are migrated. The two do not share
+ * tokens, components, or CSS, so they can coexist without bleeding into each
+ * other. Delete BaseLayout once the last page is off it.
+ *
+ * Fonts are imported here as JS side effects rather than @import in CSS:
+ * @fontsource @import inside Tailwind-scoped CSS fails under rolldown. Keep
+ * this pattern.
+ */
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/public-sans';
+import '@fontsource/jetbrains-mono/400.css';
+import '../styles/site.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Thread from '../components/Thread.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+	/** Selector the line's crossbar forms at. Omit for pages with no scripture. */
+	crossAt?: string;
+}
+
+const {
+	title = 'Brookside Church of God',
+	description = 'A church in Brookside, Alabama, working through the Bible a passage at a time. Sunday worship 10:45 AM.',
+	crossAt,
+} = Astro.props;
+
+const fullTitle =
+	title === 'Brookside Church of God' ? title : `${title} · Brookside Church of God`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta name="theme-color" content="#fafaf8" />
+	</head>
+	<body>
+		<Thread crossAt={crossAt} />
+		<SiteHeader />
+		<main><slot /></main>
+		<SiteFooter />
+	</body>
+</html>

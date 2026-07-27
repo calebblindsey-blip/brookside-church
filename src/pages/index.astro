@@ -1,204 +1,207 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import SermonCard from '../components/SermonCard.astro';
-import Map from '../components/Map.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import data from '../data/sermons.json';
 
-// Placeholder latest sermon + recent episodes. Live RSS wiring = Week 3.
-const latest = {
-	title: 'Lord, Deliver Me From Me',
-	date: 'April 14, 2026',
-	dateEyebrow: 'April 14',
-	episode: 279,
-	scripture: 'Romans 7:14–25',
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const longDate = (iso: string) => {
+	const [y, m, d] = iso.split('-');
+	return `${months[Number(m) - 1]} ${Number(d)}, ${y}`;
+};
+const shortDate = (iso: string) => {
+	const [, m, d] = iso.split('-');
+	return `${months[Number(m) - 1].slice(0, 3)} ${Number(d)}`;
 };
 
-const recent = [
-	{
-		title: 'The Weight of Glory',
-		date: 'Apr 7, 2026',
-		episode: 278,
-		scripture: '2 Corinthians 4:16–18',
-	},
-	{
-		title: 'Come to the Table',
-		date: 'Mar 31, 2026',
-		episode: 277,
-		scripture: 'Luke 22:14–20',
-	},
-	{
-		title: 'Resurrection Morning',
-		date: 'Mar 24, 2026',
-		episode: 276,
-		scripture: 'John 20:1–18',
-	},
-];
+const latest = data.recent[0];
+const previous = data.recent.slice(1, 5);
+const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFullYear();
 ---
 
-<BaseLayout>
-	<!-- ───── Hero ───── -->
-	<section class="relative overflow-hidden bg-ink-deep text-bone noise-grain">
-		<div class="absolute inset-0 hero-glow"></div>
-
-		<div class="section-shell relative z-10 py-28 md:py-40">
-			<div class="font-mono text-[11px] uppercase tracking-[0.28em] text-bone/55">
-				Latest Sermon
-				<span class="mx-2 text-bone/25">·</span>
-				{latest.date}
-			</div>
-
-			<h1 class="mt-7 max-w-4xl font-display text-5xl font-medium leading-[1.02] tracking-tight text-bone md:text-7xl lg:text-[5.5rem]">
-				{latest.title}
-			</h1>
-
-			<div class="mt-6 flex items-center gap-5 text-sm text-bone/70">
-				<span>Pastor Brad Lindsey</span>
-				<span aria-hidden="true" class="h-px w-8 bg-bone/25"></span>
-				<span class="font-display italic">{latest.scripture}</span>
-			</div>
-
-			<div class="mt-12 flex flex-wrap items-center gap-4">
-				<a
-					href="/watch"
-					class="group inline-flex items-center gap-3 rounded-full bg-oxblood px-7 py-3.5 text-sm font-medium text-bone transition-colors hover:bg-oxblood-hover"
-				>
-					<span
-						aria-hidden="true"
-						class="flex h-6 w-6 items-center justify-center rounded-full bg-bone/20 transition-transform group-hover:scale-110"
-					>
-						<svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor"><path d="M0 0l8 5-8 5V0z"/></svg>
-					</span>
-					Watch Sermon
-				</a>
-				<a
-					href="/visit"
-					class="inline-flex items-center gap-2 rounded-full border border-bone/25 px-7 py-3.5 text-sm font-medium text-bone transition-colors hover:border-bone hover:bg-bone/5"
-				>
-					Plan a Visit
-					<span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
-				</a>
-			</div>
-
-			<div class="mt-16 flex flex-wrap gap-x-8 gap-y-2 border-t border-bone/10 pt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-bone/55">
-				<span><span class="text-bone/40">Sun</span> &nbsp;10:45 AM</span>
-				<span><span class="text-bone/40">Wed</span> &nbsp;6:30 PM</span>
-				<span class="hidden md:inline"><span class="text-bone/40">@</span> &nbsp;200 Cardiff St, Brookside, AL</span>
-			</div>
-		</div>
-	</section>
-
-	<!-- ───── Our Hope ───── -->
-	<section class="py-28 md:py-36">
-		<div class="section-shell">
-			<SectionHeading
-				eyebrow="Our hope"
-				heading="Preaching Christ crucified."
-				watermark="Our Hope"
-			/>
-			<p class="mt-10 max-w-3xl font-display text-2xl leading-snug text-ink md:text-[28px]">
-				Brookside exists to preach Christ crucified and to help people know him, trust
-				him, and live by his gospel. Whatever brought you here — welcome.
+<SiteLayout crossAt=".verse">
+	<section class="bay hero">
+		<p class="eyebrow">200 Cardiff Street · Brookside, Alabama</p>
+		<h1 class="display" data-split>
+			Preaching<br />Christ<br /><em>crucified</em>
+		</h1>
+		<div class="hero__foot">
+			<p class="lede">
+				One church on Cardiff Street, working through the Bible a passage at a
+				time. Come as you are, sit where you like, leave knowing what the text
+				said.
 			</p>
-			<div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm">
-				<a
-					href="/about"
-					class="group inline-flex items-center gap-2 text-oxblood hover:text-oxblood-hover"
-				>
-					<span class="relative">
-						What we believe
-						<span aria-hidden="true" class="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-100 bg-oxblood transition-transform duration-300 group-hover:scale-x-0"></span>
-					</span>
-					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
-				</a>
-				<a href="/visit" class="text-muted hover:text-ink">Plan a visit</a>
-			</div>
+			<dl class="hours">
+				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
+				<div><dt>Sunday Worship</dt><dd>10:45 AM</dd></div>
+				<div><dt>Wednesday</dt><dd>6:30 PM</dd></div>
+			</dl>
+		</div>
+		<div class="actions hero__actions">
+			<a class="btn btn--solid" href="/visit">Plan your visit</a>
+			<a class="btn btn--line" href="/watch">Hear this week's sermon</a>
 		</div>
 	</section>
 
-	<!-- ───── Recent sermons ───── -->
-	<section class="border-t hairline bg-stone/30 py-28 md:py-32">
-		<div class="section-shell">
-			<div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-				<SectionHeading eyebrow="Recent sermons" heading="Sit under the Word." />
-				<a
-					href="/watch"
-					class="group hidden items-center gap-2 text-sm font-medium text-oxblood md:inline-flex"
-				>
-					View full archive
-					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
-				</a>
-			</div>
-
-			<div class="mt-12 grid gap-6 md:grid-cols-3">
-				<SermonCard
-					title={recent[0].title}
-					date={recent[0].date}
-					episode={recent[0].episode}
-					scripture={recent[0].scripture}
-				/>
-				<SermonCard
-					title={recent[1].title}
-					date={recent[1].date}
-					episode={recent[1].episode}
-					scripture={recent[1].scripture}
-				/>
-				<SermonCard
-					title={recent[2].title}
-					date={recent[2].date}
-					episode={recent[2].episode}
-					scripture={recent[2].scripture}
-				/>
-			</div>
-
-			<a
-				href="/watch"
-				class="mt-10 inline-flex items-center gap-2 text-sm font-medium text-oxblood md:hidden"
-			>
-				View full archive <span aria-hidden="true">→</span>
-			</a>
+	<section class="bay rule latest" aria-labelledby="this-week">
+		<p class="eyebrow" id="this-week">This week</p>
+		<div class="latest__lead">
+			<h2 class="headline">{latest.title}</h2>
+			<p class="latest__by">Brad Lindsey · {longDate(latest.date)}</p>
+			<a class="link" href="/watch">Listen to this sermon &rarr;</a>
 		</div>
+		<ol class="prior">
+			{previous.map((s) => (
+				<li>
+					<a href="/watch">
+						<span class="prior__date">{shortDate(s.date)}</span>
+						<span class="prior__title">{s.title}</span>
+					</a>
+				</li>
+			))}
+		</ol>
+		<a class="link link--quiet" href="/watch">All {data.total} sermons &rarr;</a>
 	</section>
 
-	<!-- ───── Gather with us ───── -->
-	<section class="py-28 md:py-36">
-		<div class="section-shell grid gap-14 md:grid-cols-5">
-			<div class="md:col-span-2">
-				<SectionHeading eyebrow="Gather with us" heading="Sundays, 10:45." />
-
-				<dl class="mt-10 divide-y divide-[color:var(--color-stone)] border-y hairline">
-					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
-						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Sunday</dt>
-						<dd class="font-display text-lg text-ink">Worship · 10:45 AM</dd>
-					</div>
-					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
-						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Wed</dt>
-						<dd class="font-display text-lg text-ink">Bible Study · 6:30 PM</dd>
-					</div>
-					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
-						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Kids</dt>
-						<dd class="text-[15px] text-charcoal/85">Kids Church &amp; Children's Nursery, both Sunday AM.</dd>
-					</div>
-					<div class="grid grid-cols-[auto_1fr] items-baseline gap-x-8 py-5">
-						<dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Where</dt>
-						<dd class="text-[15px] text-charcoal/85">
-							200 Cardiff Street<br />
-							Brookside, AL
-						</dd>
-					</div>
-				</dl>
-
-				<a
-					href="/visit"
-					class="group mt-10 inline-flex items-center gap-2 text-sm font-medium text-oxblood"
-				>
-					What to expect on your first visit
-					<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
-				</a>
-			</div>
-
-			<div class="md:col-span-3">
-				<Map />
-			</div>
-		</div>
+	<section class="bay verse" aria-label="Scripture">
+		<blockquote>
+			<p>
+				For I determined not to know any thing among you, save Jesus Christ,
+				and him <em>crucified</em>.
+			</p>
+			<cite>1 Corinthians 2:2</cite>
+		</blockquote>
 	</section>
-</BaseLayout>
+
+	<section class="bay rule mission" aria-labelledby="mission-heading">
+		<p class="eyebrow" id="mission-heading">Why we are here</p>
+		<p class="mission__text">
+			To preach and support the Gospel of Jesus Christ both locally and abroad,
+			opening the door for lives to be changed and transformed through the power
+			of Jesus Christ.
+		</p>
+	</section>
+
+	<section class="bay rule grid" aria-label="Start here">
+		<article>
+			<h3 class="subhead">New here?</h3>
+			<p class="prose">
+				Park anywhere, come in the front doors, and someone will point you the
+				rest of the way. Nobody will ask you to stand up.
+			</p>
+			<a class="link" href="/visit">What a Sunday looks like &rarr;</a>
+		</article>
+		<article>
+			<h3 class="subhead">{data.total} sermons</h3>
+			<p class="prose">
+				{years} years of preaching, all of it free, on Apple Podcasts, Spotify,
+				and right here.
+			</p>
+			<a class="link" href="/watch">Browse the archive &rarr;</a>
+		</article>
+		<article>
+			<h3 class="subhead">Kids on Sunday</h3>
+			<p class="prose">
+				Nursery and Kids Church both run during the 10:45 service, staffed by
+				people the church knows.
+			</p>
+			<a class="link" href="/visit">Kids and childcare &rarr;</a>
+		</article>
+	</section>
+</SiteLayout>
+
+<style is:global>
+	/* Page-level composition only. Anything reusable belongs in site.css. */
+	.hero { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3rem, 7vw, 4.5rem); }
+	.hero__foot {
+		display: flex; flex-wrap: wrap; gap: clamp(1.75rem, 5vw, 4.5rem);
+		align-items: start; margin-top: clamp(2rem, 4vw, 3rem);
+	}
+	.hero__foot .lede { flex: 1 1 24rem; }
+	.hero__foot .hours { margin-left: auto; flex: 0 1 auto; min-width: 15rem; }
+	.hero__actions { margin-top: clamp(2rem, 4vw, 2.75rem); }
+
+	.latest {
+		padding-block: clamp(3rem, 7vw, 5rem);
+		display: grid; gap: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.75rem, 4vw, 3.5rem);
+		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+		align-items: start;
+	}
+	.latest .eyebrow { grid-column: 1 / -1; margin-bottom: 0; }
+	.latest__by { margin: 0.9rem 0 1.25rem; color: var(--iron); font-size: 0.95rem; }
+	.link--quiet { grid-column: 1 / -1; justify-self: start; font-size: 0.92rem; }
+
+	.verse { padding-block: clamp(4.5rem, 11vw, 8rem); }
+	.verse blockquote { margin: 0; }
+	.verse p {
+		/* The measure has to live on the element carrying the display size: a ch
+		   on the blockquote resolves against body text and crushes this into a
+		   one-word column. */
+		margin: 0; max-width: 17ch; font-family: var(--display);
+		font-size: clamp(1.9rem, 5.2vw, 3.9rem);
+		font-variation-settings: 'wght' 500, 'opsz' 36;
+		line-height: 1.06; letter-spacing: -0.03em; text-wrap: pretty;
+	}
+	.verse cite {
+		display: block; margin-top: 1.6rem; font-style: normal;
+		font-family: var(--mono); font-size: 0.7rem;
+		letter-spacing: 0.18em; text-transform: uppercase; color: var(--iron);
+	}
+
+	.mission { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+	.mission__text {
+		margin: 0; max-width: 34ch; font-family: var(--display);
+		font-size: clamp(1.3rem, 2.6vw, 2rem);
+		font-variation-settings: 'wght' 500, 'opsz' 24;
+		line-height: 1.25; letter-spacing: -0.025em; text-wrap: pretty;
+	}
+
+	.grid {
+		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
+		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+		padding-block: clamp(3rem, 6vw, 4.5rem);
+	}
+
+	@media (max-width: 720px) {
+		.latest { grid-template-columns: 1fr; }
+		.hero__foot .hours { width: 100%; margin-left: 0; }
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import ScrollTrigger from 'gsap/ScrollTrigger';
+	import SplitText from 'gsap/SplitText';
+	import Lenis from 'lenis';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText);
+
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const lenis = new Lenis({ duration: 1.05 });
+		lenis.on('scroll', ScrollTrigger.update);
+		gsap.ticker.add((t) => lenis.raf(t * 1000));
+		gsap.ticker.lagSmoothing(0);
+
+		const heading = document.querySelector<HTMLElement>('[data-split]');
+		if (heading) {
+			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
+			gsap.from(split.lines, {
+				yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
+			});
+		}
+
+		gsap.from('.hero .eyebrow, .hero__foot, .hero__actions', {
+			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
+		});
+
+		// Reveals start high in the viewport so anything below the fold is already
+		// on screen by the time it plays: nothing sits at zero opacity waiting for
+		// a trigger that might never fire.
+		gsap.utils.toArray<HTMLElement>(
+			'.latest__lead, .prior, .verse blockquote, .mission__text, .grid > article, .foot > *',
+		).forEach((el) => {
+			gsap.from(el, {
+				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
+				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+			});
+		});
+	}
+</script>
