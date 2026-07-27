@@ -76,8 +76,6 @@ const years = [...new Set(weeks.map((w) => w.year))];
 				<div class="hero__main">
 				<p class="hero__meta">
 					<span class="tag">Latest</span>
-					<span>Season {latest.season}</span><i>/</i>
-					<span>Episode {latest.episode}</span><i>/</i>
 					<span>{L.mon} {L.day}, {L.year}</span>
 				</p>
 
@@ -141,7 +139,7 @@ const years = [...new Set(weeks.map((w) => w.year))];
 						const f = fmt(s.date);
 						return (
 							<li class="row" data-row>
-								<span class="row__id">S{s.season}·E{s.episode}</span>
+								<span class="row__id">{Math.round(s.seconds / 60)} MIN</span>
 								<span class="row__date">{f.mon} {f.day}</span>
 								<span class="row__title" data-scramble={s.title}>{s.title}</span>
 								<span class="row__go" aria-hidden="true">Listen</span>

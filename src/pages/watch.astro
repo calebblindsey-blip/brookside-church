@@ -12,10 +12,16 @@
  *   - The archive is NOT unbroken. 291 sermons across 332 weeks with nine gaps
  *     over three weeks (longest 62 days, spring 2020). Never write "every
  *     Sunday" or "every week without a gap" anywhere on this page.
- *   - Rows deliberately do not link anywhere. Per-episode audio URLs all point
- *     at static1.squarespace.com and die at cancellation, so wiring them in now
- *     would ship 291 links with a known expiry date. Playback lives off-site
- *     until the feed migration lands and gives us stable URLs.
+ *   - The third column is the RUNTIME, not a season/episode tag. The old
+ *     Squarespace feed carried S/E numbers and the migration dropped them; the
+ *     numbering was incoherent anyway (S2 was 2022, S3 was 2020) and Anchor
+ *     emits none, so every future episode would have rendered blank at the top
+ *     of the list. Do not reintroduce them from the old snapshot.
+ *
+ * Rows play. One <audio> for the whole page, driven from a deck pinned to the
+ * bottom of the viewport, rather than a player per row: 291 media elements is
+ * both a memory problem and a page that reads as a control panel instead of an
+ * archive. The row is a cue, the deck is the instrument.
  *
  * No crossAt: the line runs as a plain spine here. The crossbar is Home's
  * payoff and repeating it on every page spends it.
@@ -47,8 +53,25 @@ const episodes: Episode[] = data.episodes;
 const latest = episodes[0];
 const firstEver = episodes[episodes.length - 1];
 
-/** One episode (Hebrews 4, Sep 2021) carries no season, so the tag has to bend. */
-const tag = (e: Episode) => (e.season ? `S${e.season} E${e.episode}` : `E${e.episode}`);
+/** Clock time, not prose: the column is scanned down, so it has to stay narrow
+    and tabular. One sermon runs 1:17, so the hour slot cannot be assumed away. */
+const clock = (s: number) => {
+	const h = Math.floor(s / 3600);
+	const m = Math.floor((s % 3600) / 60);
+	const sec = s % 60;
+	return h
+		? `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+		: `${m}:${String(sec).padStart(2, '0')}`;
+};
+
+/** Spoken form for the button's accessible name. "44:12" is read as a time of
+    day by most screen readers, which is not what a runtime means. */
+const spoken = (s: number) => {
+	const h = Math.floor(s / 3600);
+	const m = Math.round((s % 3600) / 60);
+	const hp = h ? `${h} hour${h === 1 ? '' : 's'} ` : '';
+	return `${hp}${m} minute${m === 1 ? '' : 's'}`;
+};
 
 // Grouped in a single pass rather than by filtering per year: the feed is
 // already sorted newest-first, so a year change is just a boundary.
@@ -100,11 +123,26 @@ const spanWord = WORDS[span] ?? String(span);
 				<span aria-hidden="true">·</span>
 				<span>{longDate(latest.date)}</span>
 				<span aria-hidden="true">·</span>
-				<span class="feature__tag">{tag(latest)}</span>
+				<span class="feature__tag">{clock(latest.seconds)}</span>
 			</p>
+			{/*
+				Play is the primary action now that the archive is playable, so it
+				takes the solid button the platform links used to share. Apple and
+				Spotify stay, but demoted: the bottom section already exists to hand
+				the archive off to a podcast app, and this block's job is to start
+				the most recent sermon.
+			*/}
 			<div class="actions feature__actions">
-				<a class="btn btn--solid" href={APPLE} target="_blank" rel="noopener">Listen on Apple Podcasts</a>
-				<a class="btn btn--line" href={SPOTIFY} target="_blank" rel="noopener">Listen on Spotify</a>
+				<button
+					class="btn btn--solid"
+					type="button"
+					data-cue
+					data-src={latest.url}
+					data-label={latest.title}
+					data-when={longDate(latest.date)}
+				>Play this sermon</button>
+				<a class="btn btn--line" href={APPLE} target="_blank" rel="noopener">Apple Podcasts</a>
+				<a class="btn btn--line" href={SPOTIFY} target="_blank" rel="noopener">Spotify</a>
 			</div>
 		</div>
 
@@ -169,12 +207,27 @@ const spanWord = WORDS[span] ?? String(span);
 						<h3 class="stack__year" id={`y-${g.year}`}>{g.year}</h3>
 						<p class="stack__count">{g.items.length} sermons</p>
 					</div>
+					{/*
+						The button is inside the li rather than the li being the control:
+						an <ol> whose children are buttons loses the list semantics that
+						make "291 sermons" navigable, and the filter reads .row.
+					*/}
 					<ol class="stack__list">
 						{g.items.map((e) => (
 							<li class="row" data-title={e.title.toLowerCase()} data-year={g.year}>
-								<span class="row__date">{rowDate(e.date)}</span>
-								<span class="row__title">{e.title}</span>
-								<span class="row__tag">{tag(e)}</span>
+								<button
+									class="row__hit"
+									type="button"
+									data-cue
+									data-src={e.url}
+									data-label={e.title}
+									data-when={longDate(e.date)}
+									aria-label={`Play “${e.title}”, ${longDate(e.date)}, ${spoken(e.seconds)}`}
+								>
+									<span class="row__date">{rowDate(e.date)}</span>
+									<span class="row__title">{e.title}</span>
+									<span class="row__time">{clock(e.seconds)}</span>
+								</button>
 							</li>
 						))}
 					</ol>
@@ -211,6 +264,45 @@ const spanWord = WORDS[span] ?? String(span);
 			</a>
 		</div>
 	</section>
+
+	{/*
+		The deck. Rendered inert and empty; JS fills it on the first play and it
+		is removed from the a11y tree until then, so nothing here is announced or
+		tab-reachable on a page nobody has asked to play anything on.
+
+		aria-live on the now-playing line rather than role="status" on the whole
+		deck: the scrub position updates four times a second and a live region
+		around it would narrate the timecode forever.
+	*/}
+	<div class="deck" data-deck hidden>
+		<div class="deck__in">
+			<button class="deck__toggle" type="button" data-toggle aria-label="Pause">
+				<span class="deck__glyph" data-glyph aria-hidden="true"></span>
+			</button>
+
+			<div class="deck__body">
+				<p class="deck__now" aria-live="polite">
+					<span class="deck__title" data-deck-title></span>
+					<span class="deck__when" data-deck-when></span>
+				</p>
+				<label class="deck__scrub">
+					<span class="deck__scrub-label">Seek</span>
+					<input type="range" data-seek min="0" max="1000" value="0" step="1" />
+				</label>
+			</div>
+
+			<p class="deck__time">
+				<span data-at>0:00</span><span class="deck__slash" aria-hidden="true">/</span><span data-dur>0:00</span>
+			</p>
+
+			<button class="deck__close" type="button" data-close aria-label="Close player">
+				<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+					<path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" fill="none" />
+				</svg>
+			</button>
+		</div>
+		<audio data-audio preload="none"></audio>
+	</div>
 </SiteLayout>
 
 <style is:global>
@@ -375,20 +467,44 @@ const spanWord = WORDS[span] ?? String(span);
 		margin: 0; padding: 0; list-style: none; max-width: 44rem;
 		border-top: 1px solid var(--ash);
 	}
-	.row {
+	.row { position: relative; border-bottom: 1px solid var(--ash); }
+	.row[hidden] { display: none; }
+
+	/*
+		The button carries the grid, not the li: the row has to stay a list item
+		for "291 sermons" to be navigable, and the whole width has to be the hit
+		target because a 0.98rem title is a poor thing to ask anyone to hit.
+	*/
+	.row__hit {
 		display: grid; grid-template-columns: 3.9rem minmax(0, 1fr) auto;
 		gap: 1.1rem; align-items: baseline;
-		padding: 0.62rem 0; border-bottom: 1px solid var(--ash);
+		width: 100%; margin: 0; padding: 0.62rem 0;
+		background: none; border: 0; border-radius: 0;
+		color: inherit; font: inherit; text-align: left; cursor: pointer;
 	}
-	.row[hidden] { display: none; }
+	.row__hit:hover .row__title { color: var(--coral); }
+	/* Inset so the ring follows the text block rather than the full bleed row. */
+	.row__hit:focus-visible { outline-offset: -2px; }
+
+	/*
+		Playing marker. A coral rule standing in the margin, which is the same
+		device as the page's spine rather than a new one: nothing about the row
+		itself moves, so the list does not reflow when playback moves down it.
+	*/
+	.row[data-playing]::before {
+		content: ''; position: absolute; top: 0; bottom: 0; left: -0.75rem;
+		width: 3px; background: var(--coral);
+	}
+	.row[data-playing] .row__title { color: var(--coral); }
+
 	.row__date {
 		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
 		text-transform: uppercase; color: var(--iron); font-variant-numeric: tabular-nums;
 	}
-	.row__title { font-size: 0.98rem; line-height: 1.35; text-wrap: pretty; }
+	.row__title { font-size: 0.98rem; line-height: 1.35; text-wrap: pretty; transition: color 0.18s; }
 	/* --ash on --paper is barely a mark on the page; this stays quieter than the
 	   title without dropping out of legibility. */
-	.row__tag {
+	.row__time {
 		font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em;
 		color: color-mix(in srgb, var(--iron) 58%, var(--paper));
 		font-variant-numeric: tabular-nums;
@@ -436,6 +552,127 @@ const spanWord = WORDS[span] ?? String(span);
 	}
 	.port:hover .port__name { color: var(--coral); }
 
+	/* ---------- deck ---------- */
+
+	/*
+		The one piece of furniture on the site that floats. It earns it by being
+		the only thing that has to outlive scrolling: the point of a shared player
+		is that you can keep reading the archive while a sermon runs.
+
+		Ink, like the video screen above it, so the page still has exactly one
+		dark surface family. Coral is spent only on the progress line, which keeps
+		the accent doing the same job here as everywhere else: it marks a line.
+	*/
+	.deck {
+		position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+		background: var(--ink); color: var(--paper);
+		transform: translateY(100%);
+		transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.deck[data-open] { transform: none; }
+	.deck__in {
+		display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 1.4rem);
+		padding: 0.85rem var(--flank) 0.85rem var(--edge);
+		max-width: calc(var(--edge) + var(--measure));
+	}
+
+	.deck__toggle {
+		flex: none; display: grid; place-items: center;
+		width: 42px; height: 42px; padding: 0;
+		background: var(--paper); color: var(--ink);
+		border: 0; border-radius: 50%; cursor: pointer;
+		transition: background 0.18s;
+	}
+	.deck__toggle:hover { background: var(--coral); }
+	/* Drawn rather than set as a glyph: ▶ and ❚❚ sit on different baselines and
+	   optical centres in every font, so the button visibly twitches on toggle. */
+	.deck__glyph {
+		width: 12px; height: 13px; background: currentColor;
+		clip-path: polygon(0 0, 100% 50%, 0 100%);
+		margin-left: 2px;
+	}
+	.deck[data-state='playing'] .deck__glyph {
+		clip-path: none; margin-left: 0;
+		background: linear-gradient(90deg, currentColor 0 31%, transparent 31% 69%, currentColor 69% 100%);
+	}
+
+	.deck__body { flex: 1 1 auto; min-width: 0; }
+	.deck__now {
+		display: flex; align-items: baseline; gap: 0.6rem;
+		margin: 0 0 0.15rem; min-width: 0;
+	}
+	.deck__title {
+		font-family: var(--display); font-variation-settings: 'wght' 600, 'opsz' 24;
+		font-size: 1rem; letter-spacing: -0.02em;
+		white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+	}
+	.deck__when {
+		flex: none; font-family: var(--mono); font-size: 0.66rem;
+		letter-spacing: 0.06em; color: var(--ash);
+	}
+	.deck[data-error] .deck__when { color: var(--coral); }
+
+	.deck__scrub { display: block; }
+	.deck__scrub-label {
+		position: absolute; width: 1px; height: 1px;
+		overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+	}
+	/*
+		A rule with a dot on it, matching the search field above: both are the
+		same instrument, a horizontal you act on. --p is written by the script as
+		a unitless 0 to 1.
+	*/
+	.deck__scrub input {
+		-webkit-appearance: none; appearance: none;
+		display: block; width: 100%; height: 14px; margin: 0;
+		background: none; cursor: pointer;
+	}
+	.deck__scrub input::-webkit-slider-runnable-track {
+		height: 2px;
+		background: linear-gradient(
+			to right,
+			var(--coral) calc(var(--p, 0) * 100%),
+			color-mix(in srgb, var(--paper) 26%, transparent) 0
+		);
+	}
+	.deck__scrub input::-moz-range-track {
+		height: 2px;
+		background: linear-gradient(
+			to right,
+			var(--coral) calc(var(--p, 0) * 100%),
+			color-mix(in srgb, var(--paper) 26%, transparent) 0
+		);
+	}
+	.deck__scrub input::-webkit-slider-thumb {
+		-webkit-appearance: none; appearance: none;
+		width: 11px; height: 11px; margin-top: -4.5px;
+		border: 0; border-radius: 50%; background: var(--coral);
+	}
+	.deck__scrub input::-moz-range-thumb {
+		width: 11px; height: 11px;
+		border: 0; border-radius: 50%; background: var(--coral);
+	}
+	.deck__scrub input:focus-visible { outline-offset: 2px; }
+
+	.deck__time {
+		flex: none; margin: 0; font-family: var(--mono); font-size: 0.7rem;
+		letter-spacing: 0.06em; color: var(--ash);
+		font-variant-numeric: tabular-nums;
+	}
+	.deck__slash { padding: 0 0.35rem; opacity: 0.5; }
+
+	.deck__close {
+		flex: none; display: grid; place-items: center;
+		width: 30px; height: 30px; padding: 0;
+		background: none; border: 0; border-radius: 50%;
+		color: var(--ash); cursor: pointer; transition: color 0.18s;
+	}
+	.deck__close:hover { color: var(--paper); }
+
+	/* Keeps the last sermon in the archive clear of the deck once it opens.
+	   The block is already is:global, so no :global() wrapper. */
+	body.has-deck { padding-bottom: var(--deck-h, 4.5rem); }
+
 	/* ---------- responsive ---------- */
 
 	@media (max-width: 980px) {
@@ -456,10 +693,32 @@ const spanWord = WORDS[span] ?? String(span);
 			z-index: 2;
 		}
 		.stack__count { margin: 0; }
-		.row { grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.8rem; }
-		.row__tag { display: none; }
+		/* The runtime stays on phones. The season tag it replaced was dropped here
+		   because it told nobody anything; "44:12" is exactly the thing someone
+		   checks before starting a sermon on a commute, so it keeps its column. */
+		.row__hit { grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 0.8rem; }
 		.roll__origin { margin-left: 0; }
 		.roll__empty { margin-left: 0; }
+
+		/* Two rows would eat a third of a phone screen, so the timecode drops to
+		   elapsed-only and the close control goes: swipe-free dismissal is the
+		   pause button, which is already the biggest target here. */
+		.deck__in { gap: 0.7rem; padding-block: 0.7rem; }
+		.deck__slash, .deck__time [data-dur] { display: none; }
+		.deck__when { display: none; }
+
+		/*
+			The marker goes. At this width the list sits ~12px off the spine, so a
+			coral rule in that margin lands beside the coral spine and the two read
+			as one stuttering line rather than as a spine and a marker. The coral
+			title carries it instead, and the deck names the same sermon a thumb's
+			width below, so nothing is ambiguous.
+		*/
+		.row[data-playing]::before { display: none; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.deck { transition: none; }
 	}
 </style>
 
@@ -560,6 +819,161 @@ const spanWord = WORDS[span] ?? String(span);
 			for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
 			apply();
 		});
+	}
+
+	/* ---------- deck ---------- */
+
+	/*
+		One <audio> for all 291 rows. Per-row elements would each hold their own
+		buffer and network state, and the browser caps concurrent media elements
+		well below 291 anyway, so rows past the cap would silently refuse to play.
+
+		preload="none" is deliberate: nothing is fetched until somebody actually
+		asks for a sermon. The archive is ~60MB an episode.
+	*/
+
+	const deck = document.querySelector<HTMLElement>('[data-deck]');
+	const audio = deck?.querySelector<HTMLAudioElement>('[data-audio]');
+	const glyphBtn = deck?.querySelector<HTMLButtonElement>('[data-toggle]');
+	const seek = deck?.querySelector<HTMLInputElement>('[data-seek]');
+	const deckTitle = deck?.querySelector<HTMLElement>('[data-deck-title]');
+	const deckWhen = deck?.querySelector<HTMLElement>('[data-deck-when]');
+	const atEl = deck?.querySelector<HTMLElement>('[data-at]');
+	const durEl = deck?.querySelector<HTMLElement>('[data-dur]');
+
+	/** Mirrors the clock() helper in the frontmatter. Kept in sync by hand; the
+	    two run in different scopes and sharing would mean shipping a module for
+	    nine lines. */
+	function clock(total: number) {
+		if (!Number.isFinite(total) || total < 0) return '0:00';
+		const s = Math.floor(total);
+		const h = Math.floor(s / 3600);
+		const m = Math.floor((s % 3600) / 60);
+		const r = s % 60;
+		const pad = (n: number) => String(n).padStart(2, '0');
+		return h ? `${h}:${pad(m)}:${pad(r)}` : `${m}:${pad(r)}`;
+	}
+
+	if (deck && audio && glyphBtn && seek) {
+		let current: HTMLElement | null = null;
+		let scrubbing = false;
+
+		/** The deck is fixed, so the last rows would sit under it. Measured rather
+		    than guessed: the bar's height changes with the responsive rules. */
+		function reserve() {
+			document.body.style.setProperty('--deck-h', `${deck!.offsetHeight}px`);
+		}
+
+		function open() {
+			if (deck!.hasAttribute('data-open')) return;
+			deck!.hidden = false;
+			document.body.classList.add('has-deck');
+			reserve();
+			// Two frames: unhiding and transforming in the same frame gives the
+			// browser one style resolution and the slide-up never runs.
+			requestAnimationFrame(() => requestAnimationFrame(() => {
+				deck!.setAttribute('data-open', '');
+				reserve();
+				ScrollTrigger.refresh();
+			}));
+		}
+
+		function mark(state: 'playing' | 'paused') {
+			deck!.setAttribute('data-state', state);
+			glyphBtn!.setAttribute('aria-label', state === 'playing' ? 'Pause' : 'Play');
+		}
+
+		function fail(message: string) {
+			deck!.setAttribute('data-error', '');
+			if (deckWhen) deckWhen.textContent = message;
+			mark('paused');
+		}
+
+		function cue(btn: HTMLElement) {
+			// Same sermon: the row is a play/pause toggle, not a restart button.
+			if (current === btn) {
+				if (audio!.paused) audio!.play().catch(() => fail('Could not play. Try Apple Podcasts.'));
+				else audio!.pause();
+				return;
+			}
+
+			current?.closest('.row')?.removeAttribute('data-playing');
+			current = btn;
+			btn.closest('.row')?.setAttribute('data-playing', '');
+
+			deck!.removeAttribute('data-error');
+			if (deckTitle) deckTitle.textContent = btn.dataset.label || '';
+			if (deckWhen) deckWhen.textContent = btn.dataset.when || '';
+			if (atEl) atEl.textContent = '0:00';
+			if (durEl) durEl.textContent = '0:00';
+			seek!.value = '0';
+			deck!.style.setProperty('--p', '0');
+
+			audio!.src = btn.dataset.src || '';
+			open();
+			audio!.play().catch(() => fail('Could not play. Try Apple Podcasts.'));
+		}
+
+		for (const btn of document.querySelectorAll<HTMLElement>('[data-cue]')) {
+			btn.addEventListener('click', () => cue(btn));
+		}
+
+		glyphBtn.addEventListener('click', () => {
+			if (audio.paused) audio.play().catch(() => fail('Could not play. Try Apple Podcasts.'));
+			else audio.pause();
+		});
+
+		deck.querySelector<HTMLButtonElement>('[data-close]')?.addEventListener('click', () => {
+			audio.pause();
+			// Dropping the source stops a part-finished download dead. Setting src
+			// to '' resolves against the page URL and re-requests the document, so
+			// removeAttribute is the only clean stop.
+			audio.removeAttribute('src');
+			audio.load();
+			current?.closest('.row')?.removeAttribute('data-playing');
+			current = null;
+			deck.removeAttribute('data-open');
+			document.body.classList.remove('has-deck');
+			const done = () => { deck.hidden = true; ScrollTrigger.refresh(); };
+			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
+			else deck.addEventListener('transitionend', done, { once: true });
+		});
+
+		audio.addEventListener('play', () => mark('playing'));
+		audio.addEventListener('pause', () => mark('paused'));
+		audio.addEventListener('ended', () => mark('paused'));
+		audio.addEventListener('error', () => {
+			if (audio.getAttribute('src')) fail('Could not play. Try Apple Podcasts.');
+		});
+
+		audio.addEventListener('loadedmetadata', () => {
+			if (durEl) durEl.textContent = clock(audio.duration);
+		});
+
+		audio.addEventListener('timeupdate', () => {
+			if (atEl) atEl.textContent = clock(audio.currentTime);
+			if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+			const p = audio.currentTime / audio.duration;
+			deck.style.setProperty('--p', String(p));
+			// Writing .value mid-drag fights the pointer and the thumb stutters.
+			if (!scrubbing) seek.value = String(Math.round(p * 1000));
+		});
+
+		const scrubTo = () => {
+			if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+			const p = Number(seek.value) / 1000;
+			deck.style.setProperty('--p', String(p));
+			audio.currentTime = p * audio.duration;
+			if (atEl) atEl.textContent = clock(audio.currentTime);
+		};
+		seek.addEventListener('pointerdown', () => { scrubbing = true; });
+		seek.addEventListener('input', scrubTo);
+		seek.addEventListener('change', () => { scrubTo(); scrubbing = false; });
+		// Keyboard arrows fire input/change with no pointer events at all.
+		seek.addEventListener('keydown', () => { scrubbing = true; });
+		seek.addEventListener('keyup', () => { scrubbing = false; });
+
+		window.addEventListener('resize', () => { if (!deck.hidden) reserve(); });
 	}
 
 	/* ---------- live stream ---------- */
