@@ -1,1 +1,2228 @@
-{"total": 291, "oldest": "2020-03-18", "newest": "2026-07-20", "recent": [{"title": "The Power Of Joy", "date": "2026-07-20", "season": "9", "episode": "24"}, {"title": "Can Jesus Come Back To America", "date": "2026-07-13", "season": "9", "episode": "23"}, {"title": "Go With Wisdom", "date": "2026-07-09", "season": "9", "episode": "22"}, {"title": "God’s Broken Heart", "date": "2026-07-07", "season": "9", "episode": "21"}, {"title": "Benefits of Being Holy Spirit Filled", "date": "2026-06-29", "season": "9", "episode": "20"}, {"title": "Wait For The Moving of The Water", "date": "2026-06-15", "season": "9", "episode": "19"}, {"title": "You Can’t Do This Alone", "date": "2026-06-02", "season": "9", "episode": "18"}, {"title": "Who Can Make That Straight?", "date": "2026-05-27", "season": "9", "episode": "17"}, {"title": "The Lamb & The Serpent", "date": "2026-05-18", "season": "9", "episode": "16"}, {"title": "His Love, Your Breakthrough", "date": "2026-05-11", "season": "9", "episode": "15"}, {"title": "Darker World, Brighter Church", "date": "2026-05-05", "season": "9", "episode": "14"}, {"title": "Spiritual Goals", "date": "2026-04-29", "season": "9", "episode": "13"}, {"title": "Lord, Deliver Me From Me", "date": "2026-04-13", "season": "9", "episode": "12"}, {"title": "It’s A Big Deal", "date": "2026-04-08", "season": "9", "episode": "11"}, {"title": "Tremble At His Word", "date": "2026-03-23", "season": "9", "episode": "10"}, {"title": "We Are In A War", "date": "2026-03-09", "season": "9", "episode": "9"}, {"title": "Victim Or Victim Mindset", "date": "2026-03-02", "season": "9", "episode": "8"}, {"title": "The Righteous Are Being Tested", "date": "2026-02-23", "season": "9", "episode": "7"}, {"title": "War", "date": "2026-02-09", "season": "9", "episode": "6"}, {"title": "Special Attention", "date": "2026-02-02", "season": "9", "episode": "5"}, {"title": "The Last Days Battle For Love", "date": "2026-01-26", "season": "9", "episode": "4"}, {"title": "When God’s Will Doesn’t Make Sense-Obey Anyway", "date": "2026-01-20", "season": "9", "episode": "3"}, {"title": "Sleep", "date": "2026-01-12", "season": "9", "episode": "2"}, {"title": "Sabbath Breakers", "date": "2026-01-05", "season": "9", "episode": "1"}, {"title": "Make The Choice For A Blessed New Year", "date": "2025-12-29", "season": "8", "episode": "51"}, {"title": "Why A Stable?", "date": "2025-12-15", "season": "8", "episode": "50"}, {"title": "What Christmas Means", "date": "2025-12-08", "season": "8", "episode": "49"}, {"title": "Ultimate Test Of Faith", "date": "2025-12-01", "season": "8", "episode": "48"}, {"title": "Right Song Wrong Side", "date": "2025-11-24", "season": "8", "episode": "47"}, {"title": "Greetings From Caesar’s House", "date": "2025-11-17", "season": "8", "episode": "46"}], "dates": ["2026-07-20", "2026-07-13", "2026-07-09", "2026-07-07", "2026-06-29", "2026-06-15", "2026-06-02", "2026-05-27", "2026-05-18", "2026-05-11", "2026-05-05", "2026-04-29", "2026-04-13", "2026-04-08", "2026-03-23", "2026-03-09", "2026-03-02", "2026-02-23", "2026-02-09", "2026-02-02", "2026-01-26", "2026-01-20", "2026-01-12", "2026-01-05", "2025-12-29", "2025-12-15", "2025-12-08", "2025-12-01", "2025-11-24", "2025-11-17", "2025-11-10", "2025-11-03", "2025-10-26", "2025-10-20", "2025-10-13", "2025-10-07", "2025-09-29", "2025-09-23", "2025-09-17", "2025-09-10", "2025-09-02", "2025-08-30", "2025-08-18", "2025-08-12", "2025-08-05", "2025-07-28", "2025-07-22", "2025-07-15", "2025-07-09", "2025-07-09", "2025-06-25", "2025-06-17", "2025-06-11", "2025-06-02", "2025-06-02", "2025-05-22", "2025-05-13", "2025-05-13", "2025-04-30", "2025-04-22", "2025-04-14", "2025-04-08", "2025-03-31", "2025-03-26", "2025-03-17", "2025-03-11", "2025-03-03", "2025-02-24", "2025-02-18", "2025-02-11", "2025-02-03", "2025-01-27", "2025-01-21", "2025-01-13", "2025-01-06", "2024-12-30", "2024-12-30", "2024-12-16", "2024-12-10", "2024-12-05", "2024-12-05", "2024-11-04", "2024-10-28", "2024-10-23", "2024-10-15", "2024-10-07", "2024-10-01", "2024-09-24", "2024-09-17", "2024-09-12", "2024-09-05", "2024-08-26", "2024-08-23", "2024-08-13", "2024-08-05", "2024-07-30", "2024-07-22", "2024-07-15", "2024-07-01", "2024-06-17", "2024-06-09", "2024-06-03", "2024-05-29", "2024-05-20", "2024-05-20", "2024-05-20", "2024-04-24", "2024-04-16", "2024-04-08", "2024-03-28", "2024-03-18", "2024-03-12", "2024-03-04", "2024-02-26", "2024-02-21", "2024-02-12", "2024-02-05", "2024-01-29", "2024-01-22", "2024-01-15", "2024-01-08", "2024-01-03", "2024-01-03", "2024-01-03", "2024-01-03", "2023-11-28", "2023-11-28", "2023-11-14", "2023-11-14", "2023-11-03", "2023-10-24", "2023-10-17", "2023-10-09", "2023-10-02", "2023-09-25", "2023-09-22", "2023-09-11", "2023-09-11", "2023-08-22", "2023-08-15", "2023-08-10", "2023-08-01", "2023-07-25", "2023-07-25", "2023-07-11", "2023-07-11", "2023-06-27", "2023-06-21", "2023-06-21", "2023-06-05", "2023-06-01", "2023-05-22", "2023-05-17", "2023-05-01", "2023-04-25", "2023-04-17", "2023-04-17", "2023-04-05", "2023-03-28", "2023-03-21", "2023-03-08", "2023-02-21", "2023-02-14", "2023-02-06", "2023-02-06", "2023-01-23", "2023-01-21", "2023-01-10", "2023-01-02", "2022-12-20", "2022-12-14", "2022-12-05", "2022-12-03", "2022-12-03", "2022-12-03", "2022-11-12", "2022-10-18", "2022-10-07", "2022-09-30", "2022-09-20", "2022-09-14", "2022-09-11", "2022-09-11", "2022-09-01", "2022-08-16", "2022-08-13", "2022-08-01", "2022-07-26", "2022-07-18", "2022-07-15", "2022-07-05", "2022-06-27", "2022-06-20", "2022-06-14", "2022-06-07", "2022-05-10", "2022-05-10", "2022-04-29", "2022-04-18", "2022-04-13", "2022-04-03", "2022-03-29", "2022-03-29", "2022-03-17", "2022-03-17", "2022-03-04", "2022-02-22", "2022-02-17", "2022-02-08", "2022-01-31", "2022-01-25", "2022-01-17", "2022-01-11", "2022-01-06", "2021-12-29", "2021-12-14", "2021-12-07", "2021-12-05", "2021-11-23", "2021-11-15", "2021-11-10", "2021-11-06", "2021-11-06", "2021-10-19", "2021-10-12", "2021-10-06", "2021-09-27", "2021-09-21", "2021-09-13", "2021-09-13", "2021-08-31", "2021-08-27", "2021-08-21", "2021-08-12", "2021-08-05", "2021-08-05", "2021-07-22", "2021-07-16", "2021-07-16", "2021-07-04", "2021-06-21", "2021-06-17", "2021-06-17", "2021-06-01", "2021-05-25", "2021-05-25", "2021-05-25", "2021-04-27", "2021-04-19", "2021-04-13", "2021-04-06", "2021-04-06", "2021-03-25", "2021-03-25", "2021-03-12", "2021-03-01", "2021-03-01", "2021-02-12", "2021-01-27", "2021-01-22", "2021-01-12", "2021-01-12", "2020-12-18", "2020-12-18", "2020-11-25", "2020-11-25", "2020-11-10", "2020-11-10", "2020-10-27", "2020-10-13", "2020-10-08", "2020-09-28", "2020-09-21", "2020-09-16", "2020-09-09", "2020-09-01", "2020-08-30", "2020-08-30", "2020-08-11", "2020-08-03", "2020-07-29", "2020-07-16", "2020-07-06", "2020-07-02", "2020-06-24", "2020-06-09", "2020-06-03", "2020-05-29", "2020-05-19", "2020-03-18", "2020-03-18"]}
+{
+  "total": 291,
+  "oldest": "2020-03-18",
+  "newest": "2026-07-20",
+  "recent": [
+    {
+      "title": "The Power Of Joy",
+      "date": "2026-07-20",
+      "season": "9",
+      "episode": "24"
+    },
+    {
+      "title": "Can Jesus Come Back To America",
+      "date": "2026-07-13",
+      "season": "9",
+      "episode": "23"
+    },
+    {
+      "title": "Go With Wisdom",
+      "date": "2026-07-09",
+      "season": "9",
+      "episode": "22"
+    },
+    {
+      "title": "God’s Broken Heart",
+      "date": "2026-07-07",
+      "season": "9",
+      "episode": "21"
+    },
+    {
+      "title": "Benefits of Being Holy Spirit Filled",
+      "date": "2026-06-29",
+      "season": "9",
+      "episode": "20"
+    },
+    {
+      "title": "Wait For The Moving of The Water",
+      "date": "2026-06-15",
+      "season": "9",
+      "episode": "19"
+    },
+    {
+      "title": "You Can’t Do This Alone",
+      "date": "2026-06-02",
+      "season": "9",
+      "episode": "18"
+    },
+    {
+      "title": "Who Can Make That Straight?",
+      "date": "2026-05-27",
+      "season": "9",
+      "episode": "17"
+    },
+    {
+      "title": "The Lamb & The Serpent",
+      "date": "2026-05-18",
+      "season": "9",
+      "episode": "16"
+    },
+    {
+      "title": "His Love, Your Breakthrough",
+      "date": "2026-05-11",
+      "season": "9",
+      "episode": "15"
+    },
+    {
+      "title": "Darker World, Brighter Church",
+      "date": "2026-05-05",
+      "season": "9",
+      "episode": "14"
+    },
+    {
+      "title": "Spiritual Goals",
+      "date": "2026-04-29",
+      "season": "9",
+      "episode": "13"
+    },
+    {
+      "title": "Lord, Deliver Me From Me",
+      "date": "2026-04-13",
+      "season": "9",
+      "episode": "12"
+    },
+    {
+      "title": "It’s A Big Deal",
+      "date": "2026-04-08",
+      "season": "9",
+      "episode": "11"
+    },
+    {
+      "title": "Tremble At His Word",
+      "date": "2026-03-23",
+      "season": "9",
+      "episode": "10"
+    },
+    {
+      "title": "We Are In A War",
+      "date": "2026-03-09",
+      "season": "9",
+      "episode": "9"
+    },
+    {
+      "title": "Victim Or Victim Mindset",
+      "date": "2026-03-02",
+      "season": "9",
+      "episode": "8"
+    },
+    {
+      "title": "The Righteous Are Being Tested",
+      "date": "2026-02-23",
+      "season": "9",
+      "episode": "7"
+    },
+    {
+      "title": "War",
+      "date": "2026-02-09",
+      "season": "9",
+      "episode": "6"
+    },
+    {
+      "title": "Special Attention",
+      "date": "2026-02-02",
+      "season": "9",
+      "episode": "5"
+    },
+    {
+      "title": "The Last Days Battle For Love",
+      "date": "2026-01-26",
+      "season": "9",
+      "episode": "4"
+    },
+    {
+      "title": "When God’s Will Doesn’t Make Sense-Obey Anyway",
+      "date": "2026-01-20",
+      "season": "9",
+      "episode": "3"
+    },
+    {
+      "title": "Sleep",
+      "date": "2026-01-12",
+      "season": "9",
+      "episode": "2"
+    },
+    {
+      "title": "Sabbath Breakers",
+      "date": "2026-01-05",
+      "season": "9",
+      "episode": "1"
+    },
+    {
+      "title": "Make The Choice For A Blessed New Year",
+      "date": "2025-12-29",
+      "season": "8",
+      "episode": "51"
+    },
+    {
+      "title": "Why A Stable?",
+      "date": "2025-12-15",
+      "season": "8",
+      "episode": "50"
+    },
+    {
+      "title": "What Christmas Means",
+      "date": "2025-12-08",
+      "season": "8",
+      "episode": "49"
+    },
+    {
+      "title": "Ultimate Test Of Faith",
+      "date": "2025-12-01",
+      "season": "8",
+      "episode": "48"
+    },
+    {
+      "title": "Right Song Wrong Side",
+      "date": "2025-11-24",
+      "season": "8",
+      "episode": "47"
+    },
+    {
+      "title": "Greetings From Caesar’s House",
+      "date": "2025-11-17",
+      "season": "8",
+      "episode": "46"
+    }
+  ],
+  "dates": [
+    "2026-07-20",
+    "2026-07-13",
+    "2026-07-09",
+    "2026-07-07",
+    "2026-06-29",
+    "2026-06-15",
+    "2026-06-02",
+    "2026-05-27",
+    "2026-05-18",
+    "2026-05-11",
+    "2026-05-05",
+    "2026-04-29",
+    "2026-04-13",
+    "2026-04-08",
+    "2026-03-23",
+    "2026-03-09",
+    "2026-03-02",
+    "2026-02-23",
+    "2026-02-09",
+    "2026-02-02",
+    "2026-01-26",
+    "2026-01-20",
+    "2026-01-12",
+    "2026-01-05",
+    "2025-12-29",
+    "2025-12-15",
+    "2025-12-08",
+    "2025-12-01",
+    "2025-11-24",
+    "2025-11-17",
+    "2025-11-10",
+    "2025-11-03",
+    "2025-10-26",
+    "2025-10-20",
+    "2025-10-13",
+    "2025-10-07",
+    "2025-09-29",
+    "2025-09-23",
+    "2025-09-17",
+    "2025-09-10",
+    "2025-09-02",
+    "2025-08-30",
+    "2025-08-18",
+    "2025-08-12",
+    "2025-08-05",
+    "2025-07-28",
+    "2025-07-22",
+    "2025-07-15",
+    "2025-07-09",
+    "2025-07-09",
+    "2025-06-25",
+    "2025-06-17",
+    "2025-06-11",
+    "2025-06-02",
+    "2025-06-02",
+    "2025-05-22",
+    "2025-05-13",
+    "2025-05-13",
+    "2025-04-30",
+    "2025-04-22",
+    "2025-04-14",
+    "2025-04-08",
+    "2025-03-31",
+    "2025-03-26",
+    "2025-03-17",
+    "2025-03-11",
+    "2025-03-03",
+    "2025-02-24",
+    "2025-02-18",
+    "2025-02-11",
+    "2025-02-03",
+    "2025-01-27",
+    "2025-01-21",
+    "2025-01-13",
+    "2025-01-06",
+    "2024-12-30",
+    "2024-12-30",
+    "2024-12-16",
+    "2024-12-10",
+    "2024-12-05",
+    "2024-12-05",
+    "2024-11-04",
+    "2024-10-28",
+    "2024-10-23",
+    "2024-10-15",
+    "2024-10-07",
+    "2024-10-01",
+    "2024-09-24",
+    "2024-09-17",
+    "2024-09-12",
+    "2024-09-05",
+    "2024-08-26",
+    "2024-08-23",
+    "2024-08-13",
+    "2024-08-05",
+    "2024-07-30",
+    "2024-07-22",
+    "2024-07-15",
+    "2024-07-01",
+    "2024-06-17",
+    "2024-06-09",
+    "2024-06-03",
+    "2024-05-29",
+    "2024-05-20",
+    "2024-05-20",
+    "2024-05-20",
+    "2024-04-24",
+    "2024-04-16",
+    "2024-04-08",
+    "2024-03-28",
+    "2024-03-18",
+    "2024-03-12",
+    "2024-03-04",
+    "2024-02-26",
+    "2024-02-21",
+    "2024-02-12",
+    "2024-02-05",
+    "2024-01-29",
+    "2024-01-22",
+    "2024-01-15",
+    "2024-01-08",
+    "2024-01-03",
+    "2024-01-03",
+    "2024-01-03",
+    "2024-01-03",
+    "2023-11-28",
+    "2023-11-28",
+    "2023-11-14",
+    "2023-11-14",
+    "2023-11-03",
+    "2023-10-24",
+    "2023-10-17",
+    "2023-10-09",
+    "2023-10-02",
+    "2023-09-25",
+    "2023-09-22",
+    "2023-09-11",
+    "2023-09-11",
+    "2023-08-22",
+    "2023-08-15",
+    "2023-08-10",
+    "2023-08-01",
+    "2023-07-25",
+    "2023-07-25",
+    "2023-07-11",
+    "2023-07-11",
+    "2023-06-27",
+    "2023-06-21",
+    "2023-06-21",
+    "2023-06-05",
+    "2023-06-01",
+    "2023-05-22",
+    "2023-05-17",
+    "2023-05-01",
+    "2023-04-25",
+    "2023-04-17",
+    "2023-04-17",
+    "2023-04-05",
+    "2023-03-28",
+    "2023-03-21",
+    "2023-03-08",
+    "2023-02-21",
+    "2023-02-14",
+    "2023-02-06",
+    "2023-02-06",
+    "2023-01-23",
+    "2023-01-21",
+    "2023-01-10",
+    "2023-01-02",
+    "2022-12-20",
+    "2022-12-14",
+    "2022-12-05",
+    "2022-12-03",
+    "2022-12-03",
+    "2022-12-03",
+    "2022-11-12",
+    "2022-10-18",
+    "2022-10-07",
+    "2022-09-30",
+    "2022-09-20",
+    "2022-09-14",
+    "2022-09-11",
+    "2022-09-11",
+    "2022-09-01",
+    "2022-08-16",
+    "2022-08-13",
+    "2022-08-01",
+    "2022-07-26",
+    "2022-07-18",
+    "2022-07-15",
+    "2022-07-05",
+    "2022-06-27",
+    "2022-06-20",
+    "2022-06-14",
+    "2022-06-07",
+    "2022-05-10",
+    "2022-05-10",
+    "2022-04-29",
+    "2022-04-18",
+    "2022-04-13",
+    "2022-04-03",
+    "2022-03-29",
+    "2022-03-29",
+    "2022-03-17",
+    "2022-03-17",
+    "2022-03-04",
+    "2022-02-22",
+    "2022-02-17",
+    "2022-02-08",
+    "2022-01-31",
+    "2022-01-25",
+    "2022-01-17",
+    "2022-01-11",
+    "2022-01-06",
+    "2021-12-29",
+    "2021-12-14",
+    "2021-12-07",
+    "2021-12-05",
+    "2021-11-23",
+    "2021-11-15",
+    "2021-11-10",
+    "2021-11-06",
+    "2021-11-06",
+    "2021-10-19",
+    "2021-10-12",
+    "2021-10-06",
+    "2021-09-27",
+    "2021-09-21",
+    "2021-09-13",
+    "2021-09-13",
+    "2021-08-31",
+    "2021-08-27",
+    "2021-08-21",
+    "2021-08-12",
+    "2021-08-05",
+    "2021-08-05",
+    "2021-07-22",
+    "2021-07-16",
+    "2021-07-16",
+    "2021-07-04",
+    "2021-06-21",
+    "2021-06-17",
+    "2021-06-17",
+    "2021-06-01",
+    "2021-05-25",
+    "2021-05-25",
+    "2021-05-25",
+    "2021-04-27",
+    "2021-04-19",
+    "2021-04-13",
+    "2021-04-06",
+    "2021-04-06",
+    "2021-03-25",
+    "2021-03-25",
+    "2021-03-12",
+    "2021-03-01",
+    "2021-03-01",
+    "2021-02-12",
+    "2021-01-27",
+    "2021-01-22",
+    "2021-01-12",
+    "2021-01-12",
+    "2020-12-18",
+    "2020-12-18",
+    "2020-11-25",
+    "2020-11-25",
+    "2020-11-10",
+    "2020-11-10",
+    "2020-10-27",
+    "2020-10-13",
+    "2020-10-08",
+    "2020-09-28",
+    "2020-09-21",
+    "2020-09-16",
+    "2020-09-09",
+    "2020-09-01",
+    "2020-08-30",
+    "2020-08-30",
+    "2020-08-11",
+    "2020-08-03",
+    "2020-07-29",
+    "2020-07-16",
+    "2020-07-06",
+    "2020-07-02",
+    "2020-06-24",
+    "2020-06-09",
+    "2020-06-03",
+    "2020-05-29",
+    "2020-05-19",
+    "2020-03-18",
+    "2020-03-18"
+  ],
+  "episodes": [
+    {
+      "title": "The Power Of Joy",
+      "date": "2026-07-20",
+      "season": "9",
+      "episode": "24"
+    },
+    {
+      "title": "Can Jesus Come Back To America",
+      "date": "2026-07-13",
+      "season": "9",
+      "episode": "23"
+    },
+    {
+      "title": "Go With Wisdom",
+      "date": "2026-07-09",
+      "season": "9",
+      "episode": "22"
+    },
+    {
+      "title": "God’s Broken Heart",
+      "date": "2026-07-07",
+      "season": "9",
+      "episode": "21"
+    },
+    {
+      "title": "Benefits of Being Holy Spirit Filled",
+      "date": "2026-06-29",
+      "season": "9",
+      "episode": "20"
+    },
+    {
+      "title": "Wait For The Moving of The Water",
+      "date": "2026-06-15",
+      "season": "9",
+      "episode": "19"
+    },
+    {
+      "title": "You Can’t Do This Alone",
+      "date": "2026-06-02",
+      "season": "9",
+      "episode": "18"
+    },
+    {
+      "title": "Who Can Make That Straight?",
+      "date": "2026-05-27",
+      "season": "9",
+      "episode": "17"
+    },
+    {
+      "title": "The Lamb & The Serpent",
+      "date": "2026-05-18",
+      "season": "9",
+      "episode": "16"
+    },
+    {
+      "title": "His Love, Your Breakthrough",
+      "date": "2026-05-11",
+      "season": "9",
+      "episode": "15"
+    },
+    {
+      "title": "Darker World, Brighter Church",
+      "date": "2026-05-05",
+      "season": "9",
+      "episode": "14"
+    },
+    {
+      "title": "Spiritual Goals",
+      "date": "2026-04-29",
+      "season": "9",
+      "episode": "13"
+    },
+    {
+      "title": "Lord, Deliver Me From Me",
+      "date": "2026-04-13",
+      "season": "9",
+      "episode": "12"
+    },
+    {
+      "title": "It’s A Big Deal",
+      "date": "2026-04-08",
+      "season": "9",
+      "episode": "11"
+    },
+    {
+      "title": "Tremble At His Word",
+      "date": "2026-03-23",
+      "season": "9",
+      "episode": "10"
+    },
+    {
+      "title": "We Are In A War",
+      "date": "2026-03-09",
+      "season": "9",
+      "episode": "9"
+    },
+    {
+      "title": "Victim Or Victim Mindset",
+      "date": "2026-03-02",
+      "season": "9",
+      "episode": "8"
+    },
+    {
+      "title": "The Righteous Are Being Tested",
+      "date": "2026-02-23",
+      "season": "9",
+      "episode": "7"
+    },
+    {
+      "title": "War",
+      "date": "2026-02-09",
+      "season": "9",
+      "episode": "6"
+    },
+    {
+      "title": "Special Attention",
+      "date": "2026-02-02",
+      "season": "9",
+      "episode": "5"
+    },
+    {
+      "title": "The Last Days Battle For Love",
+      "date": "2026-01-26",
+      "season": "9",
+      "episode": "4"
+    },
+    {
+      "title": "When God’s Will Doesn’t Make Sense-Obey Anyway",
+      "date": "2026-01-20",
+      "season": "9",
+      "episode": "3"
+    },
+    {
+      "title": "Sleep",
+      "date": "2026-01-12",
+      "season": "9",
+      "episode": "2"
+    },
+    {
+      "title": "Sabbath Breakers",
+      "date": "2026-01-05",
+      "season": "9",
+      "episode": "1"
+    },
+    {
+      "title": "Make The Choice For A Blessed New Year",
+      "date": "2025-12-29",
+      "season": "8",
+      "episode": "51"
+    },
+    {
+      "title": "Why A Stable?",
+      "date": "2025-12-15",
+      "season": "8",
+      "episode": "50"
+    },
+    {
+      "title": "What Christmas Means",
+      "date": "2025-12-08",
+      "season": "8",
+      "episode": "49"
+    },
+    {
+      "title": "Ultimate Test Of Faith",
+      "date": "2025-12-01",
+      "season": "8",
+      "episode": "48"
+    },
+    {
+      "title": "Right Song Wrong Side",
+      "date": "2025-11-24",
+      "season": "8",
+      "episode": "47"
+    },
+    {
+      "title": "Greetings From Caesar’s House",
+      "date": "2025-11-17",
+      "season": "8",
+      "episode": "46"
+    },
+    {
+      "title": "Desperate For His Presence",
+      "date": "2025-11-10",
+      "season": "8",
+      "episode": "45"
+    },
+    {
+      "title": "Faith & Family",
+      "date": "2025-11-03",
+      "season": "8",
+      "episode": "44"
+    },
+    {
+      "title": "God Knows & God Builds",
+      "date": "2025-10-26",
+      "season": "8",
+      "episode": "43"
+    },
+    {
+      "title": "Being Ordinary",
+      "date": "2025-10-20",
+      "season": "8",
+      "episode": "42"
+    },
+    {
+      "title": "Too Much Talking",
+      "date": "2025-10-13",
+      "season": "8",
+      "episode": "41"
+    },
+    {
+      "title": "Tell Your Story",
+      "date": "2025-10-07",
+      "season": "8",
+      "episode": "40"
+    },
+    {
+      "title": "Harvest",
+      "date": "2025-09-29",
+      "season": "8",
+      "episode": "39"
+    },
+    {
+      "title": "Bold As Lions",
+      "date": "2025-09-23",
+      "season": "8",
+      "episode": "38"
+    },
+    {
+      "title": "Stuck Upstairs",
+      "date": "2025-09-17",
+      "season": "8",
+      "episode": "37"
+    },
+    {
+      "title": "Put Christ First In Your Life",
+      "date": "2025-09-10",
+      "season": "8",
+      "episode": "36"
+    },
+    {
+      "title": "The View From The Valley",
+      "date": "2025-09-02",
+      "season": "8",
+      "episode": "35"
+    },
+    {
+      "title": "The Forgotten Blood Of The Lamb",
+      "date": "2025-08-30",
+      "season": "8",
+      "episode": "34"
+    },
+    {
+      "title": "Acknowledge Him",
+      "date": "2025-08-18",
+      "season": "8",
+      "episode": "33"
+    },
+    {
+      "title": "Following Jesus Has A Cost",
+      "date": "2025-08-12",
+      "season": "8",
+      "episode": "32"
+    },
+    {
+      "title": "Watch The Lamb",
+      "date": "2025-08-05",
+      "season": "8",
+      "episode": "31"
+    },
+    {
+      "title": "When Grace Meets Faith",
+      "date": "2025-07-28",
+      "season": "8",
+      "episode": "30"
+    },
+    {
+      "title": "Hope When All Seems Hopeless",
+      "date": "2025-07-22",
+      "season": "8",
+      "episode": "29"
+    },
+    {
+      "title": "Drawing Near To God",
+      "date": "2025-07-15",
+      "season": "8",
+      "episode": "28"
+    },
+    {
+      "title": "Our Wartime Walkie-Talkie",
+      "date": "2025-07-09",
+      "season": "8",
+      "episode": "27"
+    },
+    {
+      "title": "Calling Of God",
+      "date": "2025-07-09",
+      "season": "8",
+      "episode": "26"
+    },
+    {
+      "title": "Keeping God’s Peace In Troubled Times",
+      "date": "2025-06-25",
+      "season": "8",
+      "episode": "25"
+    },
+    {
+      "title": "Leaving A Legacy",
+      "date": "2025-06-17",
+      "season": "8",
+      "episode": "24"
+    },
+    {
+      "title": "Missional Marriage",
+      "date": "2025-06-11",
+      "season": "8",
+      "episode": "23"
+    },
+    {
+      "title": "The Divine Purpose Of The Family",
+      "date": "2025-06-02",
+      "season": "8",
+      "episode": "22"
+    },
+    {
+      "title": "Regret Versus Repentance",
+      "date": "2025-06-02",
+      "season": "8",
+      "episode": "21"
+    },
+    {
+      "title": "Praising God At The Dung Gate",
+      "date": "2025-05-22",
+      "season": "8",
+      "episode": "20"
+    },
+    {
+      "title": "Focus On The Family",
+      "date": "2025-05-13",
+      "season": "8",
+      "episode": "19"
+    },
+    {
+      "title": "The Final Pleading Of Conscience",
+      "date": "2025-05-13",
+      "season": "8",
+      "episode": "18"
+    },
+    {
+      "title": "Falling Away To The Antichrist",
+      "date": "2025-04-30",
+      "season": "8",
+      "episode": "17"
+    },
+    {
+      "title": "True Love",
+      "date": "2025-04-22",
+      "season": "8",
+      "episode": "16"
+    },
+    {
+      "title": "HOSANNA",
+      "date": "2025-04-14",
+      "season": "8",
+      "episode": "15"
+    },
+    {
+      "title": "You’re Not The Only Boat On The Lake",
+      "date": "2025-04-08",
+      "season": "8",
+      "episode": "14"
+    },
+    {
+      "title": "Being A Humble Learner",
+      "date": "2025-03-31",
+      "season": "8",
+      "episode": "13"
+    },
+    {
+      "title": "Drifting",
+      "date": "2025-03-26",
+      "season": "8",
+      "episode": "12"
+    },
+    {
+      "title": "When No Is God’s Best Answer",
+      "date": "2025-03-17",
+      "season": "8",
+      "episode": "11"
+    },
+    {
+      "title": "Be Sure Your Sin Will Find You Out",
+      "date": "2025-03-11",
+      "season": "8",
+      "episode": "10"
+    },
+    {
+      "title": "The Joy Of The Lord",
+      "date": "2025-03-03",
+      "season": "8",
+      "episode": "9"
+    },
+    {
+      "title": "Conquering Cynicism",
+      "date": "2025-02-24",
+      "season": "8",
+      "episode": "8"
+    },
+    {
+      "title": "Refining Process",
+      "date": "2025-02-18",
+      "season": "8",
+      "episode": "7"
+    },
+    {
+      "title": "Loneliness",
+      "date": "2025-02-11",
+      "season": "8",
+      "episode": "6"
+    },
+    {
+      "title": "Get Ready For What Is To Come",
+      "date": "2025-02-03",
+      "season": "8",
+      "episode": "5"
+    },
+    {
+      "title": "Don’t Stop When Tears Start",
+      "date": "2025-01-27",
+      "season": "8",
+      "episode": "4"
+    },
+    {
+      "title": "Our Real Enemies",
+      "date": "2025-01-21",
+      "season": "8",
+      "episode": "3"
+    },
+    {
+      "title": "The Importance Of Being Spirit Led",
+      "date": "2025-01-13",
+      "season": "8",
+      "episode": "2"
+    },
+    {
+      "title": "The Writing Is On The Wall",
+      "date": "2025-01-06",
+      "season": "8",
+      "episode": "1"
+    },
+    {
+      "title": "How To Get The Power of God",
+      "date": "2024-12-30",
+      "season": "7",
+      "episode": "49"
+    },
+    {
+      "title": "Christ Lives In Me",
+      "date": "2024-12-30",
+      "season": "7",
+      "episode": "48"
+    },
+    {
+      "title": "Wrapped In Thrown Away Rags",
+      "date": "2024-12-16",
+      "season": "7",
+      "episode": "47"
+    },
+    {
+      "title": "The Spirit Of God",
+      "date": "2024-12-10",
+      "season": "7",
+      "episode": "46"
+    },
+    {
+      "title": "Fellowship With The Holy Spirit",
+      "date": "2024-12-05",
+      "season": "7",
+      "episode": "45"
+    },
+    {
+      "title": "The Grace Of Self Control",
+      "date": "2024-12-05",
+      "season": "7",
+      "episode": "44"
+    },
+    {
+      "title": "Sowing Seed",
+      "date": "2024-11-04",
+      "season": "7",
+      "episode": "41"
+    },
+    {
+      "title": "Refreshed But Not Free",
+      "date": "2024-10-28",
+      "season": "7",
+      "episode": "40"
+    },
+    {
+      "title": "Holy Spirit Come Back",
+      "date": "2024-10-23",
+      "season": "7",
+      "episode": "39"
+    },
+    {
+      "title": "Pastor Appreciation",
+      "date": "2024-10-15",
+      "season": "7",
+      "episode": "38"
+    },
+    {
+      "title": "Faith Without Borders",
+      "date": "2024-10-07",
+      "season": "7",
+      "episode": "37"
+    },
+    {
+      "title": "How Wise Are You?",
+      "date": "2024-10-01",
+      "season": "7",
+      "episode": "36"
+    },
+    {
+      "title": "We Only Want To Hear God When He Agrees With Us",
+      "date": "2024-09-24",
+      "season": "7",
+      "episode": "35"
+    },
+    {
+      "title": "Navigating Toxic Relationships",
+      "date": "2024-09-17",
+      "season": "7",
+      "episode": "34"
+    },
+    {
+      "title": "The Beauty Of Peace",
+      "date": "2024-09-12",
+      "season": "7",
+      "episode": "33"
+    },
+    {
+      "title": "The Cost Of Complaining",
+      "date": "2024-09-05",
+      "season": "7",
+      "episode": "32"
+    },
+    {
+      "title": "As In The Days Of Noah",
+      "date": "2024-08-26",
+      "season": "7",
+      "episode": "31"
+    },
+    {
+      "title": "The Truth About Repentance",
+      "date": "2024-08-23",
+      "season": "7",
+      "episode": "30"
+    },
+    {
+      "title": "This Is God. Can You Hear Me?",
+      "date": "2024-08-13",
+      "season": "7",
+      "episode": "29"
+    },
+    {
+      "title": "You & Me Against The World",
+      "date": "2024-08-05",
+      "season": "7",
+      "episode": "28"
+    },
+    {
+      "title": "Den Of Thieves",
+      "date": "2024-07-30",
+      "season": "7",
+      "episode": "27"
+    },
+    {
+      "title": "How To Be Blessed & Live Blessed",
+      "date": "2024-07-22",
+      "season": "7",
+      "episode": "27"
+    },
+    {
+      "title": "Counterfeit Christianity",
+      "date": "2024-07-15",
+      "season": "7",
+      "episode": "26"
+    },
+    {
+      "title": "Trusting In The Finished Work Of Jesus Christ",
+      "date": "2024-07-01",
+      "season": "7",
+      "episode": "25"
+    },
+    {
+      "title": "3 Kinds Of Believers",
+      "date": "2024-06-17",
+      "season": "7",
+      "episode": "23"
+    },
+    {
+      "title": "Loving Jesus",
+      "date": "2024-06-09",
+      "season": "7",
+      "episode": "22"
+    },
+    {
+      "title": "The Harvest",
+      "date": "2024-06-03",
+      "season": "7",
+      "episode": "21"
+    },
+    {
+      "title": "Full Time Ministry",
+      "date": "2024-05-29",
+      "season": "7",
+      "episode": "20"
+    },
+    {
+      "title": "A Good Reason To Stop Crying",
+      "date": "2024-05-20",
+      "season": "7",
+      "episode": "19"
+    },
+    {
+      "title": "How To Overcome What’s Coming",
+      "date": "2024-05-20",
+      "season": "7",
+      "episode": "18"
+    },
+    {
+      "title": "New Name",
+      "date": "2024-05-20",
+      "season": "7",
+      "episode": "17"
+    },
+    {
+      "title": "Freedom In Christ",
+      "date": "2024-04-24",
+      "season": "7",
+      "episode": "16"
+    },
+    {
+      "title": "The Gospel",
+      "date": "2024-04-16",
+      "season": "7",
+      "episode": "15"
+    },
+    {
+      "title": "You Are God’s Temple",
+      "date": "2024-04-08",
+      "season": "7",
+      "episode": "14"
+    },
+    {
+      "title": "Triumphal Entry",
+      "date": "2024-03-28",
+      "season": "7",
+      "episode": "12"
+    },
+    {
+      "title": "Radical Love",
+      "date": "2024-03-18",
+      "season": "7",
+      "episode": "11"
+    },
+    {
+      "title": "The Love Factor",
+      "date": "2024-03-12",
+      "season": "7",
+      "episode": "10"
+    },
+    {
+      "title": "Why Fast",
+      "date": "2024-03-04",
+      "season": "7",
+      "episode": "9"
+    },
+    {
+      "title": "Holy Of Holies",
+      "date": "2024-02-26",
+      "season": "7",
+      "episode": "8"
+    },
+    {
+      "title": "Being With God In Quiet",
+      "date": "2024-02-21",
+      "season": "7",
+      "episode": "7"
+    },
+    {
+      "title": "Change Your Perspective",
+      "date": "2024-02-12",
+      "season": "7",
+      "episode": "6"
+    },
+    {
+      "title": "God’s Amazing Grace",
+      "date": "2024-02-05",
+      "season": "7",
+      "episode": "5"
+    },
+    {
+      "title": "Is There A Right Way To Pray?",
+      "date": "2024-01-29",
+      "season": "7",
+      "episode": "4"
+    },
+    {
+      "title": "Prayer Focus",
+      "date": "2024-01-22",
+      "season": "7",
+      "episode": "3"
+    },
+    {
+      "title": "Calling On The Name Of The Lord",
+      "date": "2024-01-15",
+      "season": "7",
+      "episode": "2"
+    },
+    {
+      "title": "Christ, Wisdom From God",
+      "date": "2024-01-08",
+      "season": "7",
+      "episode": "1"
+    },
+    {
+      "title": "The World",
+      "date": "2024-01-03",
+      "season": "6",
+      "episode": "52"
+    },
+    {
+      "title": "Christmas Theology",
+      "date": "2024-01-03",
+      "season": "6",
+      "episode": "51"
+    },
+    {
+      "title": "What Child Is This",
+      "date": "2024-01-03",
+      "season": "6",
+      "episode": "50"
+    },
+    {
+      "title": "As For Me And My House",
+      "date": "2024-01-03",
+      "season": "6",
+      "episode": "49"
+    },
+    {
+      "title": "What Will Heaven Be Like",
+      "date": "2023-11-28",
+      "season": "6",
+      "episode": "47"
+    },
+    {
+      "title": "Judgement On A Revival Nation",
+      "date": "2023-11-28",
+      "season": "6",
+      "episode": "46"
+    },
+    {
+      "title": "What Will Hell Be Like?",
+      "date": "2023-11-14",
+      "season": "6",
+      "episode": "45"
+    },
+    {
+      "title": "God Chose You",
+      "date": "2023-11-14",
+      "season": "6",
+      "episode": "44"
+    },
+    {
+      "title": "What Judgement Will Be Like",
+      "date": "2023-11-03",
+      "season": "6",
+      "episode": "43"
+    },
+    {
+      "title": "Sound Doctrine",
+      "date": "2023-10-24",
+      "season": "6",
+      "episode": "43"
+    },
+    {
+      "title": "Israel's War Is Our War",
+      "date": "2023-10-17",
+      "season": "6",
+      "episode": "42"
+    },
+    {
+      "title": "Biblical Worldview",
+      "date": "2023-10-09",
+      "season": "6",
+      "episode": "41"
+    },
+    {
+      "title": "There Is Still Room At The Table",
+      "date": "2023-10-02",
+      "season": "6",
+      "episode": "40"
+    },
+    {
+      "title": "Joy Of Jesus",
+      "date": "2023-09-25",
+      "season": "6",
+      "episode": "39"
+    },
+    {
+      "title": "The Roots Are Still There",
+      "date": "2023-09-22",
+      "season": "6",
+      "episode": "38"
+    },
+    {
+      "title": "Valley Furnace",
+      "date": "2023-09-11",
+      "season": "6",
+      "episode": "37"
+    },
+    {
+      "title": "New Covenant Class",
+      "date": "2023-09-11",
+      "season": "6",
+      "episode": "36"
+    },
+    {
+      "title": "Naked And Afraid",
+      "date": "2023-08-22",
+      "season": "6",
+      "episode": "34"
+    },
+    {
+      "title": "Kill The Boar",
+      "date": "2023-08-15",
+      "season": "6",
+      "episode": "33"
+    },
+    {
+      "title": "Glory In The Cross",
+      "date": "2023-08-10",
+      "season": "6",
+      "episode": "32"
+    },
+    {
+      "title": "Witchcraft",
+      "date": "2023-08-01",
+      "season": "6",
+      "episode": "31"
+    },
+    {
+      "title": "Wolves",
+      "date": "2023-07-25",
+      "season": "6",
+      "episode": "30"
+    },
+    {
+      "title": "Tares Among Wheat",
+      "date": "2023-07-25",
+      "season": "6",
+      "episode": "29"
+    },
+    {
+      "title": "Rise Up And Walk",
+      "date": "2023-07-11",
+      "season": "6",
+      "episode": "28"
+    },
+    {
+      "title": "This Gospel",
+      "date": "2023-07-11",
+      "season": "6",
+      "episode": "27"
+    },
+    {
+      "title": "Love Jesus, Preach The Gospel, Die And Be Forgotten",
+      "date": "2023-06-27",
+      "season": "6",
+      "episode": "26"
+    },
+    {
+      "title": "Fatherhood",
+      "date": "2023-06-21",
+      "season": "6",
+      "episode": "25"
+    },
+    {
+      "title": "Holy Spirit",
+      "date": "2023-06-21",
+      "season": "6",
+      "episode": "24"
+    },
+    {
+      "title": "The Sword Of The Spirit",
+      "date": "2023-06-05",
+      "season": "6",
+      "episode": "23"
+    },
+    {
+      "title": "Helmet Of Salvation",
+      "date": "2023-06-01",
+      "season": "6",
+      "episode": "22"
+    },
+    {
+      "title": "Shield Of Faith",
+      "date": "2023-05-22",
+      "season": "6",
+      "episode": "21"
+    },
+    {
+      "title": "Shoes of Gospel of Peace",
+      "date": "2023-05-17",
+      "season": "6",
+      "episode": "20"
+    },
+    {
+      "title": "Tribulation, Kingdom & Patience",
+      "date": "2023-05-01",
+      "season": "6",
+      "episode": "18"
+    },
+    {
+      "title": "Belt Of Truth",
+      "date": "2023-04-25",
+      "season": "6",
+      "episode": "17"
+    },
+    {
+      "title": "Spiritual Warfare",
+      "date": "2023-04-17",
+      "season": "6",
+      "episode": "16"
+    },
+    {
+      "title": "Come And See",
+      "date": "2023-04-17",
+      "season": "6",
+      "episode": "15"
+    },
+    {
+      "title": "What Are You Living For",
+      "date": "2023-04-05",
+      "season": "6",
+      "episode": "14"
+    },
+    {
+      "title": "The World Has Left Us",
+      "date": "2023-03-28",
+      "season": "6",
+      "episode": "13"
+    },
+    {
+      "title": "The Revolving Door",
+      "date": "2023-03-21",
+      "season": "6",
+      "episode": "12"
+    },
+    {
+      "title": "Heart of Worship",
+      "date": "2023-03-08",
+      "season": "6",
+      "episode": "9"
+    },
+    {
+      "title": "Rebuilding The House of The Lord",
+      "date": "2023-02-21",
+      "season": "6",
+      "episode": "8"
+    },
+    {
+      "title": "Standing In The Storm",
+      "date": "2023-02-14",
+      "season": "6",
+      "episode": "7"
+    },
+    {
+      "title": "The Great Commission II",
+      "date": "2023-02-06",
+      "season": "6",
+      "episode": "6"
+    },
+    {
+      "title": "Sex & Stewardship",
+      "date": "2023-02-06",
+      "season": "6",
+      "episode": "5"
+    },
+    {
+      "title": "The Great Commission I",
+      "date": "2023-01-23",
+      "season": "6",
+      "episode": "4"
+    },
+    {
+      "title": "The Lordship Of Jesus",
+      "date": "2023-01-21",
+      "season": "6",
+      "episode": "3"
+    },
+    {
+      "title": "Unity And The Fear Of God",
+      "date": "2023-01-10",
+      "season": "6",
+      "episode": "2"
+    },
+    {
+      "title": "Glory In The Cross",
+      "date": "2023-01-02",
+      "season": "6",
+      "episode": "1"
+    },
+    {
+      "title": "On the Outside Looking In: Week 2",
+      "date": "2022-12-20",
+      "season": "5",
+      "episode": "50"
+    },
+    {
+      "title": "On The Outside Looking In",
+      "date": "2022-12-14",
+      "season": "5",
+      "episode": "49"
+    },
+    {
+      "title": "What Happened To Joy",
+      "date": "2022-12-05",
+      "season": "5",
+      "episode": "48"
+    },
+    {
+      "title": "The Lord’s Testimony",
+      "date": "2022-12-03",
+      "season": "5",
+      "episode": "47"
+    },
+    {
+      "title": "Membership For Mission II",
+      "date": "2022-12-03",
+      "season": "5",
+      "episode": "46"
+    },
+    {
+      "title": "Membership For Mission",
+      "date": "2022-12-03",
+      "season": "5",
+      "episode": "45"
+    },
+    {
+      "title": "History Repeats Itself",
+      "date": "2022-11-12",
+      "season": "5",
+      "episode": "44"
+    },
+    {
+      "title": "Set Free From Fear Of Death",
+      "date": "2022-10-18",
+      "season": "5",
+      "episode": "41"
+    },
+    {
+      "title": "God’s Eternal Pursuit",
+      "date": "2022-10-07",
+      "season": "5",
+      "episode": "40"
+    },
+    {
+      "title": "Chastisement",
+      "date": "2022-09-30",
+      "season": "2",
+      "episode": "39"
+    },
+    {
+      "title": "What The Lord Requires",
+      "date": "2022-09-20",
+      "season": "5",
+      "episode": "38"
+    },
+    {
+      "title": "Revelation Part 12",
+      "date": "2022-09-14",
+      "season": "5",
+      "episode": "37"
+    },
+    {
+      "title": "Revelation Part 11",
+      "date": "2022-09-11",
+      "season": "5",
+      "episode": "36"
+    },
+    {
+      "title": "Revelation Part 10",
+      "date": "2022-09-11",
+      "season": "5",
+      "episode": "35"
+    },
+    {
+      "title": "Revelation Part 9",
+      "date": "2022-09-01",
+      "season": "5",
+      "episode": "34"
+    },
+    {
+      "title": "Revelation Part 8",
+      "date": "2022-08-16",
+      "season": "5",
+      "episode": "33"
+    },
+    {
+      "title": "Hell Is For Real",
+      "date": "2022-08-13",
+      "season": "5",
+      "episode": "32"
+    },
+    {
+      "title": "Revelation Part 7",
+      "date": "2022-08-01",
+      "season": "5",
+      "episode": "31"
+    },
+    {
+      "title": "Dropping Out",
+      "date": "2022-07-26",
+      "season": "5",
+      "episode": "30"
+    },
+    {
+      "title": "Revelation Part 6",
+      "date": "2022-07-18",
+      "season": "5",
+      "episode": "29"
+    },
+    {
+      "title": "Growing Cold On The Eve Of Destruction",
+      "date": "2022-07-15",
+      "season": "5",
+      "episode": "28"
+    },
+    {
+      "title": "Revelation Part 5",
+      "date": "2022-07-05",
+      "season": "5",
+      "episode": "27"
+    },
+    {
+      "title": "Hope In The Midst Of Chaos",
+      "date": "2022-06-27",
+      "season": "5",
+      "episode": "26"
+    },
+    {
+      "title": "Revelation Part 4",
+      "date": "2022-06-20",
+      "season": "5",
+      "episode": "25"
+    },
+    {
+      "title": "Revelation Part 3",
+      "date": "2022-06-14",
+      "season": "5",
+      "episode": "24"
+    },
+    {
+      "title": "Revelation Part 2",
+      "date": "2022-06-07",
+      "season": "5",
+      "episode": "23"
+    },
+    {
+      "title": "The Cost Of Discipleship",
+      "date": "2022-05-10",
+      "season": "5",
+      "episode": "19"
+    },
+    {
+      "title": "Two Types of Christians",
+      "date": "2022-05-10",
+      "season": "5",
+      "episode": "18"
+    },
+    {
+      "title": "Forerunners",
+      "date": "2022-04-29",
+      "season": "5",
+      "episode": "17"
+    },
+    {
+      "title": "Resurrection Witnesses",
+      "date": "2022-04-18",
+      "season": "5",
+      "episode": "16"
+    },
+    {
+      "title": "Know God",
+      "date": "2022-04-13",
+      "season": "5",
+      "episode": "15"
+    },
+    {
+      "title": "Spiritual Awakening",
+      "date": "2022-04-03",
+      "season": "5",
+      "episode": "14"
+    },
+    {
+      "title": "The Betrayal",
+      "date": "2022-03-29",
+      "season": "5",
+      "episode": "13"
+    },
+    {
+      "title": "The Garden",
+      "date": "2022-03-29",
+      "season": "5",
+      "episode": "12"
+    },
+    {
+      "title": "Lord Help Me",
+      "date": "2022-03-17",
+      "season": "5",
+      "episode": "11"
+    },
+    {
+      "title": "War And Blessings",
+      "date": "2022-03-17",
+      "season": "5",
+      "episode": "10"
+    },
+    {
+      "title": "Water To Wine",
+      "date": "2022-03-04",
+      "season": "5",
+      "episode": "9"
+    },
+    {
+      "title": "Holy Spirit Come Back",
+      "date": "2022-02-22",
+      "season": "5",
+      "episode": "8"
+    },
+    {
+      "title": "Harvest Time",
+      "date": "2022-02-17",
+      "season": "5",
+      "episode": "7"
+    },
+    {
+      "title": "Unshakable",
+      "date": "2022-02-08",
+      "season": "5",
+      "episode": "6"
+    },
+    {
+      "title": "Spiritual Warfare",
+      "date": "2022-01-31",
+      "season": "5",
+      "episode": "5"
+    },
+    {
+      "title": "Rebuilding The Wall",
+      "date": "2022-01-25",
+      "season": "5",
+      "episode": "4"
+    },
+    {
+      "title": "Foundation For The Future 3",
+      "date": "2022-01-17",
+      "season": "5",
+      "episode": "3"
+    },
+    {
+      "title": "Foundation For The Future 2",
+      "date": "2022-01-11",
+      "season": "5",
+      "episode": "2"
+    },
+    {
+      "title": "Foundation For The Future 1",
+      "date": "2022-01-06",
+      "season": "5",
+      "episode": "1"
+    },
+    {
+      "title": "New Covenant Christmas",
+      "date": "2021-12-29",
+      "season": "4",
+      "episode": "48"
+    },
+    {
+      "title": "Hebrews 13",
+      "date": "2021-12-14",
+      "season": "4",
+      "episode": "47"
+    },
+    {
+      "title": "Hebrews 12",
+      "date": "2021-12-07",
+      "season": "4",
+      "episode": "46"
+    },
+    {
+      "title": "Hebrews 11",
+      "date": "2021-12-05",
+      "season": "4",
+      "episode": "45"
+    },
+    {
+      "title": "Day Of Thanksgiving",
+      "date": "2021-11-23",
+      "season": "4",
+      "episode": "44"
+    },
+    {
+      "title": "Hebrews 10",
+      "date": "2021-11-15",
+      "season": "4",
+      "episode": "43"
+    },
+    {
+      "title": "New Covenant 8",
+      "date": "2021-11-10",
+      "season": "4",
+      "episode": "42"
+    },
+    {
+      "title": "Hebrews 9",
+      "date": "2021-11-06",
+      "season": "4",
+      "episode": "41"
+    },
+    {
+      "title": "Consider Your Ways",
+      "date": "2021-11-06",
+      "season": "4",
+      "episode": "40"
+    },
+    {
+      "title": "Uzziah Became Strong",
+      "date": "2021-10-19",
+      "season": "4",
+      "episode": "39"
+    },
+    {
+      "title": "Hebrews 8",
+      "date": "2021-10-12",
+      "season": "4",
+      "episode": "38"
+    },
+    {
+      "title": "Hebrews 7",
+      "date": "2021-10-06",
+      "season": "4",
+      "episode": "37"
+    },
+    {
+      "title": "Hebrews 5 & 6",
+      "date": "2021-09-27",
+      "season": "4",
+      "episode": "36"
+    },
+    {
+      "title": "Hebrews 4",
+      "date": "2021-09-21",
+      "season": null,
+      "episode": "35"
+    },
+    {
+      "title": "Preparing To Face The Fire",
+      "date": "2021-09-13",
+      "season": "4",
+      "episode": "34"
+    },
+    {
+      "title": "Hebrews 3",
+      "date": "2021-09-13",
+      "season": "4",
+      "episode": "33"
+    },
+    {
+      "title": "God Give Us Justice",
+      "date": "2021-08-31",
+      "season": "4",
+      "episode": "32"
+    },
+    {
+      "title": "Hebrews 2",
+      "date": "2021-08-27",
+      "season": "4",
+      "episode": "31"
+    },
+    {
+      "title": "Hebrews 1",
+      "date": "2021-08-21",
+      "season": "4",
+      "episode": "30"
+    },
+    {
+      "title": "Koinonia: Breaking Bread",
+      "date": "2021-08-12",
+      "season": "4",
+      "episode": "29"
+    },
+    {
+      "title": "The Mark Of The Beast",
+      "date": "2021-08-05",
+      "season": "4",
+      "episode": "28"
+    },
+    {
+      "title": "Cross The Bridge",
+      "date": "2021-08-05",
+      "season": "4",
+      "episode": "27"
+    },
+    {
+      "title": "You’re Not Alone Part 2",
+      "date": "2021-07-22",
+      "season": "4",
+      "episode": "26"
+    },
+    {
+      "title": "You’re Not Alone Part 1",
+      "date": "2021-07-16",
+      "season": "4",
+      "episode": "25"
+    },
+    {
+      "title": "Desolation Has Begun",
+      "date": "2021-07-16",
+      "season": "4",
+      "episode": "24"
+    },
+    {
+      "title": "Koinonia: Apostles Doctrine",
+      "date": "2021-07-04",
+      "season": "4",
+      "episode": "23"
+    },
+    {
+      "title": "Koinonia: Fellowship",
+      "date": "2021-06-21",
+      "season": "4",
+      "episode": "22"
+    },
+    {
+      "title": "Time For A Demo",
+      "date": "2021-06-17",
+      "season": "4",
+      "episode": "21"
+    },
+    {
+      "title": "He Calls Me Friend",
+      "date": "2021-06-17",
+      "season": "4",
+      "episode": "20"
+    },
+    {
+      "title": "Truth Of Abiding",
+      "date": "2021-06-01",
+      "season": "4",
+      "episode": "19"
+    },
+    {
+      "title": "Concealed And Revealed",
+      "date": "2021-05-25",
+      "season": "4",
+      "episode": "18"
+    },
+    {
+      "title": "9th Blood Group",
+      "date": "2021-05-25",
+      "season": "4",
+      "episode": "17"
+    },
+    {
+      "title": "Are We Promoting Satan Worship",
+      "date": "2021-05-25",
+      "season": "4",
+      "episode": "16"
+    },
+    {
+      "title": "Jesus’ Last Words ( Part 7)",
+      "date": "2021-04-27",
+      "season": "4",
+      "episode": "15"
+    },
+    {
+      "title": "Jesus’ Last Words (Part 6)",
+      "date": "2021-04-19",
+      "season": "4",
+      "episode": "14"
+    },
+    {
+      "title": "Jesus’ Last Words (Part 5)",
+      "date": "2021-04-13",
+      "season": "4",
+      "episode": "13"
+    },
+    {
+      "title": "Jesus’ Last Words (Part 4)",
+      "date": "2021-04-06",
+      "season": "4",
+      "episode": "12"
+    },
+    {
+      "title": "Jesus’ Last Words (Part 3)",
+      "date": "2021-04-06",
+      "season": "4",
+      "episode": "11"
+    },
+    {
+      "title": "When Shepherds Fail",
+      "date": "2021-03-25",
+      "season": "4",
+      "episode": "10"
+    },
+    {
+      "title": "Jesus’ Last Words (Part 2)",
+      "date": "2021-03-25",
+      "season": "4",
+      "episode": "9"
+    },
+    {
+      "title": "Jesus’ Last Words(Part 1)",
+      "date": "2021-03-12",
+      "season": "4",
+      "episode": "8"
+    },
+    {
+      "title": "Covenants Part 7",
+      "date": "2021-03-01",
+      "season": "4",
+      "episode": "7"
+    },
+    {
+      "title": "Covenants Part 6",
+      "date": "2021-03-01",
+      "season": "4",
+      "episode": "6"
+    },
+    {
+      "title": "Covenants Part 5",
+      "date": "2021-02-12",
+      "season": "4",
+      "episode": "5"
+    },
+    {
+      "title": "Covenants Part 4",
+      "date": "2021-01-27",
+      "season": "4",
+      "episode": "4"
+    },
+    {
+      "title": "Covenants Part 3",
+      "date": "2021-01-22",
+      "season": "4",
+      "episode": "3"
+    },
+    {
+      "title": "Covenants Part 2",
+      "date": "2021-01-12",
+      "season": "4",
+      "episode": "2"
+    },
+    {
+      "title": "Covenants Part 1",
+      "date": "2021-01-12",
+      "season": "4",
+      "episode": "1"
+    },
+    {
+      "title": "The Sent One",
+      "date": "2020-12-18",
+      "season": "3",
+      "episode": "42"
+    },
+    {
+      "title": "Second Wind",
+      "date": "2020-12-18",
+      "season": "3",
+      "episode": "41"
+    },
+    {
+      "title": "Kill The Dragon Get The Girl",
+      "date": "2020-11-25",
+      "season": "3",
+      "episode": "40"
+    },
+    {
+      "title": "Ezekiel’s Temple",
+      "date": "2020-11-25",
+      "season": "3",
+      "episode": "39"
+    },
+    {
+      "title": "Why Nations Rage",
+      "date": "2020-11-10",
+      "season": "3",
+      "episode": "38"
+    },
+    {
+      "title": "Vote For Jesus",
+      "date": "2020-11-10",
+      "season": "3",
+      "episode": "37"
+    },
+    {
+      "title": "An Encounter With Jesus",
+      "date": "2020-10-27",
+      "season": "3",
+      "episode": "36"
+    },
+    {
+      "title": "Burying The Gates Of Hell",
+      "date": "2020-10-13",
+      "season": "3",
+      "episode": "35"
+    },
+    {
+      "title": "God’s Reminder",
+      "date": "2020-10-08",
+      "season": "3",
+      "episode": "34"
+    },
+    {
+      "title": "Where Will You Be When The End Comes",
+      "date": "2020-09-28",
+      "season": "3",
+      "episode": "33"
+    },
+    {
+      "title": "Dying To Self",
+      "date": "2020-09-21",
+      "season": "3",
+      "episode": "32"
+    },
+    {
+      "title": "The Lord Is Our Banner Of Victory",
+      "date": "2020-09-16",
+      "season": "3",
+      "episode": "31"
+    },
+    {
+      "title": "Are You A Pharisee Or A Sinner?",
+      "date": "2020-09-09",
+      "season": "3",
+      "episode": "30"
+    },
+    {
+      "title": "How To React When Bitten",
+      "date": "2020-09-01",
+      "season": "3",
+      "episode": "29"
+    },
+    {
+      "title": "A Time To Weep, A Time To Fight",
+      "date": "2020-08-30",
+      "season": "3",
+      "episode": "28"
+    },
+    {
+      "title": "Do Not Faint",
+      "date": "2020-08-30",
+      "season": "3",
+      "episode": "27"
+    },
+    {
+      "title": "Make Your Battle The Lord’s",
+      "date": "2020-08-11",
+      "season": "3",
+      "episode": "26"
+    },
+    {
+      "title": "Putting Away The Old Gods",
+      "date": "2020-08-03",
+      "season": "3",
+      "episode": "25"
+    },
+    {
+      "title": "Trumpet Warning",
+      "date": "2020-07-29",
+      "season": "3",
+      "episode": "24"
+    },
+    {
+      "title": "When Society Begs Jesus To Touch His Church",
+      "date": "2020-07-16",
+      "season": "3",
+      "episode": "23"
+    },
+    {
+      "title": "The Self Destruction Of America",
+      "date": "2020-07-06",
+      "season": "3",
+      "episode": "22"
+    },
+    {
+      "title": "In The Cleft Of The Rock",
+      "date": "2020-07-02",
+      "season": "3",
+      "episode": "21"
+    },
+    {
+      "title": "The Reigning Glory Of God",
+      "date": "2020-06-24",
+      "season": "3",
+      "episode": "20"
+    },
+    {
+      "title": "Greatest Warfare And Overcoming It",
+      "date": "2020-06-09",
+      "season": "3",
+      "episode": "19"
+    },
+    {
+      "title": "The Last Days in America",
+      "date": "2020-06-03",
+      "season": "3",
+      "episode": "18"
+    },
+    {
+      "title": "Reality Check",
+      "date": "2020-05-29",
+      "season": "3",
+      "episode": "17"
+    },
+    {
+      "title": "Why We Need The Body Of Christ",
+      "date": "2020-05-19",
+      "season": "3",
+      "episode": "16"
+    },
+    {
+      "title": "Do You Know What Time It Is?",
+      "date": "2020-03-18",
+      "season": "3",
+      "episode": "7"
+    },
+    {
+      "title": "Is Love Tolerant?",
+      "date": "2020-03-18",
+      "season": "3",
+      "episode": "6"
+    }
+  ]
+}

@@ -1,0 +1,622 @@
+---
+/**
+ * Watch: the archive's page.
+ *
+ * The generic version of this page is a black video hero, a card grid of
+ * "recent sermons", and a search box with a magnifying glass. The material that
+ * is actually specific to Brookside is the archive itself: 291 sermons running
+ * back to March 2020. So the archive IS the page, and the structural device is
+ * the year, which is real information rather than decoration.
+ *
+ * Two content rules, both learned the hard way and both load-bearing:
+ *   - The archive is NOT unbroken. 291 sermons across 332 weeks with nine gaps
+ *     over three weeks (longest 62 days, spring 2020). Never write "every
+ *     Sunday" or "every week without a gap" anywhere on this page.
+ *   - Rows deliberately do not link anywhere. Per-episode audio URLs all point
+ *     at static1.squarespace.com and die at cancellation, so wiring them in now
+ *     would ship 291 links with a known expiry date. Playback lives off-site
+ *     until the feed migration lands and gives us stable URLs.
+ *
+ * No crossAt: the line runs as a plain spine here. The crossbar is Home's
+ * payoff and repeating it on every page spends it.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import data from '../data/sermons.json';
+
+const APPLE = 'https://podcasts.apple.com/us/podcast/id1094539094';
+const SPOTIFY = 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76';
+const YOUTUBE = 'https://www.youtube.com/channel/UCFVvTNQHSyICAekmJdQ47Eg';
+
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const longDate = (iso: string) => {
+	const [y, m, d] = iso.split('-');
+	return `${months[Number(m) - 1]} ${Number(d)}, ${y}`;
+};
+const rowDate = (iso: string) => {
+	const [, m, d] = iso.split('-');
+	return `${months[Number(m) - 1].slice(0, 3)} ${String(Number(d)).padStart(2, '0')}`;
+};
+const monthYear = (iso: string) => {
+	const [y, m] = iso.split('-');
+	return `${months[Number(m) - 1]} ${y}`;
+};
+
+type Episode = (typeof data.episodes)[number];
+
+const episodes: Episode[] = data.episodes;
+const latest = episodes[0];
+const firstEver = episodes[episodes.length - 1];
+
+/** One episode (Hebrews 4, Sep 2021) carries no season, so the tag has to bend. */
+const tag = (e: Episode) => (e.season ? `S${e.season} E${e.episode}` : `E${e.episode}`);
+
+// Grouped in a single pass rather than by filtering per year: the feed is
+// already sorted newest-first, so a year change is just a boundary.
+const years: { year: string; items: Episode[] }[] = [];
+for (const ep of episodes) {
+	const y = ep.date.slice(0, 4);
+	const open = years[years.length - 1];
+	if (open && open.year === y) open.items.push(ep);
+	else years.push({ year: y, items: [ep] });
+}
+
+// Spelled out rather than set as a numeral: at display size "6 years" reads as
+// a stat, and the eyebrow already carries the counts. Recomputed from the feed
+// so it stays true as the archive grows.
+const WORDS = ['zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve'];
+const span = Number(data.newest.slice(0, 4)) - Number(data.oldest.slice(0, 4));
+const spanWord = WORDS[span] ?? String(span);
+---
+
+<SiteLayout
+	title="Watch"
+	description={`All ${data.total} sermons Brookside Church of God has recorded since ${monthYear(data.oldest)}, plus the Sunday livestream. Worship streams live at 10:45 AM.`}
+>
+	<section class="bay wtop">
+		<p class="eyebrow">{data.total} sermons · {monthYear(data.oldest)} to {monthYear(data.newest)}</p>
+		<h1 class="display" data-split>
+			{spanWord} years<br />of preaching,<br />one <em>subject</em>
+		</h1>
+		<div class="wtop__foot">
+			<p class="lede">
+				Sunday worship streams live at 10:45 AM. Everything before it is here,
+				back to the first recording in March 2020. Search the archive, then
+				listen wherever you already listen.
+			</p>
+			<dl class="hours">
+				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
+				<div><dt>Sunday Worship</dt><dd>10:45 AM</dd></div>
+				<div><dt>Wednesday</dt><dd>6:30 PM</dd></div>
+			</dl>
+		</div>
+	</section>
+
+	<section class="bay rule feature" aria-labelledby="latest-heading">
+		<div class="feature__lead">
+			<p class="eyebrow" id="latest-heading">Most recent</p>
+			<h2 class="headline">{latest.title}</h2>
+			<p class="feature__meta">
+				<span>Brad Lindsey</span>
+				<span aria-hidden="true">·</span>
+				<span>{longDate(latest.date)}</span>
+				<span aria-hidden="true">·</span>
+				<span class="feature__tag">{tag(latest)}</span>
+			</p>
+			<div class="actions feature__actions">
+				<a class="btn btn--solid" href={APPLE} target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+				<a class="btn btn--line" href={SPOTIFY} target="_blank" rel="noopener">Listen on Spotify</a>
+			</div>
+		</div>
+
+		{/*
+			Click-to-play rather than a bare iframe, and that is a correctness
+			decision before it is a performance one. Without an API key there is no
+			way to know whether the channel is live, and an always-on live_stream
+			embed renders YouTube's own "video unavailable" panel on the six days a
+			week nothing is streaming: a black box that reads as a broken page on a
+			church's front door. Nothing loads from YouTube until someone asks for
+			it, so the page cannot break itself; after a deliberate click, YouTube's
+			own messaging is a fair thing to land on.
+
+			Also means no third-party requests, and no YouTube cookies, on load.
+		*/}
+		<div class="feature__media">
+			<button class="screen" type="button" data-play>
+				<span class="screen__state"><span class="screen__dot" aria-hidden="true"></span>Live Sundays, 10:45 AM</span>
+				<span class="screen__cue">Watch the live stream</span>
+				<span class="screen__note">Plays here, without leaving the page.</span>
+			</button>
+			{/*
+				The honest half of the fallback. Nothing is streaming most days, and
+				without an API key the page cannot know that, so rather than dressing
+				the embed up as something smarter than it is, the way to past services
+				is just stated plainly next to it.
+			*/}
+			<a class="link feature__past" href={YOUTUBE} target="_blank" rel="noopener">
+				Past services on YouTube &rarr;
+			</a>
+		</div>
+	</section>
+
+	<section class="bay rule archive" aria-labelledby="archive-heading">
+		<div class="seek">
+			<p class="eyebrow" id="archive-heading">The archive</p>
+			<div class="seek__body">
+				<label class="seek__field">
+					<span class="seek__label">Search sermons</span>
+					<input
+						type="search"
+						id="seek"
+						placeholder="Search by title"
+						autocomplete="off"
+						spellcheck="false"
+					/>
+				</label>
+				<p class="seek__count" role="status" aria-live="polite" data-count>
+					<span data-shown>{data.total}</span> of {data.total}
+				</p>
+				<div class="seek__years" role="group" aria-label="Filter by year">
+					<button type="button" class="chip" data-year="all" aria-pressed="true">All</button>
+					{years.map((g) => (
+						<button type="button" class="chip" data-year={g.year} aria-pressed="false">{g.year}</button>
+					))}
+				</div>
+			</div>
+		</div>
+
+		<div class="roll" data-roll>
+			{years.map((g) => (
+				<section class="stack" data-group={g.year} aria-labelledby={`y-${g.year}`}>
+					<div class="stack__mark">
+						<h3 class="stack__year" id={`y-${g.year}`}>{g.year}</h3>
+						<p class="stack__count">{g.items.length} sermons</p>
+					</div>
+					<ol class="stack__list">
+						{g.items.map((e) => (
+							<li class="row" data-title={e.title.toLowerCase()} data-year={g.year}>
+								<span class="row__date">{rowDate(e.date)}</span>
+								<span class="row__title">{e.title}</span>
+								<span class="row__tag">{tag(e)}</span>
+							</li>
+						))}
+					</ol>
+				</section>
+			))}
+			<p class="roll__empty" data-empty hidden></p>
+		</div>
+
+		<p class="roll__origin">
+			The archive begins with <em>{longDate(firstEver.date)}</em>, “{firstEver.title}”.
+		</p>
+	</section>
+
+	<section class="bay rule subscribe" aria-labelledby="subscribe-heading">
+		<p class="eyebrow" id="subscribe-heading">Take it with you</p>
+		<div class="subscribe__grid">
+			{/*
+				Both notes stick to things that have actually been checked against
+				the feed. "Where most people listen" and a per-platform episode
+				count were both in here and both were guesses. There is no listener
+				breakdown, and the Spotify show's own count has never been verified.
+			*/}
+			<a class="port" href={APPLE} target="_blank" rel="noopener">
+				<span class="port__name">Apple Podcasts</span>
+				<span class="port__note">The full archive, back to 2020.</span>
+			</a>
+			<a class="port" href={SPOTIFY} target="_blank" rel="noopener">
+				<span class="port__name">Spotify</span>
+				<span class="port__note">The same archive, without leaving the app.</span>
+			</a>
+			<a class="port" href={YOUTUBE} target="_blank" rel="noopener">
+				<span class="port__name">YouTube</span>
+				<span class="port__note">Where the Sunday service streams live.</span>
+			</a>
+		</div>
+	</section>
+</SiteLayout>
+
+<style is:global>
+	/* Page-level composition only. Anything reusable belongs in site.css. */
+
+	/* Clears the sticky header before a year mark pins under it. */
+	:root { --chrome-h: 4.25rem; }
+
+	.wtop { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2.5rem, 6vw, 4rem); }
+	.wtop__foot {
+		display: flex; flex-wrap: wrap; gap: clamp(1.75rem, 5vw, 4.5rem);
+		align-items: start; margin-top: clamp(2rem, 4vw, 3rem);
+	}
+	.wtop__foot .lede { flex: 1 1 24rem; }
+	.wtop__foot .hours { margin-left: auto; flex: 0 1 auto; min-width: 15rem; }
+
+	.feature {
+		padding-block: clamp(2.5rem, 6vw, 4rem);
+		display: grid; gap: clamp(1.75rem, 4vw, 3.5rem);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+		align-items: center;
+	}
+	.feature__meta {
+		display: flex; flex-wrap: wrap; gap: 0.5rem;
+		margin: 1rem 0 1.75rem; color: var(--iron); font-size: 0.95rem;
+	}
+	.feature__tag {
+		font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
+		align-self: center;
+	}
+
+	/*
+		The one dark surface on the site, and the only place a screen belongs.
+		Kept flat (no gradient, no drop shadow, no play-triangle badge) so it
+		reads as the room's projector rather than as a media player chrome.
+	*/
+	.feature__media { width: 100%; }
+	.screen {
+		display: flex; flex-direction: column; align-items: flex-start;
+		justify-content: flex-end; gap: 0.3rem;
+		width: 100%; aspect-ratio: 16 / 9; margin: 0;
+		padding: clamp(1.1rem, 2.5vw, 1.9rem);
+		background: var(--ink); border: 0; border-radius: 0;
+		color: var(--paper); text-align: left; cursor: pointer;
+		transition: background 0.2s;
+	}
+	.screen:hover { background: #000; }
+	.screen__state {
+		display: flex; align-items: center; gap: 0.5rem; margin-bottom: auto;
+		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+		text-transform: uppercase; color: var(--ash);
+	}
+	.screen__dot {
+		width: 7px; height: 7px; border-radius: 50%; background: var(--coral);
+		flex: none;
+	}
+	.screen__cue {
+		font-family: var(--display); font-variation-settings: 'wght' 700, 'opsz' 24;
+		font-size: clamp(1.25rem, 2.6vw, 1.85rem); letter-spacing: -0.03em;
+		line-height: 1.1;
+	}
+	.screen:hover .screen__cue { color: var(--coral); }
+	.screen__note { font-size: 0.85rem; color: var(--ash); }
+	.feature__past { display: inline-block; margin-top: 0.9rem; font-size: 0.92rem; }
+	/* Replaced in place by the iframe, so the frame keeps its exact geometry and
+	   the page does not jump when the video loads. */
+	.feature__media iframe {
+		display: block; width: 100%; aspect-ratio: 16 / 9; border: 0;
+	}
+
+	/* ---------- archive ---------- */
+
+	.archive { padding-block: clamp(2.5rem, 6vw, 4rem) clamp(3rem, 7vw, 5rem); }
+
+	/*
+		Search sits on the same two-column grid as the year stacks, so the rule
+		under the input ends exactly where the sermon rows end. Left to span the
+		full bay it overshoots the list by ~500px and the two read as unrelated
+		blocks rather than one instrument and the thing it operates on.
+	*/
+	.seek {
+		display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+		gap: clamp(1rem, 3vw, 2.5rem);
+		margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+	}
+	.seek .eyebrow { margin-bottom: 0; }
+	.seek__body { max-width: 44rem; }
+	.seek__field { display: block; }
+	.seek__label {
+		position: absolute; width: 1px; height: 1px;
+		overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+	}
+	/* The input is a rule with type on it, not a boxed control: the page is
+	   built out of horizontals and a pill-shaped field would be the one piece
+	   of furniture that came from somewhere else. */
+	.seek input {
+		width: 100%; margin: 0; padding: 0.55rem 0 0.7rem;
+		background: none; border: 0; border-bottom: 2px solid var(--ink);
+		border-radius: 0; color: var(--ink);
+		font-family: var(--display); font-variation-settings: 'wght' 500, 'opsz' 24;
+		font-size: clamp(1.3rem, 3.2vw, 2rem); letter-spacing: -0.025em;
+		-webkit-appearance: none; appearance: none;
+	}
+	.seek input::placeholder { color: var(--ash); }
+	/*
+		Pointer focus gets the coral rule; keyboard focus additionally keeps the
+		site's real focus ring. Suppressing the outline here left the input with a
+		colour change as its only focus cue, which is no cue at all for anyone who
+		cannot separate the ink and the coral.
+	*/
+	.seek input:focus { border-bottom-color: var(--coral); }
+	.seek input:focus:not(:focus-visible) { outline: none; }
+	.seek input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+	.seek__count {
+		margin: 0.75rem 0 0; font-family: var(--mono);
+		font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+		color: var(--iron); font-variant-numeric: tabular-nums;
+	}
+	.seek__count [data-shown] { color: var(--coral); }
+
+	.seek__years { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.25rem; }
+	.chip {
+		padding: 0.4rem 0.85rem; border: 1px solid var(--ash); border-radius: 999px;
+		background: none; color: var(--iron); cursor: pointer;
+		font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+		font-variant-numeric: tabular-nums;
+		transition: border-color 0.18s, color 0.18s, background 0.18s;
+	}
+	.chip:hover { border-color: var(--ink); color: var(--ink); }
+	.chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+	/*
+		The year is the page's signature: scrolling the archive counts backwards
+		through the church's own history and the mark rides along beside it. It is
+		the one place on this page that gets display type at size.
+	*/
+	.stack {
+		display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+		gap: clamp(1rem, 3vw, 2.5rem);
+		padding-top: clamp(1.5rem, 3vw, 2.25rem);
+	}
+	/* A class setting `display` outranks the UA's [hidden] rule, so filtering
+	   would set the attribute and change nothing. Both need saying explicitly. */
+	.stack[hidden] { display: none; }
+	.stack__mark { position: sticky; top: calc(var(--chrome-h) + 0.75rem); align-self: start; }
+	.stack__year {
+		margin: 0; font-family: var(--display);
+		font-size: clamp(2.1rem, 5vw, 3.4rem);
+		font-variation-settings: 'wght' 800, 'opsz' 36;
+		line-height: 0.9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
+	}
+	.stack__count {
+		margin: 0.5rem 0 0; font-family: var(--mono); font-size: 0.68rem;
+		letter-spacing: 0.12em; text-transform: uppercase; color: var(--iron);
+	}
+
+	/* Held to a reading column. Run full-bleed and 291 short titles float in a
+	   field of white with the tag stranded at the far edge, which is the
+	   broadsheet look rather than a decision. */
+	.stack__list {
+		margin: 0; padding: 0; list-style: none; max-width: 44rem;
+		border-top: 1px solid var(--ash);
+	}
+	.row {
+		display: grid; grid-template-columns: 3.9rem minmax(0, 1fr) auto;
+		gap: 1.1rem; align-items: baseline;
+		padding: 0.62rem 0; border-bottom: 1px solid var(--ash);
+	}
+	.row[hidden] { display: none; }
+	.row__date {
+		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+		text-transform: uppercase; color: var(--iron); font-variant-numeric: tabular-nums;
+	}
+	.row__title { font-size: 0.98rem; line-height: 1.35; text-wrap: pretty; }
+	/* --ash on --paper is barely a mark on the page; this stays quieter than the
+	   title without dropping out of legibility. */
+	.row__tag {
+		font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em;
+		color: color-mix(in srgb, var(--iron) 58%, var(--paper));
+		font-variant-numeric: tabular-nums;
+	}
+	.row mark { background: none; color: var(--coral); font-weight: 600; }
+
+	.roll__empty {
+		margin: 2.5rem 0 0;
+		margin-left: calc(7.5rem + clamp(1rem, 3vw, 2.5rem));
+		max-width: 34ch;
+		font-family: var(--display); font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+		font-variation-settings: 'wght' 500, 'opsz' 24;
+		line-height: 1.3; letter-spacing: -0.025em;
+	}
+	/* Indented into the list's own column so the rule that closes the archive
+	   starts and ends where the sermon rows do. */
+	.roll__origin {
+		margin: clamp(2rem, 4vw, 3rem) 0 0;
+		margin-left: calc(7.5rem + clamp(1rem, 3vw, 2.5rem));
+		padding-top: 1.25rem;
+		border-top: 2px solid var(--ink); max-width: 44rem;
+		font-size: 0.95rem; line-height: 1.6; color: var(--iron);
+	}
+
+	/* ---------- subscribe ---------- */
+
+	.subscribe { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
+	.subscribe__grid {
+		display: grid; gap: 0;
+		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+		border-top: 1px solid var(--ash);
+	}
+	.port {
+		display: block; padding: 1.35rem 1.35rem 1.5rem 0;
+		border-bottom: 1px solid var(--ash);
+		transition: color 0.18s;
+	}
+	.port__name {
+		display: block; font-family: var(--display); font-size: 1.3rem;
+		font-variation-settings: 'wght' 700; letter-spacing: -0.025em;
+	}
+	.port__note {
+		display: block; margin-top: 0.4rem; max-width: 26ch;
+		font-size: 0.9rem; line-height: 1.5; color: var(--iron);
+	}
+	.port:hover .port__name { color: var(--coral); }
+
+	/* ---------- responsive ---------- */
+
+	@media (max-width: 980px) {
+		.feature { grid-template-columns: 1fr; }
+	}
+
+	@media (max-width: 720px) {
+		.wtop__foot .hours { width: 100%; margin-left: 0; }
+		.seek { grid-template-columns: 1fr; gap: 0.9rem; }
+		.stack { grid-template-columns: 1fr; gap: 0.9rem; }
+		/* The mark becomes a bar the rows slide under, which keeps the year
+		   readable on a phone without stealing a column from the titles. */
+		.stack__mark {
+			display: flex; align-items: baseline; gap: 0.7rem;
+			top: var(--chrome-h);
+			padding: 0.5rem 0 0.4rem;
+			background: var(--paper);
+			z-index: 2;
+		}
+		.stack__count { margin: 0; }
+		.row { grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.8rem; }
+		.row__tag { display: none; }
+		.roll__origin { margin-left: 0; }
+		.roll__empty { margin-left: 0; }
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import ScrollTrigger from 'gsap/ScrollTrigger';
+	import SplitText from 'gsap/SplitText';
+	import Lenis from 'lenis';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText);
+
+	/* ---------- archive filter ---------- */
+
+	const input = document.querySelector<HTMLInputElement>('#seek');
+	const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
+	const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-group]'));
+	const rows = Array.from(document.querySelectorAll<HTMLElement>('.row'));
+	const shown = document.querySelector<HTMLElement>('[data-shown]');
+	const empty = document.querySelector<HTMLElement>('[data-empty]');
+	const origin = document.querySelector<HTMLElement>('.roll__origin');
+
+	// Cached once: reading dataset for 291 rows on every keystroke is the
+	// difference between instant and laggy on a phone.
+	const index = rows.map((el) => ({
+		el,
+		title: el.dataset.title || '',
+		year: el.dataset.year || '',
+		label: el.querySelector<HTMLElement>('.row__title'),
+		text: el.querySelector<HTMLElement>('.row__title')?.textContent || '',
+	}));
+
+	let year = 'all';
+
+	/** Marks the matched run inside the title so the hit is visible, not just implied. */
+	function paint(item: (typeof index)[number], q: string) {
+		if (!item.label) return;
+		if (!q) {
+			if (item.label.firstElementChild) item.label.textContent = item.text;
+			return;
+		}
+		const at = item.title.indexOf(q);
+		if (at < 0) return;
+		const t = item.text;
+		item.label.replaceChildren(
+			document.createTextNode(t.slice(0, at)),
+			Object.assign(document.createElement('mark'), { textContent: t.slice(at, at + q.length) }),
+			document.createTextNode(t.slice(at + q.length)),
+		);
+	}
+
+	function apply() {
+		const q = (input?.value || '').trim().toLowerCase();
+		let count = 0;
+
+		for (const item of index) {
+			const hit = (!q || item.title.includes(q)) && (year === 'all' || item.year === year);
+			item.el.hidden = !hit;
+			if (hit) {
+				count++;
+				paint(item, q);
+			}
+		}
+
+		// A year heading with nothing under it reads as a bug, so groups fold too.
+		for (const g of groups) {
+			g.hidden = !g.querySelector<HTMLElement>('.row:not([hidden])');
+		}
+
+		if (shown) shown.textContent = String(count);
+
+		// The message has to name the filter that is actually narrowing things.
+		// Telling someone to clear a year filter they never set sends them looking
+		// for a control that is already off.
+		if (empty) {
+			empty.hidden = count > 0;
+			empty.textContent =
+				year === 'all'
+					? 'No sermon titles match that. Try a shorter word.'
+					: `No sermon titles from ${year} match that. Try a shorter word, or search across all years.`;
+		}
+		// A closing line under an empty list reads as a stray sentence.
+		if (origin) origin.hidden = count === 0;
+
+		// Row heights changed, so every trigger below the archive is now measuring
+		// against a stale document height.
+		ScrollTrigger.refresh();
+	}
+
+	let debounce: number;
+	input?.addEventListener('input', () => {
+		window.clearTimeout(debounce);
+		debounce = window.setTimeout(apply, 90);
+	});
+
+	for (const chip of chips) {
+		chip.addEventListener('click', () => {
+			year = chip.dataset.year || 'all';
+			for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+			apply();
+		});
+	}
+
+	/* ---------- live stream ---------- */
+
+	// The live_stream endpoint resolves to whatever the channel is currently
+	// broadcasting without needing a video ID or an API key. It is only ever
+	// requested after a click, so if nothing is streaming the visitor gets
+	// YouTube's own message having asked for it, rather than finding a dead
+	// black panel sitting on the page.
+	const CHANNEL = 'UCFVvTNQHSyICAekmJdQ47Eg';
+
+	document.querySelector<HTMLButtonElement>('[data-play]')?.addEventListener('click', (ev) => {
+		const btn = ev.currentTarget as HTMLButtonElement;
+		const frame = document.createElement('iframe');
+		frame.src = `https://www.youtube.com/embed/live_stream?channel=${CHANNEL}&autoplay=1`;
+		frame.title = 'Brookside Church of God live stream';
+		frame.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; web-share';
+		frame.allowFullscreen = true;
+		frame.loading = 'lazy';
+		btn.replaceWith(frame);
+		frame.focus();
+	});
+
+	/* ---------- motion ---------- */
+
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const lenis = new Lenis({ duration: 1.05 });
+		lenis.on('scroll', ScrollTrigger.update);
+		gsap.ticker.add((t) => lenis.raf(t * 1000));
+		gsap.ticker.lagSmoothing(0);
+
+		const heading = document.querySelector<HTMLElement>('[data-split]');
+		if (heading) {
+			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
+			gsap.from(split.lines, {
+				yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
+			});
+		}
+
+		gsap.from('.wtop .eyebrow, .wtop__foot', {
+			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
+		});
+
+		// Reveals start high in the viewport so anything below the fold is already
+		// on screen by the time it plays: nothing sits at zero opacity waiting for
+		// a trigger that might never fire. Rows are deliberately NOT animated:
+		// 291 staggered triggers is both a scroll-jank problem and the kind of
+		// scattered motion that makes a page read as machine-made.
+		gsap.utils.toArray<HTMLElement>(
+			'.feature__lead > *, .feature__media, .seek, .roll__origin, .port, .foot > *',
+		).forEach((el) => {
+			gsap.from(el, {
+				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
+				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+			});
+		});
+	}
+</script>
