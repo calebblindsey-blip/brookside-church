@@ -109,31 +109,29 @@ const spanWord = WORDS[span] ?? String(span);
 		</div>
 
 		{/*
-			Click-to-play rather than a bare iframe, and that is a correctness
-			decision before it is a performance one. Without an API key there is no
-			way to know whether the channel is live, and an always-on live_stream
-			embed renders YouTube's own "video unavailable" panel on the six days a
-			week nothing is streaming: a black box that reads as a broken page on a
-			church's front door. Nothing loads from YouTube until someone asks for
-			it, so the page cannot break itself; after a deliberate click, YouTube's
-			own messaging is a fair thing to land on.
+			Click-to-play rather than a bare iframe: no third-party request and no
+			YouTube cookie until a visitor actually asks for one, and the page
+			cannot be made to look broken by something outside our control.
 
-			Also means no third-party requests, and no YouTube cookies, on load.
+			The copy names both states on purpose. The player is the uploads
+			playlist, so it is the live broadcast during the service and the most
+			recent service afterwards. Promising only "the live stream" would be a
+			lie six days a week.
+
+			Note this panel and the sermon on the left are NOT the same thing: the
+			left column is the newest podcast episode, the right is the newest
+			YouTube upload, and the channel carries full services as well as cut
+			sermons, so in a given week they can legitimately name different
+			things. Hence "the service" here and "Most recent" sermon there.
 		*/}
 		<div class="feature__media">
 			<button class="screen" type="button" data-play>
 				<span class="screen__state"><span class="screen__dot" aria-hidden="true"></span>Live Sundays, 10:45 AM</span>
-				<span class="screen__cue">Watch the live stream</span>
-				<span class="screen__note">Plays here, without leaving the page.</span>
+				<span class="screen__cue">Watch the service</span>
+				<span class="screen__note">Live on Sunday morning. The rest of the week, the most recent one.</span>
 			</button>
-			{/*
-				The honest half of the fallback. Nothing is streaming most days, and
-				without an API key the page cannot know that, so rather than dressing
-				the embed up as something smarter than it is, the way to past services
-				is just stated plainly next to it.
-			*/}
 			<a class="link feature__past" href={YOUTUBE} target="_blank" rel="noopener">
-				Past services on YouTube &rarr;
+				Every service on YouTube &rarr;
 			</a>
 		</div>
 	</section>
@@ -566,21 +564,37 @@ const spanWord = WORDS[span] ?? String(span);
 
 	/* ---------- live stream ---------- */
 
-	// The live_stream endpoint resolves to whatever the channel is currently
-	// broadcasting without needing a video ID or an API key. It is only ever
-	// requested after a click, so if nothing is streaming the visitor gets
-	// YouTube's own message having asked for it, rather than finding a dead
-	// black panel sitting on the page.
+	/*
+		The channel's auto-generated uploads playlist, NOT embed/live_stream.
+		This is not a preference, live_stream is dead: it renders YouTube's grey
+		"This video is unavailable" panel even when the channel IS live. Verified
+		by rendering both in Chromium from a real http origin, with a control
+		channel proven live at that moment failing identically. YouTube stopped
+		supporting permanent live embeds for external sites in 2023.
+
+		The uploads playlist is the replacement and needs no live detection at
+		all: YouTube puts the broadcast at position 1 the moment it starts, and
+		leaves the newest upload there the rest of the week. One static URL,
+		correct in both states.
+
+		Two things that will break this if changed:
+		 - Do NOT set referrerpolicy="no-referrer" here, or Referrer-Policy:
+		   no-referrer on the page. An embed with no Referer is rejected as
+		   EMBEDDER_IDENTITY_MISSING_REFERRER and renders "Error 153".
+		 - The playlist id is the channel id with UC swapped for UU. Deriving it
+		   keeps the two from drifting apart.
+	*/
 	const CHANNEL = 'UCFVvTNQHSyICAekmJdQ47Eg';
+	const UPLOADS = `UU${CHANNEL.slice(2)}`;
 
 	document.querySelector<HTMLButtonElement>('[data-play]')?.addEventListener('click', (ev) => {
 		const btn = ev.currentTarget as HTMLButtonElement;
 		const frame = document.createElement('iframe');
-		frame.src = `https://www.youtube.com/embed/live_stream?channel=${CHANNEL}&autoplay=1`;
-		frame.title = 'Brookside Church of God live stream';
+		// nocookie host: no YouTube cookie is set unless the visitor actually plays.
+		frame.src = `https://www.youtube-nocookie.com/embed/videoseries?list=${UPLOADS}&autoplay=1`;
+		frame.title = 'Brookside Church of God, live stream and recent services';
 		frame.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; web-share';
 		frame.allowFullscreen = true;
-		frame.loading = 'lazy';
 		btn.replaceWith(frame);
 		frame.focus();
 	});
