@@ -909,7 +909,25 @@ const spanWord = WORDS[span] ?? String(span);
 			seek!.value = '0';
 			deck!.style.setProperty('--p', '0');
 
-			audio!.src = btn.dataset.src || '';
+			/*
+				A <source> with an explicit type rather than audio.src, because the
+				origin serves Content-Type: application/octet-stream on all 291 files
+				even though the RSS enclosures declare audio/mpeg. Chrome and WebKit
+				both sniff past that and play, but sniffing is not a promise, and the
+				people most likely to be on an old browser here are the ones most
+				likely to be listening to sermons. Declaring the type means the
+				browser never has to guess.
+
+				The cost is that a media error now fires on the <source>, not on the
+				<audio>, so the failure listener has to be attached per source.
+			*/
+			const source = document.createElement('source');
+			source.type = 'audio/mpeg';
+			source.src = btn.dataset.src || '';
+			source.addEventListener('error', () => fail('Could not play. Try Apple Podcasts.'));
+			audio!.replaceChildren(source);
+			audio!.load();
+
 			open();
 			audio!.play().catch(() => fail('Could not play. Try Apple Podcasts.'));
 		}
@@ -925,10 +943,11 @@ const spanWord = WORDS[span] ?? String(span);
 
 		deck.querySelector<HTMLButtonElement>('[data-close]')?.addEventListener('click', () => {
 			audio.pause();
-			// Dropping the source stops a part-finished download dead. Setting src
-			// to '' resolves against the page URL and re-requests the document, so
-			// removeAttribute is the only clean stop.
-			audio.removeAttribute('src');
+			// Dropping the source stops a part-finished download dead: clearing the
+			// children and reloading puts the element in NETWORK_EMPTY and aborts
+			// the fetch. Never assign src = '' to stop playback — an empty src
+			// resolves against the page URL and re-requests the document itself.
+			audio.replaceChildren();
 			audio.load();
 			current?.closest('.row')?.removeAttribute('data-playing');
 			current = null;
@@ -942,8 +961,11 @@ const spanWord = WORDS[span] ?? String(span);
 		audio.addEventListener('play', () => mark('playing'));
 		audio.addEventListener('pause', () => mark('paused'));
 		audio.addEventListener('ended', () => mark('paused'));
+		// Kept alongside the per-<source> listener above: which of the two fires
+		// is engine-dependent, and a silent failure here looks identical to a
+		// sermon that simply has not buffered yet.
 		audio.addEventListener('error', () => {
-			if (audio.getAttribute('src')) fail('Could not play. Try Apple Podcasts.');
+			if (audio.querySelector('source')) fail('Could not play. Try Apple Podcasts.');
 		});
 
 		audio.addEventListener('loadedmetadata', () => {
