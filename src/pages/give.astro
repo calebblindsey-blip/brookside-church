@@ -1,0 +1,274 @@
+---
+/**
+ * Give.
+ *
+ * Every destination on this page is the one the church already uses, read off
+ * the live Squarespace /give page rather than chosen by us. Nothing here is a
+ * new processor and nothing needs setting up.
+ *
+ *   - Planning Center Giving, via Church Center, is the primary. The church is
+ *     already a Planning Center customer at the app level (Church Center runs
+ *     its Groups too), so giving records land in the system it already runs.
+ *   - PayPal is the secondary, and it is the legacy `_s-xclick` hosted button
+ *     from the old site. Caleb confirmed on 2026-07-27 that the account is
+ *     still live. The hosted_button_id below is the ONLY identifier tying this
+ *     to the church's PayPal account, and the payee cannot be read back out of
+ *     it, so do not "tidy" or regenerate it. Changing that string silently
+ *     sends money somewhere else.
+ *
+ * Linked rather than POSTed as a form. PayPal's hosted buttons accept the same
+ * parameters over GET, which means this can be a normal styled link instead of
+ * the old image-submit form, and the page keeps one set of button styles.
+ *
+ * The order is deliberate: online first because that is what most people came
+ * for, then app, then in person, then mail. The mailing address is a P.O. Box
+ * and is NOT the street address; both are correct and they are not
+ * interchangeable.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const CHURCH_CENTER = 'https://brooksidechurchofgod.churchcenter.com/giving';
+const PAYPAL =
+	'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FART3Y3N8DTHA';
+const APP_IOS = 'https://apps.apple.com/us/app/church-center-app/id1357742931';
+const APP_ANDROID =
+	'https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter';
+---
+
+<SiteLayout
+	title="Give"
+	description="Give to Brookside Church of God online through Planning Center or PayPal, in the Church Center app, in person on a Sunday, or by mail."
+>
+	<section class="bay gtop">
+		<p class="eyebrow">Give &middot; Brookside Church of God</p>
+		{/*
+			Three lines with one coral word, matching Home ("Christ crucified"),
+			Watch ("one subject") and About ("one person"). The first cut ran to
+			four and orphaned "and" on a line of its own.
+		*/}
+		<h1 class="display" data-split>
+			One church,<br />kept going<br />by its <em>people</em>
+		</h1>
+		<div class="gtop__foot">
+			<p class="lede">
+				Giving here pays for the ministry of this church and supports the Gospel
+				beyond it. However you choose to give, it goes to the same place.
+			</p>
+		</div>
+	</section>
+
+	<section class="bay rule ways" aria-labelledby="ways-heading">
+		<p class="eyebrow" id="ways-heading">Four ways to give</p>
+
+		<div class="way">
+			<p class="way__num" aria-hidden="true">01</p>
+			<div class="way__body">
+				<h2 class="subhead">Online</h2>
+				<p class="prose">
+					Our secure giving portal runs on Planning Center, the same system the
+					church uses for its groups and scheduling. Give once or set giving to
+					repeat, with a card or straight from a bank account.
+				</p>
+				<div class="actions way__actions">
+					<a class="btn btn--solid" href={CHURCH_CENTER} target="_blank" rel="noopener">
+						Give through Planning Center
+					</a>
+					<a class="btn btn--line" href={PAYPAL} target="_blank" rel="noopener">
+						Give with PayPal
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="way">
+			<p class="way__num" aria-hidden="true">02</p>
+			<div class="way__body">
+				<h2 class="subhead">In the Church Center app</h2>
+				<p class="prose">
+					The same giving, on your phone, along with the church directory and
+					groups. Sign in once and giving takes a few seconds after that.
+				</p>
+				<div class="actions way__actions">
+					<a class="link" href={APP_IOS} target="_blank" rel="noopener">iPhone &rarr;</a>
+					<a class="link" href={APP_ANDROID} target="_blank" rel="noopener">Android &rarr;</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="way">
+			<p class="way__num" aria-hidden="true">03</p>
+			<div class="way__body">
+				<h2 class="subhead">In person</h2>
+				<p class="prose">
+					Envelopes are in the foyers at weekend and midweek services. Cash or
+					check, into the offering containers. Nobody passes a plate down the
+					row and nobody is put on the spot.
+				</p>
+			</div>
+		</div>
+
+		<div class="way">
+			<p class="way__num" aria-hidden="true">04</p>
+			<div class="way__body">
+				<h2 class="subhead">By mail</h2>
+				<p class="prose">Checks can be mailed to the church office.</p>
+				{/* P.O. Box, not the Cardiff Street address. Both are correct; they
+				    are not interchangeable, and mail to the street address may not
+				    arrive. */}
+				<address class="way__addr">
+					Brookside COG<br />
+					P.O. Box 24<br />
+					Brookside, AL 35036
+				</address>
+			</div>
+		</div>
+	</section>
+
+	<section class="bay rule terms" aria-labelledby="terms-heading">
+		<p class="eyebrow" id="terms-heading">Tithes and offerings</p>
+		<dl class="terms__list">
+			<div class="terms__row">
+				<dt class="terms__term">Tithe</dt>
+				<dd class="terms__body">
+					<p class="prose">
+						Ten percent of our income, contributed to the church on a regular
+						basis.
+					</p>
+				</dd>
+			</div>
+			<div class="terms__row">
+				<dt class="terms__term">Offering</dt>
+				<dd class="terms__body">
+					<p class="prose">
+						What we give when we feel called to give over and above the tithe.
+					</p>
+				</dd>
+			</div>
+		</dl>
+	</section>
+
+	<section class="bay rule ask" aria-labelledby="ask-heading">
+		<p class="eyebrow" id="ask-heading">Questions about giving</p>
+		<h2 class="headline ask__head">Ask, and someone will actually answer.</h2>
+		<p class="lede ask__lede">
+			Giving statements, recurring gifts, correcting something that went
+			through wrong, or giving toward something specific. Call the office or
+			send an email.
+		</p>
+		<div class="actions ask__actions">
+			<a class="btn btn--solid" href="tel:+12056750703">(205) 675-0703</a>
+			<a class="btn btn--line" href="mailto:info@brooksidecog.com">info@brooksidecog.com</a>
+		</div>
+	</section>
+</SiteLayout>
+
+<style is:global>
+	/* Page-level composition only. Anything reusable belongs in site.css. */
+	.gtop { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3rem, 7vw, 4.5rem); }
+	.gtop__foot { margin-top: clamp(2rem, 4vw, 3rem); }
+
+	/* ---------- ways to give ---------- */
+
+	.ways { padding-block: clamp(3rem, 7vw, 5rem) clamp(1rem, 2vw, 1.5rem); }
+	.way {
+		display: grid; gap: 0.5rem clamp(1.5rem, 3.5vw, 3rem);
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: start;
+		padding-block: clamp(1.75rem, 3.5vw, 2.5rem);
+		border-top: 1px solid var(--ash);
+	}
+	.way:first-of-type { border-top: 0; padding-top: 0; }
+	/*
+		Numbered rather than bulleted: these are four different mechanisms, not a
+		ranked list, but the numerals give the eye somewhere to land in a column
+		that is otherwise all body copy. Aria-hidden so a screen reader gets the
+		headings and not a stray "01".
+	*/
+	.way__num {
+		margin: 0; font-family: var(--mono); font-size: 0.72rem;
+		letter-spacing: 0.1em; color: var(--coral);
+		padding-top: 0.42rem; min-width: 1.9rem;
+	}
+	.way__body { min-width: 0; }
+	.way__body .prose { max-width: 54ch; }
+	.way__actions { margin-top: 1.15rem; }
+	.way__addr {
+		margin: 0.9rem 0 0; font-style: normal;
+		font-family: var(--mono); font-size: 0.85rem; line-height: 1.75;
+		color: var(--ink);
+	}
+
+	/* ---------- tithes and offerings ---------- */
+
+	.terms { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(1rem, 2vw, 1.5rem); }
+	.terms__list { margin: 0; }
+	.terms__row {
+		display: grid; gap: 0.4rem clamp(1.75rem, 4vw, 3.5rem);
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr);
+		align-items: start;
+		padding-block: clamp(1.1rem, 2.4vw, 1.6rem);
+		border-top: 1px solid var(--ash);
+	}
+	.terms__term {
+		font-family: var(--display);
+		font-size: clamp(1.4rem, 2.8vw, 2.1rem);
+		font-variation-settings: 'wght' 700, 'opsz' 28;
+		line-height: 1; letter-spacing: -0.035em;
+	}
+	.terms__body { margin: 0; }
+	.terms__body .prose {
+		margin: 0; max-width: 54ch;
+		font-size: clamp(1rem, 1.15vw, 1.08rem); line-height: 1.62; color: var(--ink);
+	}
+
+	/* ---------- questions ---------- */
+
+	.ask { padding-block: clamp(3rem, 6vw, 4.5rem); }
+	.ask__head { max-width: 18ch; }
+	.ask__lede { margin-top: 1.1rem; }
+	.ask__actions { margin-top: clamp(1.75rem, 3vw, 2.25rem); }
+
+	@media (max-width: 720px) {
+		.terms__row { grid-template-columns: 1fr; gap: 0.6rem; }
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import ScrollTrigger from 'gsap/ScrollTrigger';
+	import SplitText from 'gsap/SplitText';
+	import Lenis from 'lenis';
+
+	gsap.registerPlugin(ScrollTrigger, SplitText);
+
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const lenis = new Lenis({ duration: 1.05 });
+		lenis.on('scroll', ScrollTrigger.update);
+		gsap.ticker.add((t) => lenis.raf(t * 1000));
+		gsap.ticker.lagSmoothing(0);
+
+		const heading = document.querySelector<HTMLElement>('[data-split]');
+		if (heading) {
+			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
+			gsap.from(split.lines, {
+				yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
+			});
+		}
+
+		gsap.from('.gtop .eyebrow, .gtop__foot', {
+			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
+		});
+
+		// Reveals start high in the viewport so anything below the fold is already
+		// on screen by the time it plays: nothing sits at zero opacity waiting for
+		// a trigger that might never fire.
+		gsap.utils.toArray<HTMLElement>(
+			'.way, .terms__row, .ask > *',
+		).forEach((el) => {
+			gsap.from(el, {
+				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
+				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+			});
+		});
+	}
+</script>

@@ -60,30 +60,48 @@ const beliefs = [
 ];
 
 /*
- * Bios are the staff's own, from the live site, which is why two are in first
- * person and Brad's is in third. Normalising them would flatten out the fact
- * that these people wrote their own. Left as written.
+ * Bios.
+ *
+ * The live site's versions are inconsistent in person (Brad's third, the other
+ * two first) and two of them close on details that have aged out: a son
+ * "starting college at Samford" and a "baby girl". Rewritten at Caleb's
+ * direction into one register, third person, ministry first.
+ *
+ * What survived from the live site is only what is durable and published:
+ * Brad and Marcie joining in 1999, their two sons, Daniel's 1996 licensing and
+ * 1999 ordination and his wife Patti. Note "joined" is deliberate and is the
+ * church's own word. It is a weaker claim than "senior pastor since 1999" and
+ * nobody has confirmed the stronger one, so it stays weak.
+ *
+ * `photo` is null until real portraits exist. See the note on .who__frame.
  */
 const staff = [
 	{
 		name: 'Brad Lindsey',
 		role: 'Senior Pastor',
+		photo: null,
 		bio:
-			'Brad and his wife, Marcie, joined Brookside Church of God in 1999. Since that time they have seen God’s hand move sovereignly through their lives and the church. Brad and Marcie have two sons, Caleb and Cole. Brad has traveled nationally and internationally involved with missions.',
+			'Brad and his wife, Marcie, joined Brookside Church of God in 1999, and have seen God’s hand move sovereignly through their lives and the church in the years since. He has traveled nationally and internationally in missions work. Brad and Marcie have two sons, Caleb and Cole.',
 	},
 	{
 		name: 'Daniel Howard',
 		role: 'Teaching Pastor',
+		photo: null,
 		bio:
-			'I was licensed in 1996 and ordained into the ministry in 1999. I am a self-proclaimed “Bible nerd” and treasure hunter. One of my greatest joys in life is being able to dig into the Word of God, find those special gold nuggets of wisdom, and share them with my brothers and sisters in Christ.',
+			'Daniel was licensed in 1996 and ordained into the ministry in 1999. A self-proclaimed Bible nerd and treasure hunter, his greatest joy is digging into the Word, turning up the gold in it, and handing it to the church. He and his wife, Patti, have one son.',
 	},
 	{
 		name: 'Caleb Lindsey',
 		role: 'Worship Pastor',
+		photo: null,
 		bio:
-			'My passion is to lead the church into the presence of God through true authentic worship. It is a privilege to use the talents God has given me to advance the Gospel through worship.',
+			'Caleb leads the church into the presence of God through authentic worship, and counts it a privilege to use what God has given him to advance the Gospel from week to week. He and his family are part of the life of the church.',
 	},
 ];
+
+/** First letters of the first and last name, for the portrait placeholder. */
+const initials = (name: string) =>
+	name.split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const monthYear = (iso: string) => {
@@ -168,6 +186,11 @@ const monthYear = (iso: string) => {
 		<div class="team__grid">
 			{staff.map((p) => (
 				<article class="who">
+					<div class="who__frame">
+						{p.photo
+							? <img class="who__photo" src={p.photo} alt={`${p.name}, ${p.role}`} width="480" height="600" loading="lazy" />
+							: <span class="who__initials" aria-hidden="true">{initials(p.name)}</span>}
+					</div>
 					<p class="who__role">{p.role}</p>
 					<h3 class="who__name">{p.name}</h3>
 					<p class="prose who__bio">{p.bio}</p>
@@ -278,13 +301,32 @@ const monthYear = (iso: string) => {
 		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
 	}
-	/*
-		No portraits. There are no usable photographs of the staff in either repo,
-		and an empty grey box reads worse than none at all: it looks like an image
-		that failed rather than a decision. The rule above each name does the work
-		a portrait would have done, which is to separate the three of them.
-	*/
 	.who { border-top: 2px solid var(--ink); padding-top: 0.9rem; }
+
+	/*
+		Portrait placeholder, standing in until real staff photographs are shot as
+		part of this upgrade. Set `photo` on the entry and the <img> replaces the
+		initials with no other change: the frame already owns the aspect ratio, so
+		swapping in a real portrait cannot shift the layout.
+
+		Deliberately not a grey box. An empty grey rectangle reads as an image that
+		failed to load, which makes a finished page look broken; initials set in
+		the display face read as a decision. Same reason it is ash on paper rather
+		than a mid grey, and why nothing here says "photo coming soon".
+	*/
+	.who__frame {
+		aspect-ratio: 4 / 5; margin-bottom: 1rem;
+		display: grid; place-items: center; overflow: hidden;
+		background: color-mix(in srgb, var(--ash) 26%, var(--paper));
+	}
+	.who__photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+	.who__initials {
+		font-family: var(--display);
+		font-size: clamp(2.4rem, 5vw, 3.4rem);
+		font-variation-settings: 'wght' 700, 'opsz' 40;
+		letter-spacing: -0.04em; line-height: 1;
+		color: color-mix(in srgb, var(--ash) 88%, var(--iron));
+	}
 	.who__role {
 		margin: 0 0 0.55rem; font-family: var(--mono); font-size: 0.68rem;
 		letter-spacing: 0.16em; text-transform: uppercase; color: var(--iron);
