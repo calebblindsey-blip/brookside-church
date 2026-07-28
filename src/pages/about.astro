@@ -67,6 +67,11 @@ const beliefs = [
  * "starting college at Samford" and a "baby girl". Rewritten at Caleb's
  * direction into one register, third person, ministry first.
  *
+ * Marcie is described as the pastor's wife who serves across the church, at
+ * Caleb's direction on 2026-07-28. She carries a "Ladies Ministry Director"
+ * title with a church email on the live site's contact page but appears on no
+ * staff page; the title was not the framing Caleb chose, so it is not used.
+ *
  * What survived from the live site is only what is durable and published:
  * Brad and Marcie joining in 1999, their two sons, Daniel's 1996 licensing and
  * 1999 ordination and his wife Patti. Note "joined" is deliberate and is the
@@ -81,7 +86,7 @@ const staff = [
 		role: 'Senior Pastor',
 		photo: null,
 		bio:
-			'Brad and his wife, Marcie, joined Brookside Church of God in 1999, and have seen God’s hand move sovereignly through their lives and the church in the years since. He has traveled nationally and internationally in missions work. Brad and Marcie have two sons, Caleb and Cole.',
+			'Brad and his wife, Marcie, joined Brookside Church of God in 1999, and have seen God’s hand move sovereignly through their lives and the church in the years since. He has traveled nationally and internationally in missions work. Marcie serves across many areas of the church. Brad and Marcie have two sons, Caleb and Cole.',
 	},
 	{
 		name: 'Daniel Howard',
@@ -129,8 +134,8 @@ const monthYear = (iso: string) => {
 			*/}
 			<p class="lede">
 				A small Pentecostal congregation on Cardiff Street in Brookside,
-				Alabama, working through the Bible a passage at a time. Come as you
-				are, sit where you like, leave knowing what the text said.
+				Alabama, and a church family we would love you to be part of. Come as
+				you are and sit wherever you like.
 			</p>
 			<dl class="hours">
 				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
@@ -183,6 +188,15 @@ const monthYear = (iso: string) => {
 			nobody.
 		*/}
 		<h2 class="headline team__head">The people who preach and lead here.</h2>
+		{/*
+			The church does not publish a founding year and nobody has been able to
+			confirm one, so this stands in for it at Caleb's direction: 1999 is
+			verifiable from the church's own staff page and, unlike "27 years", it
+			never goes stale. Do not convert it to a number of years.
+		*/}
+		<p class="lede team__since">
+			Brad and Marcie Lindsey have been at Brookside since 1999.
+		</p>
 		<div class="team__grid">
 			{staff.map((p) => (
 				<article class="who">
@@ -296,7 +310,8 @@ const monthYear = (iso: string) => {
 	/* ---------- staff ---------- */
 
 	.team { padding-block: clamp(3rem, 6vw, 4.5rem); }
-	.team__head { max-width: 22ch; margin-bottom: clamp(2rem, 4vw, 2.75rem); }
+	.team__head { max-width: 22ch; margin-bottom: 1rem; }
+	.team__since { margin: 0 0 clamp(2rem, 4vw, 2.75rem); }
 	.team__grid {
 		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -381,7 +396,7 @@ const monthYear = (iso: string) => {
 		// on screen by the time it plays: nothing sits at zero opacity waiting for
 		// a trigger that might never fire.
 		gsap.utils.toArray<HTMLElement>(
-			'.creed__head, .creed__row, .mission__text, .team__head, .who, .listen > *',
+			'.creed__head, .creed__row, .mission__text, .team__head, .team__since, .who, .listen > *',
 		).forEach((el) => {
 			gsap.from(el, {
 				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
