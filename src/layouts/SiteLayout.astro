@@ -42,7 +42,17 @@ const fullTitle =
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
+		{/*
+			Three icons, not one. The SVG is what modern browsers take. The .ico is
+			what everything else asks for by name whether it is declared or not, so
+			a missing one is a 404 and a blank tab rather than a graceful fallback.
+			The touch icon is the only one with a background, because iOS
+			composites transparency onto black. All three are generated from
+			favicon.svg by engine/scripts/make-brookside-favicons.mjs in Compass.
+		*/}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
 		<meta property="og:title" content={fullTitle} />
