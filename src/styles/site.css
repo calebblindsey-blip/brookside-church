@@ -216,6 +216,10 @@ main, .foot { position: relative; z-index: 1; }
 	color: var(--iron);
 }
 .foot p { margin: 0 0 0.7rem; font-size: 0.95rem; line-height: 1.65; color: var(--iron); }
+/* Service times: each on its own line, and each unbreakable. A time is a unit
+   and must never wrap between the clock and its meridiem. */
+.foot__times { display: flex; flex-direction: column; }
+.foot__times span { white-space: nowrap; }
 .foot__cols a:not(.link):hover { color: var(--coral); }
 .foot__legal { grid-column: 1 / -1; font-size: 0.8rem; color: var(--iron); margin: 0; }
 

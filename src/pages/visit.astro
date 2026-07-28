@@ -91,6 +91,8 @@ const EMAIL = 'info@brooksidecog.com';
 			<p class="lede">
 				Those are the church's own words. Everyone is welcome, there is
 				nothing to sign up for, and nobody needs to know you are coming.
+				Morning Worship starts at 10:45 and we are usually done by around
+				12:15.
 			</p>
 		</div>
 	</section>
@@ -122,6 +124,53 @@ const EMAIL = 'info@brooksidecog.com';
 		))}
 	</section>
 
+	{/*
+		Kids. This section is why the home page's "Kids and childcare" link
+		existed with nowhere to go: the programme names were cut from this page
+		for having no source, and the link was never repointed. Every claim here
+		was confirmed by Caleb Lindsey (Worship Pastor) on 2026-07-28 and is
+		recorded in Compass at projects/personal/brookside-church-website/
+		church-facts.md. Do not add to it without the same kind of source.
+	*/}
+	<section class="bay rule kids" id="kids" aria-labelledby="kids-heading">
+		<p class="eyebrow" id="kids-heading">Bringing children</p>
+		<h2 class="headline kids__head">Yes, bring them.</h2>
+		<p class="lede kids__lede">
+			Nobody has to sit through a service worrying about whether their child is
+			welcome, so here is exactly what happens to them on a Sunday morning.
+		</p>
+		<dl class="kids__list">
+			<div>
+				<dt>Nursery</dt>
+				<dd>
+					Every Sunday, and open through both Sunday School and Morning
+					Worship. Bring your babies.
+				</dd>
+			</div>
+			<div>
+				<dt>Kids Church</dt>
+				<dd>
+					Starts at 10:45. The children stay in the sanctuary with everyone
+					else for worship, then are dismissed together once the singing is
+					over.
+				</dd>
+			</div>
+			<div>
+				<dt>Corporate Sunday</dt>
+				<dd>
+					Every fifth Sunday the children stay in for the whole service, and
+					the whole church is in one room.
+				</dd>
+			</div>
+			<div>
+				<dt>Sunday School</dt>
+				<dd>
+					9:45, with classes for every age: nursery, kids, youth and adults.
+				</dd>
+			</div>
+		</dl>
+	</section>
+
 	<section class="bay rule where" aria-labelledby="where-heading">
 		<p class="eyebrow" id="where-heading">Where we are</p>
 		<div class="where__grid">
@@ -144,6 +193,24 @@ const EMAIL = 'info@brooksidecog.com';
 				</div>
 			</div>
 			<div class="where__note">
+				{/*
+					The one photograph on the site, and it earns its place here rather
+					than on the home page: the job of this page is to remove reasons not
+					to come, and "will I know the building when I get there" is one of
+					them. Shot from Cardiff Street, so it matches what a visitor sees
+					from the road.
+				*/}
+				<figure class="where__shot">
+					<img
+						src="/building.jpg"
+						width="1200"
+						height="1800"
+						alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses."
+						loading="lazy"
+						decoding="async"
+					/>
+					<figcaption>Look for the two crosses and the blue doors.</figcaption>
+				</figure>
 				<p class="prose">
 					Brookside sits just north west of Birmingham, off I&#8209;22.
 				</p>
@@ -252,6 +319,39 @@ const EMAIL = 'info@brooksidecog.com';
 
 	/* ---------- ask ---------- */
 
+	/* Square-ish crop, not the full 2:3, so the photo sits beside the address
+	   rather than towering over it. No radius and no shadow: the system has
+	   neither anywhere else. */
+	.where__shot { margin: 0 0 1.5rem; }
+	.where__shot img {
+		display: block; width: 100%; height: auto;
+		max-height: 30rem; object-fit: cover; object-position: 50% 32%;
+		background: color-mix(in srgb, var(--ash) 26%, var(--paper));
+	}
+	.where__shot figcaption {
+		margin-top: 0.6rem; font-family: var(--mono); font-size: 0.68rem;
+		letter-spacing: 0.14em; text-transform: uppercase; color: var(--iron);
+	}
+
+	.kids { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+	.kids__head { max-width: 14ch; }
+	.kids__lede { margin-top: 1.1rem; }
+	/* Fixed two columns, not auto-fit. These are paragraphs rather than labels,
+	   so the auto-fit row the .reach list uses crushes them to a three-word
+	   measure, and with four items it lands 3 + 1 and orphans the last one. */
+	.kids__list {
+		margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+		display: grid; gap: clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3.5vw, 3.5rem);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		border-top: 2px solid var(--ink); padding-top: 1.25rem;
+	}
+	@media (max-width: 720px) { .kids__list { grid-template-columns: 1fr; } }
+	.kids__list dt {
+		font-family: var(--display); font-variation-settings: 'wght' 700;
+		font-size: 1.12rem; letter-spacing: -0.02em; margin-bottom: 0.3rem;
+	}
+	.kids__list dd { margin: 0; color: var(--iron); font-size: 0.96rem; line-height: 1.6; }
+
 	.ask { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
 	.ask__head { max-width: 18ch; }
 	.ask__lede { margin-top: 1.1rem; }
@@ -321,7 +421,7 @@ const EMAIL = 'info@brooksidecog.com';
 		// on screen by the time it plays, rather than sitting at zero opacity
 		// waiting for a trigger that may never fire.
 		gsap.utils.toArray<HTMLElement>(
-			'.when .eyebrow, .slot, .where > *, .ask > *, .foot > *',
+			'.when .eyebrow, .slot, .kids > *, .where > *, .ask > *, .foot > *',
 		).forEach((el) => {
 			gsap.from(el, {
 				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',

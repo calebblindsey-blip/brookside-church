@@ -29,10 +29,16 @@ const year = new Date().getFullYear();
 		</div>
 		<div>
 			<h4>Gather</h4>
-			<p>
-				Sunday School 9:45 AM<br />
-				Sunday Worship 10:45 AM<br />
-				Wednesday 6:30 PM
+			{/*
+				Each line is nowrap: the column is narrow enough that "Morning
+				Worship 10:45 AM" broke before the meridiem on every page, leaving a
+				line reading just "AM". The times are also the church's own names for
+				these gatherings, not "Sunday service" and "Bible study".
+			*/}
+			<p class="foot__times">
+				<span>Sunday School 9:45 AM</span>
+				<span>Morning Worship 10:45 AM</span>
+				<span>Wednesday Classes 6:30 PM</span>
 			</p>
 		</div>
 		<div>

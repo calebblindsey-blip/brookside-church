@@ -34,6 +34,19 @@ const {
 
 const fullTitle =
 	title === 'Brookside Church of God' ? title : `${title} · Brookside Church of God`;
+
+/*
+ * Social preview. Until this shipped, every link shared to Facebook or sent in
+ * a text rendered with no image at all, on both this build and the live
+ * Squarespace site.
+ *
+ * The image resolves against `site` in astro.config.mjs, so the URL is the
+ * apex, not the pages.dev host. That is correct for where this is going and
+ * wrong for right now: previews will not resolve until the DNS cutover lands.
+ * Do not "fix" it by hardcoding pages.dev, which would break at cutover.
+ */
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -55,9 +68,20 @@ const fullTitle =
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Brookside Church of God" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="632" />
+		<meta
+			property="og:image:alt"
+			content="Brookside Church of God on Cardiff Street: a brick building with a white gable, a bell tower, and two crosses against a blue sky."
+		/>
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="theme-color" content="#fafaf8" />
 	</head>
 	<body>

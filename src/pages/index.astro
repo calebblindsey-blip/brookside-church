@@ -25,19 +25,19 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		</h1>
 		<div class="hero__foot">
 			<p class="lede">
-				One church on Cardiff Street, working through the Bible a passage at a
-				time. Come as you are, sit where you like, leave knowing what the text
-				said.
+				Everyone is welcome here, and we would love you to be part of our
+				family. Morning Worship is at 10:45 and we are usually done by around
+				12:15. Come as you are and sit wherever you like.
 			</p>
 			<dl class="hours">
 				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
-				<div><dt>Sunday Worship</dt><dd>10:45 AM</dd></div>
-				<div><dt>Wednesday</dt><dd>6:30 PM</dd></div>
+				<div><dt>Morning Worship</dt><dd>10:45 AM</dd></div>
+				<div><dt>Wednesday Classes</dt><dd>6:30 PM</dd></div>
 			</dl>
 		</div>
 		<div class="actions hero__actions">
-			<a class="btn btn--solid" href="/visit">Plan your visit</a>
-			<a class="btn btn--line" href="/watch">Hear this week's sermon</a>
+			<a class="btn btn--solid" href="/visit/">Plan your visit</a>
+			<a class="btn btn--line" href="/watch/">Hear this week's sermon</a>
 		</div>
 	</section>
 
@@ -46,19 +46,19 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		<div class="latest__lead">
 			<h2 class="headline">{latest.title}</h2>
 			<p class="latest__by">Brad Lindsey · {longDate(latest.date)}</p>
-			<a class="link" href="/watch">Listen to this sermon &rarr;</a>
+			<a class="link" href="/watch/">Listen to this sermon &rarr;</a>
 		</div>
 		<ol class="prior">
 			{previous.map((s) => (
 				<li>
-					<a href="/watch">
+					<a href="/watch/">
 						<span class="prior__date">{shortDate(s.date)}</span>
 						<span class="prior__title">{s.title}</span>
 					</a>
 				</li>
 			))}
 		</ol>
-		<a class="link link--quiet" href="/watch">All {data.total} sermons &rarr;</a>
+		<a class="link link--quiet" href="/watch/">All {data.total} sermons &rarr;</a>
 	</section>
 
 	<section class="bay verse" aria-label="Scripture">
@@ -78,16 +78,21 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 			opening the door for lives to be changed and transformed through the power
 			of Jesus Christ.
 		</p>
+		<p class="prose mission__where">
+			"Abroad" is not a figure of speech. Brookside supports work in Romania,
+			Moldova, Honduras, Guatemala and Israel, and it does not stop there.
+		</p>
 	</section>
 
 	<section class="bay rule grid" aria-label="Start here">
 		<article>
 			<h3 class="subhead">New here?</h3>
 			<p class="prose">
-				Park anywhere, come in the front doors, and someone will point you the
-				rest of the way. Nobody will ask you to stand up.
+				There is a band, and the music is a mix of contemporary and traditional.
+				Come in the front doors and someone will point you the rest of the way.
+				Nobody will ask you to stand up.
 			</p>
-			<a class="link" href="/visit">What a Sunday looks like &rarr;</a>
+			<a class="link" href="/visit/">What a Sunday looks like &rarr;</a>
 		</article>
 		<article>
 			<h3 class="subhead">{data.total} sermons</h3>
@@ -95,15 +100,16 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 				{years} years of preaching, all of it free, on Apple Podcasts, Spotify,
 				and right here.
 			</p>
-			<a class="link" href="/watch">Browse the archive &rarr;</a>
+			<a class="link" href="/watch/">Browse the archive &rarr;</a>
 		</article>
 		<article>
 			<h3 class="subhead">Kids on Sunday</h3>
 			<p class="prose">
-				Nursery and Kids Church both run during the 10:45 service, staffed by
-				people the church knows.
+				Nursery runs every Sunday, through both Sunday School and the main
+				service. Kids Church starts at 10:45, and the children stay in with
+				everyone for worship before heading out together.
 			</p>
-			<a class="link" href="/visit">Kids and childcare &rarr;</a>
+			<a class="link" href="/visit/#kids">Kids and childcare &rarr;</a>
 		</article>
 	</section>
 </SiteLayout>
@@ -153,6 +159,9 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		font-variation-settings: 'wght' 500, 'opsz' 24;
 		line-height: 1.25; letter-spacing: -0.025em; text-wrap: pretty;
 	}
+	/* The countries sit under the mission statement rather than beside it: the
+	   claim comes first, the evidence second. */
+	.mission__where { margin: 1.5rem 0 0; max-width: 46ch; }
 
 	.grid {
 		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);

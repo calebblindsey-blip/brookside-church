@@ -6,13 +6,17 @@ interface Props {
 	path?: string;
 }
 
+/* Hrefs carry the trailing slash on purpose. Astro serves these as directory
+   URLs, so a bare /visit costs every nav click a 308 before the real request.
+   public/_redirects already writes trailing-slash destinations for exactly this
+   reason; leaving the in-site links bare contradicted the file's own rule. */
 const { path = Astro.url.pathname } = Astro.props;
 const nav = [
-	{ href: '/visit', label: 'Visit' },
-	{ href: '/watch', label: 'Watch' },
-	{ href: '/about', label: 'About' },
+	{ href: '/visit/', label: 'Visit' },
+	{ href: '/watch/', label: 'Watch' },
+	{ href: '/about/', label: 'About' },
 ];
-const here = (href: string) => path === href || path === `${href}/`;
+const here = (href: string) => path === href || `${path}/` === href;
 ---
 
 <header class="chrome">
@@ -24,6 +28,6 @@ const here = (href: string) => path === href || path === `${href}/`;
 		{nav.map((item) => (
 			<a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
 		))}
-		<a class="chrome__give" href="/give" aria-current={here('/give') ? 'page' : undefined}>Give</a>
+		<a class="chrome__give" href="/give/" aria-current={here('/give/') ? 'page' : undefined}>Give</a>
 	</nav>
 </header>
