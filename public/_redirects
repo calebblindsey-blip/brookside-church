@@ -1,0 +1,95 @@
+# Old Squarespace URLs -> this site. Read by Cloudflare Pages at deploy time.
+#
+# WHY THIS FILE EXISTS. The church's live sitemap has 302 URLs. Ten are real
+# pages and 292 are podcast episodes, and every one of them is indexed by
+# Google today and printed in whatever links people have saved. Six of the ten
+# real pages do not exist here under the same path, so without this file the
+# cutover turns the church's entire search presence into 404s on the day the
+# nameservers move.
+#
+# MAPPING RULE. Each old URL goes to the page that now does its job, not to
+# the home page. A redirect to "/" is what you write when you have not read the
+# old page; Google treats a mass redirect to the root as a soft 404 and drops
+# the URL anyway, so it buys nothing and costs the visitor their place.
+#
+# What each old page actually was, checked against the live site on 2026-07-27:
+#
+#   /home                    Squarespace's duplicate of the home page. 200s today.
+#   /contact-us              Service times, street address, phone, email. That is
+#                            /visit now, and it was built from this page.
+#   /what-we-believe         The Church of God declaration of faith. /about.
+#   /statement-of-faith      The same material, second URL. /about.
+#   /staff                   "Meet the team" — Brad, Caleb, Daniel and others.
+#                            /about carries the same people under "Who leads".
+#   /knowing-christ          A gospel page: who Jesus is and an invitation to
+#                            respond. Nothing here replaces it one to one; /about
+#                            is the page that states what this church believes,
+#                            so it is the honest destination. If a page like this
+#                            gets written, point this rule at it.
+#   /media                   "Browse the sermon archive" plus podcast links. /watch.
+#   /sermon-video            Recorded services, incl. children's church. /watch.
+#   /mobile-app              How to install Church Center. /give is where this
+#                            site covers that app (way 02), so it goes there
+#                            rather than to /watch.
+#   /give                    Same path here. No rule needed, and adding one would
+#                            create a redirect to itself.
+#
+# TRAILING SLASHES, both ends of the rule.
+#
+# On the left: Cloudflare Pages matches the request path exactly, so
+# /contact-us and /contact-us/ are two different matches. Every rule is written
+# twice for that reason. The /* form also catches anything that was nested
+# under the old path.
+#
+# On the right: the destinations carry a trailing slash because Pages serves
+# these as directory indexes and 308s /visit to /visit/ on its own. Writing the
+# bare path costs a legacy visitor two redirects (this 301, then that 308) for
+# no reason. Verified against `wrangler pages dev dist`, which runs the real
+# rule engine locally.
+#
+# Rule budget: Pages allows 2,100 static and 100 dynamic (wildcard) rules.
+# This file uses 11 of the dynamic budget.
+
+/home                                /             301
+/home/*                              /             301
+
+/contact-us                          /visit/        301
+/contact-us/*                        /visit/        301
+
+/what-we-believe                     /about/        301
+/what-we-believe/*                   /about/        301
+/statement-of-faith                  /about/        301
+/statement-of-faith/*                /about/        301
+/staff                               /about/        301
+/staff/*                             /about/        301
+/knowing-christ                      /about/        301
+/knowing-christ/*                    /about/        301
+
+/media                               /watch/        301
+/media/*                             /watch/        301
+/sermon-video                        /watch/        301
+/sermon-video/*                      /watch/        301
+
+/mobile-app                          /give/         301
+/mobile-app/*                        /give/         301
+
+# The podcast. 292 URLs, one per episode plus the index. They all become /watch,
+# which is the archive those episodes now live in and plays every one of them.
+/brookside-main-worship-podcast      /watch/        301
+/brookside-main-worship-podcast/*    /watch/        301
+
+# NOT HANDLED HERE, deliberately:
+#
+#   www -> apex. Pages serves whatever custom domains are attached to the
+#   project, so attaching both would serve the same site on two hostnames and
+#   split it in Google's index. The redirect belongs at the zone level as a
+#   Cloudflare Redirect Rule, because it has to fire for every hostname on the
+#   zone rather than only for requests that reach this project. See
+#   dns-cutover-runbook.md in the Compass repo.
+#
+#   brooksidecog.com -> brooksidechurchofgod.com. Squarespace does this today
+#   (301, verified). Same reason: zone-level rule on the brooksidecog.com zone.
+#
+#   /s/* Squarespace asset URLs. Those are images and files served off
+#   Squarespace's own CDN, not paths on this domain, so they die with the
+#   account no matter what this file says.

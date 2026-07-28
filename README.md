@@ -3,12 +3,12 @@
 Redesign + migration of [brooksidechurchofgod.com](https://brooksidechurchofgod.com)
 off Squarespace onto Cloudflare Pages.
 
-**Stack:** Astro 5 · TypeScript · Tailwind v4 · Fraunces + Inter + JetBrains Mono
-**Hosting:** Cloudflare Pages (free)
-**Podcast host (post-migration):** Spotify for Creators
+**Stack:** Astro 5 · TypeScript · Tailwind v4 · Bricolage Grotesque + Public Sans + JetBrains Mono
+**Hosting:** Cloudflare Pages (free), static output, no adapter
+**Podcast host:** Spotify for Creators (migrated 2026-07, Apple approved)
 
-Design doc and project tracker live in the Compass repo:
-`projects/brookside-church-website/`.
+Design doc, cutover runbook and project tracker live in the Compass repo:
+`projects/personal/brookside-church-website/`.
 
 ## Local dev
 
@@ -17,23 +17,67 @@ npm install
 npm run dev       # http://localhost:4321
 npm run build     # static build to dist/
 npm run preview   # serve the built site locally
+npm run sermons   # regenerate src/data/sermons.json from the live RSS feed
 ```
 
 ## Structure
 
 ```
 src/
-  components/     Header, Footer, GhostWatermark
-  layouts/        BaseLayout
-  pages/          index.astro, design-system.astro
-  styles/         global.css (Tailwind theme + tokens)
-public/           favicon, robots.txt, future images/fonts
+  components/     SiteHeader, SiteFooter, Thread (the line), BrooksideMark
+  layouts/        SiteLayout (current), BaseLayout (legacy, /design-system only)
+  pages/          index, visit, watch, about, give, 404
+  data/           sermons.json — generated, do not hand-edit
+  styles/         site.css (Direction B tokens), global.css (legacy)
+public/           favicon, robots.txt, _headers, _redirects
+scripts/          pull-sermons.mjs
 ```
 
-The `/design-system` route is the internal visual reference. It's disallowed
-in `robots.txt` and not linked in the public nav.
+`/design-system` and `/directions/*` are the internal visual references from the
+direction-picking phase. They are on the legacy layout, disallowed in
+`robots.txt`, and not linked from the public nav.
 
 ## Deploy
 
-Push to `main` → Cloudflare Pages auto-builds and deploys.
-Build command: `npm run build` · Output directory: `dist`.
+Direct upload, not the Git integration: the deploy ships the `dist/` that was
+just built and verified locally rather than depending on Cloudflare's build
+runner. `wrangler.toml` carries the project name and output directory, so there
+are no flags and no dashboard build settings.
+
+```bash
+npx wrangler login            # once per machine
+npm run deploy:preview        # build + deploy to a preview branch URL
+npm run deploy                # build + deploy to production
+```
+
+**The site has never been deployed.** The Pages project does not exist yet, and
+the domains are still on Squarespace. The first deploy creates the project and
+serves it on `brookside-church.pages.dev`, which touches no DNS and is the right
+place to verify everything.
+
+Both domains carry Microsoft 365 email, so the DNS cutover is the risky part and
+has its own step-by-step: `projects/personal/brookside-church-website/dns-cutover-runbook.md`
+in the Compass repo. Read it before changing a nameserver.
+
+### What ships alongside the HTML
+
+- `public/_redirects` — the old Squarespace URLs. Ten real pages and 292 podcast
+  episode URLs are indexed today; without this file the cutover turns the
+  church's whole search presence into 404s.
+- `public/_headers` — security headers and immutable caching for `/_astro/*`.
+  What is deliberately *not* set (HSTS, CSP) is documented in the file.
+
+## Verification
+
+From the Compass repo root, against a running dev server:
+
+```bash
+PW_CHROME="$HOME/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+
+node engine/scripts/audit-brookside-site.mjs http://localhost:4321/visit
+node engine/scripts/verify-brookside-deck.mjs      # drives real audio on /watch
+```
+
+The audit needs a per-page selector set and refuses to run on a page it does not
+know, so add one when adding a page. Chromium proper will not work for either
+script: it has no MP3 decoder. Use the branded Chrome for Testing binary.

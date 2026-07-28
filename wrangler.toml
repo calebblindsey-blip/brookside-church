@@ -1,0 +1,23 @@
+# Cloudflare Pages project config.
+#
+# The site is a pure static build: 10 HTML pages plus fingerprinted assets, no
+# server rendering, no adapter, no Functions. Astro's default static output is
+# already exactly what Pages wants, which is why `astro.config.mjs` has no
+# `adapter` and no `output` line and should not grow one.
+#
+# `pages_build_output_dir` is what makes `wrangler pages deploy` work with no
+# arguments and no dashboard configuration, so the deploy command is the same
+# from a laptop as it is from CI.
+#
+# Direct upload, not the Git integration. The Git integration builds on
+# Cloudflare's runners, which means the live site depends on their Node version
+# and a successful `npm ci` at deploy time; direct upload sends the dist/ that
+# was just built and verified locally. Switching to the Git integration later is
+# a dashboard setting and does not change this file.
+
+name = "brookside-church"
+pages_build_output_dir = "dist"
+
+# Only consulted if Functions are ever added. Harmless today, and it stops a
+# future function from silently inheriting whatever the default was that week.
+compatibility_date = "2026-07-27"

@@ -1,0 +1,39 @@
+# Response headers, applied by Cloudflare Pages.
+#
+# Deliberately small. Every header here is one this site can be certain of; the
+# ones that would break it are named at the bottom with the reason, so nobody
+# adds them back later on the assumption they were forgotten.
+
+/*
+  # This site is never meant to be framed by anyone. It does frame YouTube on
+  # /watch, which this does not affect: X-Frame-Options governs being embedded,
+  # not embedding.
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # Nothing on this site asks for hardware or location. Note that autoplay is
+  # NOT in this list: the Watch deck calls play() and the interaction between
+  # that policy and a user-gesture play() differs by engine, so denying it
+  # risks the one feature on the site that took the longest to get working.
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=()
+
+# Astro fingerprints everything in this directory, fonts included, so the
+# filename changes whenever the contents do. 2MB of the 2.3MB build is here.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# NOT SET HERE, and why:
+#
+#   Strict-Transport-Security. HSTS is a one-way door: once a browser has seen
+#   it, that browser refuses plain HTTP for the domain for the full max-age,
+#   and there is no way to reach the people who cached it early. Turning it on
+#   during a DNS cutover removes the ability to fall back. Add it from the
+#   Cloudflare dashboard (SSL/TLS > Edge Certificates) once the site has been
+#   live and correct for a couple of weeks, and start with a short max-age.
+#
+#   Content-Security-Policy. The pages carry inline <style> from Astro and
+#   GSAP-driven inline styles at runtime, and /watch injects a YouTube
+#   iframe on click, so a useful policy needs script-src, style-src and
+#   frame-src worked out and tested per page. Worth doing, not worth doing
+#   blind on cutover day: a wrong CSP breaks the site silently for visitors
+#   while looking perfect to whoever deployed it.
