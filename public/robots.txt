@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
+# Internal only: the visual reference and the three design directions from the
+# picking phase. Also filtered out of the sitemap in astro.config.mjs, which is
+# the signal that actually matters — robots.txt asks a crawler not to fetch a
+# page, a sitemap invites it to index one.
 Disallow: /design-system
+Disallow: /directions
 
 Sitemap: https://brooksidechurchofgod.com/sitemap-index.xml
