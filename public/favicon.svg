@@ -1,24 +1,24 @@
 <!--
-  Favicon. NOT a downscale of BrooksideMark.astro, deliberately.
+  Favicon: the mark's own cross, scaled to fill.
 
-  The full mark is a B whose stem is a cross and whose top stroke is the
-  crossbar's right arm. That interlock is the idea, and it is legible at header
-  size and above. Below roughly 22px the two bowls and the waist notch collapse
-  into one another and the silhouette reads as a currency symbol rather than a
-  letter, which is the opposite of what a mark is for in a tab strip.
+  The mark this replaces fused the cross into the letter, so its cross had no
+  right arm and the favicon had to invent one back, which is why the site ended
+  up shipping two shapes that shared a colour and nothing else. The mark now
+  carries a whole latin cross, so this is simply that cross on its own.
 
-  So the favicon takes the half of the mark that survives: the cross, given back
-  the right arm the letter borrows from it. The proportions are the mark's, not
-  a generic crucifix. Arm-to-stem ratio 1.25 against the mark's 1.3, and the bar
-  sits at 0.35 of the height rather than the mark's 0.31, that small correction
-  being what keeps the upper stem from closing up at 16px.
+  It is a straight scale-up, not a redraw. Same stroke-to-height ratio (17.4%
+  here against the mark's 17.2%), same bar at 30% of the height, same arms at
+  1.5x the stroke. Nothing was re-proportioned for small sizes because nothing
+  needed to be: at the mark's working weight the stroke lands near 3px at 16px,
+  which holds in a tab strip on its own.
 
   Coral on transparent. Transparent so it sits correctly in both light and dark
   browser chrome, coral because that is the colour doing this exact job
   everywhere else on the site: the line that becomes a cross.
 
-  Grid 32x32. Stroke 6. Stem x13-19, y2-30. Bar x5.5-26.5, y8.7-14.7.
+  Generated with the mark by assets/proposed/tooling/emit_all.py in Compass.
+  Grid 48. Stroke 8.375. Stem x19.812-28.188, y2-46. Bar x7.249-40.751.
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-    <path fill="#FF5757" d="M13 2h6v6.7h7.5v6H19V30h-6V14.7H5.5v-6H13z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+    <path fill="#FF5757" d="M19.812 2H28.188V15.2H40.751V23.575H28.188V46H19.812V23.575H7.249V15.2H19.812Z" />
 </svg>
