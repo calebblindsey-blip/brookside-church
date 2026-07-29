@@ -10,12 +10,34 @@
  * never drift out of alignment. Sections set padding-block only.
  */
 
+/*
+ * PALETTE, aligned to the official brand package 2026-07-29.
+ * Source: branding/brookside-church/assets/Brookside-Brand-Package/ in Compass.
+ * Its primary palette is Brookside Gray #B8BAB8, Brookside Coral #E6534E,
+ * Charcoal #303235, Supporting Gray #606368.
+ *
+ * --coral moved from the old #ff5757 to #E6534E. Not optional: the cross is #E6534E,
+ * and the accent that draws the line, the crossbar and one word per page has to
+ * be the same red as the logo or the page carries two.
+ *
+ * --iron moved #2f2f2f -> #303235. Imperceptible, taken for alignment.
+ *
+ * --ash DELIBERATELY NOT CHANGED. The brand grey is #B8BAB8, but --ash is not
+ * the logo grey here: it draws 41 hairline rules and borders across the site.
+ * #B8BAB8 is meaningfully darker than #d9d9d9 and swapping it would make every
+ * rule on every page more prominent. That is a visual decision about the
+ * design, not part of adopting a logo, so it is flagged rather than taken.
+ * --brand-grey below is the logo grey, available where the mark needs it.
+ */
 :root {
 	--paper: #fafaf8;
 	--ink: #101010;
-	--iron: #2f2f2f;
+	--iron: #303235;
 	--ash: #d9d9d9;
-	--coral: #ff5757;
+	--coral: #E6534E;
+	/* Brand package colours not (yet) driving the design system. */
+	--brand-grey: #B8BAB8;
+	--brand-slate: #606368;
 
 	--display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
 	--body: 'Public Sans Variable', system-ui, sans-serif;

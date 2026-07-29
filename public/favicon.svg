@@ -1,24 +1,24 @@
 <!--
-  Favicon: the mark's own cross, scaled to fill.
+  Favicon: the church's mark, from the official brand package (adopted 2026-07-29).
+  Source: branding/brookside-church/assets/Brookside-Brand-Package/02-Final-Logos/
+  in Compass. Paths copied verbatim from brookside-mark-primary.svg.
 
-  The mark this replaces fused the cross into the letter, so its cross had no
-  right arm and the favicon had to invent one back, which is why the site ended
-  up shipping two shapes that shared a colour and nothing else. The mark now
-  carries a whole latin cross, so this is simply that cross on its own.
+  WHY THE WHOLE MARK NOW, AND NOT A CROSS ON ITS OWN. The mark this replaces was
+  a filled letterform with the cross fused into it. At 16px it collapsed into an
+  unreadable blob, and on a dark tab strip its near-black bowls vanished and left
+  a coral cross with a hole in it. So the favicon had to be a different drawing
+  from the logo: two shapes sharing a colour and nothing else.
 
-  It is a straight scale-up, not a redraw. Same stroke-to-height ratio (17.4%
-  here against the mark's 17.2%), same bar at 30% of the height, same arms at
-  1.5x the stroke. Nothing was re-proportioned for small sizes because nothing
-  needed to be: at the mark's working weight the stroke lands near 3px at 16px,
-  which holds in a tab strip on its own.
+  This mark does not need that. The B is drawn as STROKES, so the cross sits in
+  real counter-space rather than fighting the letter for the same pixels, and the
+  pair survives the scale down. The favicon is now literally the logo.
 
-  Coral on transparent. Transparent so it sits correctly in both light and dark
-  browser chrome, coral because that is the colour doing this exact job
-  everywhere else on the site: the line that becomes a cross.
-
-  Generated with the mark by assets/proposed/tooling/emit_all.py in Compass.
-  Grid 48. Stroke 8.375. Stem x19.812-28.188, y2-46. Bar x7.249-40.751.
+  The B is set in the brand grey rather than currentColor: an SVG favicon has no
+  inherited text colour to take, and #B8BAB8 reads on both a light and a dark tab
+  strip. A near-black B would disappear on dark, which is the exact failure that
+  forced the previous favicon to be a separate drawing.
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-    <path fill="#FF5757" d="M19.812 2H28.188V15.2H40.751V23.575H28.188V46H19.812V23.575H7.249V15.2H19.812Z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Brookside Church of God">
+  <path fill="#B8BAB8" d="M116 68h148c76 0 120 34 120 92 0 41-22 68-59 80 46 12 72 44 72 91 0 65-47 102-127 102H160v-38h109c55 0 85-23 85-66 0-43-30-67-87-67h-24v-38h22c50 0 76-20 76-59 0-39-28-59-82-59H154v50h-38V68z"/>
+  <path fill="#E6534E" d="M116 162h38v65h77v35h-77v171h-38V262H45v-35h71v-65z"/>
 </svg>
