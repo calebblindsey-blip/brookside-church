@@ -97,6 +97,33 @@ main, .foot { position: relative; z-index: 1; }
 	font-size: clamp(3.1rem, 12.5vw, 10.5rem);
 }
 
+/* DESCENDERS. GSAP SplitText's `mask: 'lines'` wraps each line in a .line-mask with
+   overflow:clip sized to the LINE BOX. Our line box is 0.86em and the ink is taller
+   than that, so every page title shipped with its descenders sliced flat. Words with
+   no descender were unaffected, which is why it read as a font bug rather than a
+   layout one, and why four other audit checks passed straight over it.
+
+   Overflow clips at the PADDING box, so padding-bottom moves the clip edge down and
+   lets the descender render. The negative margin then collapses through .display's
+   bottom edge, so the heading's border box grows but nothing after it moves. Verified:
+   line tops and every following element sit at identical positions with and without.
+
+   SIZE IT OFF THE FONT'S WORST GLYPH, NOT THE ONE IN FRONT OF YOU. Measured on
+   Bricolage at this weight, descender depth below the baseline is:
+     j 0.202em · g 0.1825 · y 0.1813 · Q 0.1733 · p/q 0.1672 · ; 0.132 · , 0.1317
+   The baseline sits 0.7604em below the line box top, leaving 0.0996em of room inside
+   an unpadded mask. So the requirement is 0.202 - 0.0996 = 0.1024em. A first pass at
+   0.09em looked correct on Home ("Preaching", a g) and still clipped /watch, whose
+   title is "one subject" and contains the only j on the site. 0.12em clears j with
+   0.018em to spare. Keep it in em so it tracks the clamp()ed font size.
+
+   IF YOU CHANGE THIS, CHANGE yPercent TOO. A taller mask means the reveal has further
+   to travel before the line is hidden at its start position. At 0.12em the floor is
+   about 115%; the pages animate from 130, which is comfortably clear and visually
+   identical over a 1.1s power4.out. Below the floor a sliver of the headline shows
+   before it plays. */
+.display .line-mask { padding-bottom: 0.12em; margin-bottom: -0.12em; }
+
 .headline {
 	margin: 0; font-family: var(--display);
 	font-size: clamp(2rem, 4.6vw, 3.5rem);
