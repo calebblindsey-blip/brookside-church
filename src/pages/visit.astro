@@ -199,12 +199,26 @@ const EMAIL = 'info@brooksidecog.com';
 					to come, and "will I know the building when I get there" is one of
 					them. Shot from Cardiff Street, so it matches what a visitor sees
 					from the road.
+
+					Source: the brand package's hero-1600 webp, adopted 2026-07-29.
+					1600x900 at 210KB rather than the 1920x1080 JPEG at 415KB, because
+					this slot is column-constrained and renders around 313px wide, so
+					`max-height: 30rem` never engages. Half the bytes for an image
+					nobody can tell apart at this size.
+
+					Note for anyone comparing it to the original: the packaged photo is
+					AI-reprocessed. Same building, same composition, but the stained
+					glass is sharpened into swirls the real windows do not have and the
+					siding is softened. Caleb chose it knowing that. The faithful
+					original is in Compass at
+					branding/brookside-church/photography/source/building-exterior-original.jpg
+					at 2656x2742 if it is ever wanted back.
 				*/}
 				<figure class="where__shot">
 					<img
-						src="/building.jpg"
-						width="1200"
-						height="1800"
+						src="/building.webp"
+						width="1600"
+						height="900"
 						alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses."
 						loading="lazy"
 						decoding="async"
@@ -323,9 +337,15 @@ const EMAIL = 'info@brooksidecog.com';
 	   rather than towering over it. No radius and no shadow: the system has
 	   neither anywhere else. */
 	.where__shot { margin: 0 0 1.5rem; }
+	/*
+		object-position was 50% 32% when this slot held a 1200x1800 portrait and
+		had to bias upward to keep the gable in a landscape crop. The brand
+		package photo is 1920x1080 and already composed on the building, so it
+		centres. Revisit only if the source aspect changes again.
+	*/
 	.where__shot img {
 		display: block; width: 100%; height: auto;
-		max-height: 30rem; object-fit: cover; object-position: 50% 32%;
+		max-height: 30rem; object-fit: cover; object-position: 50% 50%;
 		background: color-mix(in srgb, var(--ash) 26%, var(--paper));
 	}
 	.where__shot figcaption {

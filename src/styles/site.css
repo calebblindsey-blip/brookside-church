@@ -22,21 +22,19 @@
  *
  * --iron moved #2f2f2f -> #303235. Imperceptible, taken for alignment.
  *
- * --ash DELIBERATELY NOT CHANGED. The brand grey is #B8BAB8, but --ash is not
- * the logo grey here: it draws 41 hairline rules and borders across the site.
- * #B8BAB8 is meaningfully darker than #d9d9d9 and swapping it would make every
- * rule on every page more prominent. That is a visual decision about the
- * design, not part of adopting a logo, so it is flagged rather than taken.
- * --brand-grey below is the logo grey, available where the mark needs it.
+ * --ash moved #d9d9d9 -> #B8BAB8 on Caleb's call, 2026-07-29. This one is not
+ * cosmetic bookkeeping: --ash draws 41 hairline rules and borders across the
+ * site, so every rule on every page is now noticeably darker. It was flagged
+ * first for exactly that reason and then taken deliberately. To undo it, this
+ * single line is the whole change.
  */
 :root {
 	--paper: #fafaf8;
 	--ink: #101010;
 	--iron: #303235;
-	--ash: #d9d9d9;
+	--ash: #B8BAB8;
 	--coral: #E6534E;
-	/* Brand package colours not (yet) driving the design system. */
-	--brand-grey: #B8BAB8;
+	/* Supporting grey from the brand package. Not yet used by the design system. */
 	--brand-slate: #606368;
 
 	--display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
