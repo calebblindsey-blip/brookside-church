@@ -78,7 +78,19 @@ const beliefs = [
  * church's own word. It is a weaker claim than "senior pastor since 1999" and
  * nobody has confirmed the stronger one, so it stays weak.
  *
- * `photo` is null until real portraits exist. See the note on .who__frame.
+ * `photo` is null until a real portrait exists. See the note on .who__frame.
+ *
+ * Daniel's is the one that exists. It was salvaged off the Squarespace CDN on
+ * 2026-07-29 (the old /staff page, filename `DanielHowardBio.jpg`) and dies with
+ * the account, so the copy in `branding/brookside-church/photography/source/
+ * salvage-squarespace/` in Compass is the only one. Source is 750x743; the 4:5
+ * master beside it is the largest honest crop at 594x743. That is 1.24x the
+ * 480x600 slot, not 2x, so it is slightly soft on a retina screen and there is
+ * no better source. Do NOT upscale it to fake the missing pixels.
+ *
+ * It is greyscale, and .who__photo desaturates every portrait to match, so a
+ * colour phone photo can be dropped in later without the row splitting into two
+ * treatments. See the note on .who__photo.
  */
 const staff = [
 	{
@@ -91,7 +103,7 @@ const staff = [
 	{
 		name: 'Daniel Howard',
 		role: 'Teaching Pastor',
-		photo: null,
+		photo: '/staff-daniel-howard.webp',
 		bio:
 			'Daniel was licensed in 1996 and ordained into the ministry in 1999. A self-proclaimed Bible nerd and treasure hunter, his greatest joy is digging into the Word, turning up the gold in it, and handing it to the church. He and his wife, Patti, have one son.',
 	},
@@ -334,7 +346,24 @@ const monthYear = (iso: string) => {
 		display: grid; place-items: center; overflow: hidden;
 		background: color-mix(in srgb, var(--ash) 26%, var(--paper));
 	}
-	.who__photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+	/*
+		Every portrait renders greyscale, deliberately, and it is not a style
+		flourish. The only portrait that exists is Daniel's, salvaged greyscale
+		off the old site; the rest will arrive as colour phone photos taken by
+		different people at different times. Desaturating at the slot means the
+		row reads as one set however mixed the sources are, instead of splitting
+		into "the old scanned one" and "the new phone ones".
+
+		It also keeps coral doing one job. Coral is the site's only accent and it
+		marks a line everywhere else; skin tones and a warm colour background
+		compete with it directly at this size.
+
+		One line to reverse if real portraits are ever shot together.
+	*/
+	.who__photo {
+		width: 100%; height: 100%; object-fit: cover; display: block;
+		filter: grayscale(1);
+	}
 	.who__initials {
 		font-family: var(--display);
 		font-size: clamp(2.4rem, 5vw, 3.4rem);
