@@ -50,10 +50,23 @@ npm run deploy:preview        # build + deploy to a preview branch URL
 npm run deploy                # build + deploy to production
 ```
 
-**The site has never been deployed.** The Pages project does not exist yet, and
-the domains are still on Squarespace. The first deploy creates the project and
-serves it on `brookside-church.pages.dev`, which touches no DNS and is the right
-place to verify everything.
+**The site is deployed and live on `brookside-church.pages.dev`, but it is not yet
+the public website.** The domains are still on Squarespace; the DNS cutover has not
+happened. Production is deployment `1411a39f` from `0759faf` (2026-07-30), verified
+byte-identical to the local `dist/`.
+
+Two things that trip people up here:
+
+- **Deploy with no `CLOUDFLARE_API_TOKEN` set.** `~/.cf-brookside-token` is a scoped
+  token with no account-read permission, so wrangler cannot resolve which account to
+  deploy into and reports it as an authentication failure. Setting the variable also
+  *overrides* the working OAuth session cached in
+  `~/Library/Preferences/.wrangler/config/default.toml`. `npx wrangler pages deploy
+  --branch main` with no env var works.
+- **`--branch main` is the Cloudflare production-environment label, not the git
+  branch.** All current work lives on `redesign`; git `main` is still the April
+  scaffold. Deploys upload the locally built `dist/`, so the branch names do not have
+  to agree, but a fresh clone of `main` is not this site.
 
 Both domains carry Microsoft 365 email, so the DNS cutover is the risky part and
 has its own step-by-step: `projects/personal/brookside-church-website/dns-cutover-runbook.md`
