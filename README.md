@@ -52,9 +52,14 @@ npm run deploy                # build + deploy to production
 
 **The site is deployed and live on `brookside-church.pages.dev`, but it is not yet
 the public website.** The domains are still on Squarespace; the DNS cutover has not
-happened. Production is deployment `6a718342` from `8c9340f` (2026-08-10), verified
-byte-identical to the local `dist/` on all five pages, the 404 body and the staff
-portrait.
+happened. Production is deployment `86686a6a` from `52b0277` (2026-08-10), verified
+byte-identical to the local `dist/` on all five pages, the 404 body and all four staff
+portraits.
+
+**Build with `rm -rf dist` first.** The repo sits under iCloud-synced `~/Documents`, and
+iCloud writes conflict copies (`visit/index 2.html`, mode 600) into `dist/` at build time.
+Astro does not purge unknown files and this deploy uploads the directory wholesale, so a
+stale `dist/` ships junk. A clean build is 139 files and `find dist -name "* 2.*"` is empty.
 
 Two things that trip people up here:
 
