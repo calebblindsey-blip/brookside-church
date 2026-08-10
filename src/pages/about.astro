@@ -174,6 +174,13 @@ const staff = [
 	},
 ];
 
+/*
+ * The senior pastor is featured on his own row above the others. Taken by
+ * position rather than by name or role so that featuring somebody else is a
+ * reorder of `staff` and nothing else; the array is already in seniority order.
+ */
+const [lead, ...rest] = staff;
+
 /** First letters of the first and last name, for the portrait placeholder. */
 const initials = (name: string) =>
 	name.split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -267,17 +274,45 @@ const monthYear = (iso: string) => {
 		<p class="lede team__since">
 			Brad and Marcie Lindsey have been at Brookside since 1999.
 		</p>
+		{/*
+			The senior pastor takes his own row above the rest, at Caleb's direction
+			2026-08-10. Split off by position, not by name or title, so reordering the
+			array is the only thing needed to feature someone else — and `staff[0]` is
+			Brad because the array is already in seniority order.
+
+			Both cards share the same `.who` classes and the same `.who__text` wrapper,
+			deliberately: `.who--lead` is a layout modifier only. That keeps one markup
+			shape, so the audit's existing /about selectors still cover the lead card
+			instead of silently skipping it, which is exactly how /watch once "passed"
+			an audit that asserted nothing.
+		*/}
+		<div class="team__lead">
+			<article class="who who--lead">
+				<div class="who__frame">
+					{lead.photo
+						? <img class="who__photo" src={lead.photo} alt={lead.alt} width="480" height="600" loading="lazy" />
+						: <span class="who__initials" aria-hidden="true">{initials(lead.name)}</span>}
+				</div>
+				<div class="who__text">
+					<p class="who__role">{lead.role}</p>
+					<h3 class="who__name">{lead.name}</h3>
+					<p class="prose who__bio">{lead.bio}</p>
+				</div>
+			</article>
+		</div>
 		<div class="team__grid">
-			{staff.map((p) => (
+			{rest.map((p) => (
 				<article class="who">
 					<div class="who__frame">
 						{p.photo
 							? <img class="who__photo" src={p.photo} alt={p.alt} width="480" height="600" loading="lazy" />
 							: <span class="who__initials" aria-hidden="true">{initials(p.name)}</span>}
 					</div>
-					<p class="who__role">{p.role}</p>
-					<h3 class="who__name">{p.name}</h3>
-					<p class="prose who__bio">{p.bio}</p>
+					<div class="who__text">
+						<p class="who__role">{p.role}</p>
+						<h3 class="who__name">{p.name}</h3>
+						<p class="prose who__bio">{p.bio}</p>
+					</div>
 				</article>
 			))}
 		</div>
@@ -386,6 +421,32 @@ const monthYear = (iso: string) => {
 		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
 	}
+	.team__lead { margin-bottom: clamp(2.25rem, 4.5vw, 3.5rem); }
+	/*
+		The lead card is wider than the others but its PHOTO is deliberately not much
+		wider, and the ceiling is arithmetic rather than taste. Brad's source is
+		520x650, so 2x retina caps the frame at 260px CSS; the grid cards already
+		render at 241px. Anything past ~260px is served below native and goes soft on
+		a retina screen, and it is the one portrait with no better original.
+
+		So the card grows the way the source allows: the frame goes to the ceiling,
+		and the extra prominence comes from the row to itself, the larger name, and a
+		bio set at reading width instead of squeezed into a 241px column. If a
+		higher-resolution original ever arrives, raise the 260px and nothing else
+		here has to change.
+	*/
+	.who--lead {
+		display: grid;
+		grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+		gap: clamp(1.5rem, 4vw, 3rem);
+		align-items: start;
+	}
+	.who--lead .who__frame { margin-bottom: 0; }
+	.who--lead .who__role { font-size: 0.74rem; }
+	.who--lead .who__name {
+		font-size: clamp(1.7rem, 2.4vw, 2.15rem); margin-bottom: 0.85rem;
+	}
+	.who--lead .who__bio { max-width: 62ch; }
 	.who { border-top: 2px solid var(--ink); padding-top: 0.9rem; }
 
 	/*
@@ -450,6 +511,14 @@ const monthYear = (iso: string) => {
 	@media (max-width: 720px) {
 		.atop__foot .hours { width: 100%; margin-left: 0; }
 		.creed__row { grid-template-columns: 1fr; gap: 0.75rem; }
+		/*
+			Stacked, and the frame is capped rather than set to 100%. A phone column is
+			wider than 260px, so letting the lead photo fill it would push the one
+			portrait with the weakest source furthest past native — the opposite of
+			what the desktop cap is for.
+		*/
+		.who--lead { grid-template-columns: 1fr; gap: 1.1rem; }
+		.who--lead .who__frame { max-width: 260px; }
 	}
 </style>
 
