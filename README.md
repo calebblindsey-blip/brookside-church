@@ -52,8 +52,9 @@ npm run deploy                # build + deploy to production
 
 **The site is deployed and live on `brookside-church.pages.dev`, but it is not yet
 the public website.** The domains are still on Squarespace; the DNS cutover has not
-happened. Production is deployment `1411a39f` from `0759faf` (2026-07-30), verified
-byte-identical to the local `dist/`.
+happened. Production is deployment `6a718342` from `8c9340f` (2026-08-10), verified
+byte-identical to the local `dist/` on all five pages, the 404 body and the staff
+portrait.
 
 Two things that trip people up here:
 
