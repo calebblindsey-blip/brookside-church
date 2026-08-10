@@ -52,8 +52,8 @@ npm run deploy                # build + deploy to production
 
 **The site is deployed and live on `brookside-church.pages.dev`, but it is not yet
 the public website.** The domains are still on Squarespace; the DNS cutover has not
-happened. Production is deployment `86686a6a` from `52b0277` (2026-08-10), verified
-byte-identical to the local `dist/` on all five pages, the 404 body and all four staff
+happened. Production is deployment `86d890a4` from `91c27a4` (2026-08-10), verified
+byte-identical to the local `dist/` on all five pages, the 404 body and all five staff
 portraits.
 
 **Build with `rm -rf dist` first.** The repo sits under iCloud-synced `~/Documents`, and
