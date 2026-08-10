@@ -80,7 +80,7 @@ const beliefs = [
  *
  * `photo` is null until a real portrait exists. See the note on .who__frame.
  *
- * Daniel's is the one that exists. It was salvaged off the Squarespace CDN on
+ * Daniel's was the first one. It was salvaged off the Squarespace CDN on
  * 2026-07-29 (the old /staff page, filename `DanielHowardBio.jpg`) and dies with
  * the account, so the copy in `branding/brookside-church/photography/source/
  * salvage-squarespace/` in Compass is the only one. Source is 750x743; the 4:5
@@ -91,12 +91,30 @@ const beliefs = [
  * It is greyscale, and .who__photo desaturates every portrait to match, so a
  * colour phone photo can be dropped in later without the row splitting into two
  * treatments. See the note on .who__photo.
+ *
+ * Brad's and Caleb's arrived 2026-08-10 and are NOT solo portraits: Caleb chose
+ * to keep the whole family in frame, so these are a couple and a family of four.
+ * That decision is what makes them usable at all. Cropped to one person they
+ * came out at 0.48x and 0.51x of the slot and would have needed a 2x upscale;
+ * used whole, the largest 4:5 crop is 520x650 and 724x905, which is 1.08x and
+ * 1.51x, so neither is upscaled. Sources are in `photography/source/` in Compass.
+ *
+ * The consequence to know before "fixing" it: face scale is now inconsistent
+ * across the row, because Daniel's is a tight head-and-shoulders and the others
+ * are full-length. Daniel's cannot be loosened (750x743 is the whole source) and
+ * the others cannot be tightened without either cutting someone out or dropping
+ * back under the slot. It is a real trade and this is the side of it that keeps
+ * every face at native resolution.
+ *
+ * `alt` overrides the generated "Name, Role" string. It exists because that
+ * string is a lie on a group photo: the frame holds four people, not a pastor.
  */
 const staff = [
 	{
 		name: 'Brad Lindsey',
 		role: 'Senior Pastor',
-		photo: null,
+		photo: '/staff-brad-lindsey.webp',
+		alt: 'Brad Lindsey, Senior Pastor, with his wife Marcie',
 		bio:
 			'Brad and his wife, Marcie, joined Brookside Church of God in 1999, and have seen God’s hand move sovereignly through their lives and the church in the years since. He has traveled nationally and internationally in missions work. Marcie serves across many areas of the church. Brad and Marcie have two sons, Caleb and Cole.',
 	},
@@ -104,13 +122,15 @@ const staff = [
 		name: 'Daniel Howard',
 		role: 'Teaching Pastor',
 		photo: '/staff-daniel-howard.webp',
+		alt: 'Daniel Howard, Teaching Pastor',
 		bio:
 			'Daniel was licensed in 1996 and ordained into the ministry in 1999. A self-proclaimed Bible nerd and treasure hunter, his greatest joy is digging into the Word, turning up the gold in it, and handing it to the church. He and his wife, Patti, have one son.',
 	},
 	{
 		name: 'Caleb Lindsey',
 		role: 'Worship Pastor',
-		photo: null,
+		photo: '/staff-caleb-lindsey.webp',
+		alt: 'Caleb Lindsey, Worship Pastor, with his wife and their two daughters',
 		bio:
 			'Caleb leads the church into the presence of God through authentic worship, and counts it a privilege to use what God has given him to advance the Gospel from week to week. He and his wife have two daughters.',
 	},
@@ -214,7 +234,7 @@ const monthYear = (iso: string) => {
 				<article class="who">
 					<div class="who__frame">
 						{p.photo
-							? <img class="who__photo" src={p.photo} alt={`${p.name}, ${p.role}`} width="480" height="600" loading="lazy" />
+							? <img class="who__photo" src={p.photo} alt={p.alt} width="480" height="600" loading="lazy" />
 							: <span class="who__initials" aria-hidden="true">{initials(p.name)}</span>}
 					</div>
 					<p class="who__role">{p.role}</p>
