@@ -257,6 +257,18 @@ const monthYear = (iso: string) => {
 				</div>
 			))}
 		</dl>
+		{/*
+			The full declaration lives on its own page and this is the only link to
+			it from the body of the site (the footer carries the other). It sits
+			after the four descriptors on purpose: those are the denomination
+			describing itself and end on "we welcome people from all denominations",
+			which is an open hand. The declaration is the church's specific
+			position. Both are true, and leading with the second would read as a
+			bait and switch, so this page summarises and points onward.
+		*/}
+		<p class="creed__more">
+			<a class="link" href="/what-we-believe/">Read the full declaration of faith &rarr;</a>
+		</p>
 	</section>
 
 	<section class="bay rule mission" aria-labelledby="mission-heading">
@@ -413,6 +425,9 @@ const monthYear = (iso: string) => {
 		flex: none; font-family: var(--mono); font-size: 0.68rem;
 		letter-spacing: 0.06em; color: var(--coral);
 	}
+	/* Sits clear of the last creed row's rule so the link does not read as a
+	   seventeenth item in the list above it. */
+	.creed__more { margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0; }
 
 	/* ---------- mission ---------- */
 

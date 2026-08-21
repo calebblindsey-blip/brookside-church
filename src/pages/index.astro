@@ -84,6 +84,27 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		</p>
 	</section>
 
+	{/*
+		The gospel invitation, and it is a section of its own rather than a fourth
+		card in the grid below. As a card it would sit as a peer of "Kids on
+		Sunday", which is the wrong weight for the thing the H1 of this page
+		promises. It goes directly after the mission because the mission says why
+		this church is here and this says what that message actually is — until it
+		shipped, the page headline read "Preaching Christ crucified" and the page
+		never once said what that meant.
+	*/}
+	<section class="bay rule gospel" aria-labelledby="gospel-heading">
+		<p class="eyebrow" id="gospel-heading">The message</p>
+		<h2 class="headline gospel__head">Christ crucified, written down.</h2>
+		<p class="prose gospel__body">
+			Everything this church does comes back to one message: that God loves
+			people who have gone their own way, and that Jesus died and rose again so
+			they could come home. If you have never heard it laid out plainly, or you
+			want to read it without anybody watching, it is written out here.
+		</p>
+		<a class="link gospel__link" href="/knowing-christ/">How a person comes to Christ &rarr;</a>
+	</section>
+
 	<section class="bay rule grid" aria-label="Start here">
 		<article>
 			<h3 class="subhead">New here?</h3>
@@ -163,6 +184,12 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 	   claim comes first, the evidence second. */
 	.mission__where { margin: 1.5rem 0 0; max-width: 46ch; }
 
+	/* ---------- gospel ---------- */
+	.gospel { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+	.gospel__head { max-width: 20ch; }
+	.gospel__body { margin: 1rem 0 0; max-width: 56ch; }
+	.gospel__link { display: inline-block; margin-top: clamp(1.25rem, 2.5vw, 1.75rem); }
+
 	.grid {
 		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -205,7 +232,7 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		// on screen by the time it plays: nothing sits at zero opacity waiting for
 		// a trigger that might never fire.
 		gsap.utils.toArray<HTMLElement>(
-			'.latest__lead, .prior, .verse blockquote, .mission__text, .grid > article, .foot > *',
+			'.latest__lead, .prior, .verse blockquote, .mission__text, .gospel__body, .grid > article, .foot > *',
 		).forEach((el) => {
 			gsap.from(el, {
 				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',

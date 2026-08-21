@@ -1,0 +1,173 @@
+---
+/**
+ * What we believe — the church's declaration of faith, in full.
+ *
+ * WHY THIS IS ITS OWN PAGE rather than a section on /about.
+ *
+ * /about already carries a "What we believe" section, and it stays there. That
+ * section is the *denomination describing itself* — Christian, Protestant,
+ * Foundational, Evangelical — and it closes on "We welcome people from all
+ * denominations." This page is the *church stating its position*, which is
+ * specific and boundaried. Both are true and they do opposite rhetorical jobs.
+ * Running the second straight out of the first reads as a bait and switch, so
+ * /about summarises and links here instead.
+ *
+ * It also reclaims an indexed URL. `/what-we-believe` and `/statement-of-faith`
+ * were both live on Squarespace and both previously 301'd to /about; the first
+ * is now this page and the second points at it.
+ *
+ * PROVENANCE. The articles are the church's own published Statement of Faith,
+ * transcribed from the live Squarespace /statement-of-faith page on 2026-08-21.
+ * It is the Church of God (Cleveland, TN) declaration of faith plus the
+ * marriage article. It is reproduced verbatim, including "Holy Ghost" rather
+ * than "Holy Spirit" and "The Lord Supper" without the possessive, because a
+ * doctrinal statement is not ours to copy-edit. If the church wants it
+ * modernised, that is Brad's call and it should change here and on paper
+ * together.
+ *
+ * ARTICLE 16, THE MARRIAGE ARTICLE, was a deliberate decision and not an
+ * inherited one. On Squarespace it sat on a page linked from nowhere, so almost
+ * nobody found it. Publishing it on a linked page is a real change in
+ * prominence, and Caleb decided on 2026-08-21 to carry it across rather than
+ * quietly drop it. Do not remove it as tidying; that is a decision for the
+ * church, not for a build.
+ *
+ * No crossAt. The crossbar is Home's payoff and repeating it spends it — the
+ * same call /about and /watch already make. Scripture on the page does not
+ * change that.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+/*
+ * Sixteen articles, in the church's own order. Kept as data rather than markup
+ * so the numbering cannot drift from the source: the counter is generated, so
+ * inserting an article renumbers the rest automatically and nobody has to
+ * remember to renumber by hand.
+ */
+const articles = [
+	'The Bible is the inspired and only infallible Word of God.',
+	'In one God eternally existing in three persons; namely, the Father, Son, and Holy Ghost.',
+	'That Jesus Christ is the only begotten Son of the Father, conceived of the Holy Ghost, and born of the Virgin Mary.',
+	'That Jesus was crucified, buried, and raised from the dead.',
+	'That He ascended to heaven and is today at the right hand of the Father as the Intercessor.',
+	'That all have sinned and come short of the glory of God and that repentance is commanded of God for all and necessary for forgiveness of sins.',
+	'That justification, regeneration, and the new birth are wrought by faith in the blood of Jesus Christ.',
+	'In sanctification subsequent to the new birth, through faith in the blood of Christ; through the Word, and by the Holy Ghost.',
+	"Holiness to be God's standard of living for His people.",
+	'In the baptism with the Holy Ghost subsequent to a clean heart.',
+	'In water baptism by immersion, and all who repent should be baptized in the name of the Father, and of the Son, and of the Holy Ghost.',
+	"The Lord Supper as a symbolic remembrance of Christ's suffering and death for our salvation.",
+	'Divine healing is provided for all in the atonement.',
+	'In the second coming of Jesus. First, to resurrect the righteous dead and to catch away the living saints to Him in the air.',
+	'In the bodily resurrection; eternal life for the righteous, and eternal punishment for the wicked.',
+	'Marriage is God-ordained. “The creator made them male and female, and said, ‘For this reason a man will leave his father and mother and be united to his wife, and the two will become one flesh’” (Matthew 19:4–5). Marriage is to be an exclusive relationship, a lifelong faithful union between a man and a woman. This relationship between a husband and wife should parallel the relationship between Christ and the Church (Ephesians 5:23–30).',
+];
+---
+
+<SiteLayout
+	title="What we believe"
+	description="The declaration of faith of Brookside Church of God, in full: sixteen articles on Scripture, the Trinity, salvation, sanctification, the Holy Ghost, and the return of Christ."
+>
+	<section class="bay gtop">
+		<p class="eyebrow">What we believe &middot; Brookside Church of God</p>
+		{/*
+			Three lines with one coral phrase, matching every other hero on the
+			site. Declarative, and it does not address the reader — the same rule
+			that sent the first round of /visit headlines back.
+		*/}
+		<h1 class="display" data-split>
+			The faith<br />this church<br /><em>stands on</em>
+		</h1>
+		<div class="gtop__foot">
+			<p class="lede">
+				This is the declaration of faith of the Church of God, which Brookside
+				holds without reservation. It is written plainly and it is not long.
+				If you want the shorter description of who we are first, that is on
+				<a class="link" href="/about/">the about page</a>.
+			</p>
+		</div>
+	</section>
+
+	<section class="bay rule creed" aria-labelledby="faith-heading">
+		<p class="eyebrow" id="faith-heading">The declaration</p>
+		<h2 class="headline creed__head">We believe:</h2>
+		{/*
+			One ordered list rather than the term/body definition list /about uses.
+			These articles have no headings of their own in the church's text, and
+			inventing a term for each one would be writing doctrine rather than
+			publishing it.
+		*/}
+		<ol class="faith">
+			{articles.map((a) => <li class="faith__item">{a}</li>)}
+		</ol>
+	</section>
+
+	<section class="bay rule after" aria-labelledby="after-heading">
+		<p class="eyebrow" id="after-heading">Where this leads</p>
+		<h2 class="headline after__head">
+			A statement of faith is not the same as knowing Christ.
+		</h2>
+		<p class="prose after__body">
+			Everything above is what this church holds to be true. None of it is a
+			substitute for the thing it is all pointing at. If you want to know how a
+			person actually comes to Christ, that is written out plainly on its own
+			page.
+		</p>
+		<div class="actions after__actions">
+			<a class="btn btn--solid" href="/knowing-christ/">Knowing Christ</a>
+			<a class="btn btn--line" href="/visit/">Plan a visit</a>
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	/*
+	 * The list reuses the coral leading-zero counter from /about's `.creed__five`
+	 * rather than inventing a second numbering style, because these two pages are
+	 * read as a pair and a different counter on each would read as an accident.
+	 * It is redeclared instead of shared: site.css holds cross-page primitives,
+	 * and a counter used on exactly two pages is not one yet. If a third page
+	 * needs it, promote it then.
+	 */
+	.faith {
+		margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: article;
+		max-width: 62ch;
+	}
+	.faith__item {
+		counter-increment: article;
+		display: flex;
+		gap: clamp(0.85rem, 2vw, 1.35rem);
+		align-items: baseline;
+		padding: clamp(0.7rem, 1.6vw, 1rem) 0;
+		border-top: 1px solid var(--ash);
+		color: var(--iron);
+		font-size: 1rem;
+		line-height: 1.6;
+		text-wrap: pretty;
+	}
+	.faith__item::before {
+		content: counter(article, decimal-leading-zero);
+		flex: none;
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.06em;
+		color: var(--coral);
+	}
+	/* The last article carries a rule above it like the rest; the section below
+	   opens with its own, so no bottom border here or they double up. */
+
+	.after { padding-block: clamp(3rem, 6vw, 4.5rem); }
+	.after__head { max-width: 26ch; }
+	.after__body { max-width: 54ch; margin-block: 1rem 0; }
+	.after__actions { margin-top: clamp(1.5rem, 3vw, 2rem); }
+
+	@media (max-width: 720px) {
+		/* Number over text rather than beside it: at this width a baseline-aligned
+		   counter plus a 4-word first line leaves the article hanging off a very
+		   narrow column. */
+		.faith__item { flex-direction: column; gap: 0.4rem; }
+	}
+</style>

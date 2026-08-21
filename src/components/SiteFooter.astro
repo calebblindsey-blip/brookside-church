@@ -41,6 +41,37 @@ const year = new Date().getFullYear();
 				<span>Wednesday Classes 6:30 PM</span>
 			</p>
 		</div>
+		{/*
+			Explore, added 2026-08-21. Both pages are reachable from the body of the
+			site as well (the declaration from /about, Knowing Christ from Home and
+			the foot of /watch), but neither is in the main nav and neither should
+			be: that was cut from seven items to five on purpose, and a doctrinal
+			statement is not a top-level destination. The footer is how a reference
+			document stays findable without spending a nav slot.
+
+			`.foot__cols` is `auto-fit, minmax(150px, 1fr)`, so this fifth column
+			reflows on its own and needs no grid change. It lands 4 + 1 at 1440,
+			with Follow alone on the second row.
+
+			DO NOT try to squeeze five onto one row. Measured at 1440: the grid is
+			842px with a 40px gap, and the Gather column's widest nowrap string
+			("Morning Worship 10:45 AM") needs 181px. Five columns in 842px gives
+			136px even at ZERO gap, so it cannot fit, and narrowing the columns
+			re-breaks the exact wrap those nowrap spans were added to fix — the one
+			that left a line reading just "AM". The wrap is forced arithmetic, not
+			an oversight.
+
+			Follow is the deliberate orphan: Gather and Explore are both site
+			content and belong together on the first row, and Follow is external
+			links, so it is the one that loses least by dropping down.
+		*/}
+		<div>
+			<h4>Explore</h4>
+			<p>
+				<a href="/what-we-believe/">What we believe</a><br />
+				<a href="/knowing-christ/">Knowing Christ</a>
+			</p>
+		</div>
 		<div>
 			<h4>Follow</h4>
 			<p>

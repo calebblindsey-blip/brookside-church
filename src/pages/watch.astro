@@ -277,6 +277,34 @@ const spanWord = WORDS[span] ?? String(span);
 	</section>
 
 	{/*
+		The gospel link, and this is the highest-intent position on the whole site:
+		somebody at the bottom of the sermon archive has just listened to
+		preaching. It is deliberately the last thing on the page and deliberately
+		quiet — one line and a link, not a card and not a call-out box. Six years
+		of sermons make the argument; this only has to say where the message is
+		written down.
+	*/}
+	<section class="bay rule appeal" aria-labelledby="appeal-heading">
+		<p class="eyebrow" id="appeal-heading">The message behind all of it</p>
+		<h2 class="headline appeal__head">
+			Every one of these sermons is about the same thing.
+		</h2>
+		{/*
+			No hours figure here. A first draft said "nine hundred hours of
+			preaching", which was invented — 291 sermons is nearer two hundred
+			hours. This echoes the page's own headline instead, which is verified
+			copy. Same discipline that cut "every Sunday" and the per-platform
+			episode counts from this page.
+		*/}
+		<p class="prose appeal__body">
+			Six years of preaching comes back to one subject, and it is not a
+			complicated one. If you would rather read it than listen to it, it is
+			written out plainly.
+		</p>
+		<a class="link appeal__link" href="/knowing-christ/">How a person comes to Christ &rarr;</a>
+	</section>
+
+	{/*
 		The deck. Rendered inert and empty; JS fills it on the first play and it
 		is removed from the a11y tree until then, so nothing here is announced or
 		tab-reachable on a page nobody has asked to play anything on.
@@ -543,6 +571,12 @@ const spanWord = WORDS[span] ?? String(span);
 	/* ---------- subscribe ---------- */
 
 	.subscribe { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
+
+	/* ---------- appeal ---------- */
+	.appeal { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
+	.appeal__head { max-width: 24ch; }
+	.appeal__body { margin: 1rem 0 0; max-width: 54ch; }
+	.appeal__link { display: inline-block; margin-top: clamp(1.25rem, 2.5vw, 1.75rem); }
 	.subscribe__grid {
 		display: grid; gap: 0;
 		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));

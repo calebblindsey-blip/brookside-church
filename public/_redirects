@@ -17,15 +17,19 @@
 #   /home                    Squarespace's duplicate of the home page. 200s today.
 #   /contact-us              Service times, street address, phone, email. That is
 #                            /visit now, and it was built from this page.
-#   /what-we-believe         The Church of God declaration of faith. /about.
-#   /statement-of-faith      The same material, second URL. /about.
+#   /what-we-believe         The Church of God declaration of faith. This URL is
+#                            now a real page again, so it needs NO redirect rule;
+#                            the old address resolves to the new page directly.
+#   /statement-of-faith      The same material, second URL. -> /what-we-believe.
 #   /staff                   "Meet the team" — Brad, Caleb, Daniel and others.
 #                            /about carries the same people under "Who leads".
 #   /knowing-christ          A gospel page: who Jesus is and an invitation to
-#                            respond. Nothing here replaces it one to one; /about
-#                            is the page that states what this church believes,
-#                            so it is the honest destination. If a page like this
-#                            gets written, point this rule at it.
+#                            respond. That page now exists again at the same URL
+#                            (built 2026-08-21), so this needs NO redirect rule
+#                            either. The note that used to sit here said "if a
+#                            page like this gets written, point this rule at it";
+#                            what happened instead is better, because the old
+#                            address is the new page.
 #   /media                   "Browse the sermon archive" plus podcast links. /watch.
 #   /sermon-video            Recorded services, incl. children's church. /watch.
 #   /mobile-app              How to install Church Center. /give is where this
@@ -56,14 +60,13 @@
 /contact-us                          /visit/        301
 /contact-us/*                        /visit/        301
 
-/what-we-believe                     /about/        301
-/what-we-believe/*                   /about/        301
-/statement-of-faith                  /about/        301
-/statement-of-faith/*                /about/        301
+# /what-we-believe is a REAL PAGE now, not a redirect. Do not re-add a rule for
+# it: a redirect here would shadow the page and send its own URL to /about.
+/statement-of-faith                  /what-we-believe/    301
+/statement-of-faith/*                /what-we-believe/    301
 /staff                               /about/        301
 /staff/*                             /about/        301
-/knowing-christ                      /about/        301
-/knowing-christ/*                    /about/        301
+# /knowing-christ is a REAL PAGE now. Same warning as above: no rule.
 
 /media                               /watch/        301
 /media/*                             /watch/        301
