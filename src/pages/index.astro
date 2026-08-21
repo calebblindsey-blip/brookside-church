@@ -45,7 +45,22 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 		<p class="eyebrow" id="this-week">This week</p>
 		<div class="latest__lead">
 			<h2 class="headline">{latest.title}</h2>
-			<p class="latest__by">Brad Lindsey · {longDate(latest.date)}</p>
+			{/*
+				The speaker comes from the feed, never hardcoded — the same rule
+				/watch has carried since the field existed, which was simply never
+				applied here. This line read "Brad Lindsey · {date}" in production
+				until 2026-08-21 and was correct only by luck: 46 of the 247
+				episodes that name anyone are somebody else, about one Sunday in
+				five, most recently Sasha Bragari on 2026-06-29. A fixed name here
+				credits the senior pastor for other people's preaching, on the page
+				most people land on first.
+
+				When the feed names nobody (44 episodes) the date stands alone
+				rather than being filled in with an assumption.
+			*/}
+			<p class="latest__by">
+				{latest.speaker ? `${latest.speaker} · ${longDate(latest.date)}` : longDate(latest.date)}
+			</p>
 			<a class="link" href="/watch/">Listen to this sermon &rarr;</a>
 		</div>
 		<ol class="prior">

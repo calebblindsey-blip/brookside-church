@@ -98,8 +98,9 @@ const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFul
 				<p class="eyebrow">This week</p>
 				<div class="latest__lead">
 					<h2 class="latest__title">{latest.title}</h2>
+					{/* Parsed from the feed, never hardcoded. See index.astro. */}
 					<p class="latest__by">
-						Brad Lindsey · {longDate(latest.date)}
+						{latest.speaker ? `${latest.speaker} · ${longDate(latest.date)}` : longDate(latest.date)}
 					</p>
 					<a class="link" href="#">Listen to this sermon &rarr;</a>
 				</div>

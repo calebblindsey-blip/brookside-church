@@ -81,7 +81,10 @@ const years = [...new Set(weeks.map((w) => w.year))];
 
 				<h1 class="hero__title" data-split>{latest.title}</h1>
 
-				<p class="hero__by">Preached by Brad Lindsey</p>
+				{/* Parsed from the feed, never hardcoded: ~1 Sunday in 5 is a guest.
+				    Dropped entirely when the feed names nobody, because "Preached by"
+				    with no name is worse than no line. */}
+				{latest.speaker && <p class="hero__by">Preached by {latest.speaker}</p>}
 
 				<div class="hero__actions">
 					<a class="btn btn--solid" href="#">Listen now</a>

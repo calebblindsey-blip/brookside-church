@@ -84,7 +84,8 @@ const short = (iso: string) => {
 			<section class="latest">
 				<p class="eyebrow">Preached this week</p>
 				<h2 class="latest__title">{latest.title}</h2>
-				<p class="latest__by">Brad Lindsey · {short(latest.date)}</p>
+				{/* Parsed from the feed, never hardcoded. See index.astro. */}
+				<p class="latest__by">{latest.speaker ? `${latest.speaker} · ${short(latest.date)}` : short(latest.date)}</p>
 				<a class="btn btn--solid" href="#">Listen now</a>
 
 				<ul class="latest__more">
