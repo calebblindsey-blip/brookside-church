@@ -18,6 +18,21 @@ import data from '../../data/sermons.json';
 
 const latest = data.recent[0];
 const next = data.recent.slice(1, 5);
+
+/* Leadership, parity pass 2026-08-21. Duplicated deliberately; see a.astro. */
+const staff = [
+	{ name: 'Brad Lindsey', role: 'Senior Pastor', photo: '/staff-brad-lindsey.webp',
+	  alt: 'Brad Lindsey, Senior Pastor, with his wife Marcie' },
+	{ name: 'Daniel Howard', role: 'Teaching Pastor', photo: '/staff-daniel-howard.webp',
+	  alt: 'Daniel Howard, Teaching Pastor' },
+	{ name: 'Caleb Lindsey', role: 'Worship Pastor', photo: '/staff-caleb-lindsey.webp',
+	  alt: 'Caleb Lindsey, Worship Pastor, with his wife and their two daughters' },
+	{ name: 'Cole Lindsey', role: 'Youth Pastor', photo: '/staff-cole-lindsey.webp',
+	  alt: 'Cole Lindsey, Youth Pastor, with his wife Aubrey' },
+	{ name: 'Corey and Megan Jackson', role: 'Children\u2019s Pastors',
+	  photo: '/staff-corey-megan-jackson.webp',
+	  alt: 'Corey and Megan Jackson, Children\u2019s Pastors' },
+];
 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const short = (iso: string) => {
 	const [, m, d] = iso.split('-');
@@ -97,6 +112,71 @@ const short = (iso: string) => {
 					))}
 				</ul>
 				<a class="link" href="#">All {data.total} sermons &rarr;</a>
+			</section>
+
+			{/*
+				PARITY PASS 2026-08-21. Same assets as production, no new sourcing.
+
+				The treatment is the argument, and C's argument is that type owns
+				the surface. So the building is NOT a framed plate here the way it
+				is in A — it is full-bleed and pushed down hard until it reads as a
+				dark ground, with the church's own words set on top of it. The photo
+				is the surface; scripture is still the subject.
+
+				Kept legible on purpose rather than by luck: the image is darkened
+				at the filter AND carries a gradient scrim, because a filter alone
+				fails wherever the sky is brightest, which is exactly where the top
+				line of type sits.
+			*/}
+			<section class="ground" aria-labelledby="ground-h">
+				<img
+					class="ground__img"
+					src="/building.webp"
+					width="1600"
+					height="900"
+					alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses."
+					loading="lazy"
+					decoding="async"
+				/>
+				<div class="ground__scrim" aria-hidden="true"></div>
+				<div class="ground__type">
+					<p class="eyebrow">200 Cardiff Street</p>
+					<h2 id="ground-h" class="ground__head">
+						Preaching <em>Christ</em><br />crucified
+					</h2>
+					<p class="ground__note">
+						Red brick, white gable, two crosses. Come in the front doors.
+					</p>
+				</div>
+			</section>
+
+			<section class="faces" aria-labelledby="faces-h">
+				<p class="eyebrow">Who preaches</p>
+				<h2 id="faces-h" class="faces__head">Five, and one Sunday in five somebody else</h2>
+				{/*
+					Tall narrow crops rather than the 4:5 the live site uses. C is a
+					condensed-gothic page and its whole instrument is verticality, so
+					the portraits are cut to match the type instead of fighting it.
+					Hard greyscale for the same reason A desaturates: five sources,
+					five days, five photographers, one set.
+				*/}
+				<ol class="faces__list">
+					{staff.map((m) => (
+						<li class="faces__item">
+							<img
+								class="faces__img"
+								src={m.photo}
+								width="480"
+								height="600"
+								alt={m.alt}
+								loading="lazy"
+								decoding="async"
+							/>
+							<span class="faces__role">{m.role}</span>
+							<span class="faces__name">{m.name}</span>
+						</li>
+					))}
+				</ol>
 			</section>
 		</main>
 
@@ -226,6 +306,94 @@ const short = (iso: string) => {
 			.latest {
 				padding: clamp(4rem, 10vw, 8rem) clamp(1rem, 4vw, 3rem);
 				max-width: 1180px; margin: 0 auto;
+			}
+
+			/* ---------- ground (parity pass) ---------- */
+			.ground {
+				position: relative;
+				/* Full-bleed out of the 1180px column: this is the one element on
+				   the page that should touch both edges. */
+				width: 100vw; margin-left: 50%; transform: translateX(-50%);
+				min-height: clamp(24rem, 62vh, 40rem);
+				display: grid; align-items: end;
+				overflow: hidden;
+			}
+			.ground__img {
+				position: absolute; inset: 0;
+				width: 100%; height: 100%; object-fit: cover;
+				/* Pushed well down. On true black a daylight photograph at full
+				   brightness stops being a ground and becomes a window. */
+				filter: grayscale(1) brightness(0.42) contrast(1.15);
+			}
+			.ground__scrim {
+				position: absolute; inset: 0;
+				background: linear-gradient(
+					to top,
+					var(--ink) 0%,
+					color-mix(in srgb, var(--ink) 72%, transparent) 38%,
+					color-mix(in srgb, var(--ink) 30%, transparent) 100%
+				);
+			}
+			.ground__type {
+				position: relative;
+				padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+				max-width: 1180px; margin: 0 auto; width: 100%;
+			}
+			.ground__head {
+				margin: 0.4rem 0 0;
+				font-family: var(--display);
+				font-variation-settings: 'wght' 800;
+				font-size: clamp(3rem, 11vw, 8rem);
+				line-height: 0.86; letter-spacing: -0.01em;
+				text-transform: uppercase; color: var(--bone);
+			}
+			.ground__head em { font-style: normal; color: var(--coral); }
+			.ground__note {
+				margin: 1.1rem 0 0; max-width: 34ch;
+				font-size: 0.95rem; color: #b4b4b4;
+			}
+
+			/* ---------- faces (parity pass) ---------- */
+			.faces {
+				max-width: 1180px; margin: 0 auto;
+				padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 3rem);
+			}
+			.faces__head {
+				margin: 0.4rem 0 clamp(1.5rem, 3vw, 2.25rem);
+				font-family: var(--display); font-variation-settings: 'wght' 700;
+				font-size: clamp(1.8rem, 5vw, 3.4rem); line-height: 0.92;
+				text-transform: uppercase; letter-spacing: -0.01em; color: var(--bone);
+				max-width: 20ch;
+			}
+			.faces__list {
+				list-style: none; margin: 0; padding: 0;
+				display: grid; gap: clamp(0.6rem, 1.4vw, 1rem);
+				grid-template-columns: repeat(5, 1fr);
+			}
+			.faces__item { display: grid; gap: 0.45rem; }
+			.faces__img {
+				/* height: auto is load-bearing here; see a.astro's .who__img note. */
+				display: block; width: 100%; height: auto;
+				/* 2:3 rather than the live site's 4:5 — taller, to sit with condensed
+				   gothic type. */
+				aspect-ratio: 2 / 3; object-fit: cover; object-position: center top;
+				filter: grayscale(1) brightness(0.9) contrast(1.12);
+			}
+			.faces__role {
+				font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em;
+				text-transform: uppercase; color: #7a7a7a;
+			}
+			.faces__name {
+				font-family: var(--display); font-variation-settings: 'wght' 600;
+				font-size: clamp(0.95rem, 1.5vw, 1.25rem); line-height: 1.05;
+				text-transform: uppercase; color: var(--bone);
+			}
+
+			@media (max-width: 900px) {
+				.faces__list { grid-template-columns: repeat(3, 1fr); }
+			}
+			@media (max-width: 560px) {
+				.faces__list { grid-template-columns: repeat(2, 1fr); }
 			}
 			.eyebrow {
 				margin: 0 0 1rem; font-family: var(--mono); font-size: 0.68rem;

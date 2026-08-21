@@ -47,6 +47,27 @@ for (let d = new Date(first); d <= last; d.setUTCDate(d.getUTCDate() + 7)) {
 	weeks.push({ key, year: d.getUTCFullYear(), on: preached.has(key) });
 }
 const years = [...new Set(weeks.map((w) => w.year))];
+
+/*
+ * Leadership, for the parity pass on 2026-08-21. Duplicated from about.astro
+ * rather than shared: this is a prototype and giving it a real import would tie
+ * the design round to the live site's data shape, which is exactly the coupling
+ * that made these pages awkward to revisit in the first place. If a direction
+ * ever wins, it inherits about.astro's array and this goes.
+ */
+const staff = [
+	{ name: 'Brad Lindsey', role: 'Senior Pastor', photo: '/staff-brad-lindsey.webp',
+	  alt: 'Brad Lindsey, Senior Pastor, with his wife Marcie' },
+	{ name: 'Daniel Howard', role: 'Teaching Pastor', photo: '/staff-daniel-howard.webp',
+	  alt: 'Daniel Howard, Teaching Pastor' },
+	{ name: 'Caleb Lindsey', role: 'Worship Pastor', photo: '/staff-caleb-lindsey.webp',
+	  alt: 'Caleb Lindsey, Worship Pastor, with his wife and their two daughters' },
+	{ name: 'Cole Lindsey', role: 'Youth Pastor', photo: '/staff-cole-lindsey.webp',
+	  alt: 'Cole Lindsey, Youth Pastor, with his wife Aubrey' },
+	{ name: 'Corey and Megan Jackson', role: 'Children\u2019s Pastors',
+	  photo: '/staff-corey-megan-jackson.webp',
+	  alt: 'Corey and Megan Jackson, Children\u2019s Pastors' },
+];
 ---
 
 <!doctype html>
@@ -152,6 +173,67 @@ const years = [...new Set(weeks.map((w) => w.year))];
 				</ol>
 
 				<a class="board__all" href="#">See all {data.total} sermons</a>
+			</section>
+
+			{/*
+				PARITY PASS 2026-08-21. This page had no imagery at all, which made
+				it impossible to judge against a live site that now carries the
+				building and five portraits. Same assets as production, no new
+				sourcing.
+
+				The treatment is the argument. "The Record" is documentary, so the
+				building arrives as a catalogued plate: numbered, captioned in mono,
+				stated rather than staged. Everything is greyscale because on a
+				near-black page a bright daylight photograph glares, and because a
+				record does not tint its evidence. One filter line to revert.
+			*/}
+			<section class="plate" aria-labelledby="plate-h">
+				<div class="plate__head">
+					<h2 id="plate-h">The building</h2>
+					<p>Red brick, white gable, two crosses. It has not moved since 1948.</p>
+				</div>
+				<figure class="plate__fig">
+					<img
+						src="/building.webp"
+						width="1600"
+						height="900"
+						alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses."
+						loading="lazy"
+						decoding="async"
+					/>
+					<figcaption>
+						<span class="plate__no">PLATE 01</span>
+						<span>200 CARDIFF STREET &middot; BROOKSIDE, ALABAMA</span>
+						<span class="plate__note">SHOT FROM THE ROAD, AS A VISITOR SEES IT</span>
+					</figcaption>
+				</figure>
+			</section>
+
+			<section class="who" aria-labelledby="who-h">
+				<div class="board__head">
+					<h2 id="who-h">Who preaches</h2>
+					<p>
+						Five, and one Sunday in five is somebody else again.
+					</p>
+				</div>
+				<ol class="who__list">
+					{staff.map((m, i) => (
+						<li class="who__item">
+							<span class="who__no">{String(i + 1).padStart(2, '0')}</span>
+							<img
+								class="who__img"
+								src={m.photo}
+								width="480"
+								height="600"
+								alt={m.alt}
+								loading="lazy"
+								decoding="async"
+							/>
+							<span class="who__role">{m.role}</span>
+							<span class="who__name">{m.name}</span>
+						</li>
+					))}
+				</ol>
 			</section>
 		</main>
 
@@ -299,6 +381,80 @@ const years = [...new Set(weeks.map((w) => w.year))];
 				font-variation-settings: 'wght' 700; letter-spacing: -0.03em; color: var(--bone);
 			}
 			.board__head p { margin: 0; color: #8a8a8a; font-size: 0.95rem; max-width: 34ch; }
+
+			/* ---------- plate (parity pass) ---------- */
+			.plate, .who {
+				max-width: 1240px; margin: 0 auto;
+				padding: clamp(3rem, 7vw, 5.5rem) clamp(1rem, 4vw, 3rem) 0;
+			}
+			.plate__head, .who .board__head { margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+			.plate__head h2 {
+				margin: 0 0 0.5rem; font-variation-settings: 'wght' 700;
+				font-size: clamp(1.6rem, 3.4vw, 2.4rem); letter-spacing: -0.03em;
+				color: var(--bone);
+			}
+			.plate__head p { margin: 0; color: #8a8a8a; font-size: 0.95rem; max-width: 40ch; }
+			.plate__fig { margin: 0; border: 1px solid #1f1f1f; }
+			.plate__fig img {
+				display: block; width: 100%; height: auto;
+				/* Greyscale and pulled down so it sits IN the near-black rather than
+				   punching a daylight hole through it. Revert this one line to see
+				   the photo in colour. */
+				filter: grayscale(1) brightness(0.82) contrast(1.06);
+			}
+			.plate__fig figcaption {
+				display: flex; flex-wrap: wrap; gap: 0.4rem clamp(0.9rem, 2vw, 1.75rem);
+				padding: 0.75rem clamp(0.75rem, 2vw, 1.1rem);
+				border-top: 1px solid #1f1f1f;
+				font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em;
+				color: #7a7a7a;
+			}
+			.plate__no { color: var(--coral); }
+			.plate__note { color: #4f4f4f; }
+
+			/* ---------- who (parity pass) ---------- */
+			.who { padding-bottom: clamp(3rem, 7vw, 5.5rem); }
+			.who__list {
+				list-style: none; margin: 0; padding: 0;
+				display: grid; gap: clamp(0.75rem, 1.6vw, 1.15rem);
+				grid-template-columns: repeat(5, 1fr);
+			}
+			.who__item { display: grid; gap: 0.5rem; }
+			.who__no {
+				font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em;
+				color: var(--coral);
+			}
+			.who__img {
+				/* `height: auto` is load-bearing, not tidiness. These prototype pages
+				   carry no img reset (the live SiteLayout does), so the height="600"
+				   attribute applies as a used height, aspect-ratio is ignored because
+				   both dimensions are then set, and every portrait rendered 214x600
+				   with object-fit slicing the faces off. */
+				display: block; width: 100%; height: auto;
+				aspect-ratio: 4 / 5; object-fit: cover;
+				border: 1px solid #1f1f1f;
+				/* Same reason the live site desaturates: five sources shot by five
+				   people on five days read as one set only if none of them is in
+				   colour. Here it also keeps skin tones from competing with coral. */
+				filter: grayscale(1) brightness(0.86) contrast(1.04);
+			}
+			.who__role {
+				font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em;
+				text-transform: uppercase; color: #7a7a7a;
+			}
+			.who__name {
+				font-variation-settings: 'wght' 600; font-size: 0.95rem;
+				letter-spacing: -0.01em; color: var(--bone); line-height: 1.25;
+			}
+
+			@media (max-width: 900px) {
+				/* Three across, then the last two centre themselves rather than
+				   stranding a single card on its own row. */
+				.who__list { grid-template-columns: repeat(3, 1fr); }
+			}
+			@media (max-width: 560px) {
+				.who__list { grid-template-columns: repeat(2, 1fr); }
+			}
 			.board__head strong { color: var(--coral); font-variation-settings: 'wght' 600; }
 
 			.board__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid #1a1a1a; }
