@@ -1,4 +1,5 @@
 ---
+import { CHURCH } from '../data/church';
 /**
  * Visit: the page for the one person on this site who has not decided yet.
  *
@@ -88,11 +89,11 @@ const days = [
 	},
 ];
 
-const ADDRESS = '200 Cardiff Street, Brookside, AL 35036';
+const ADDRESS = CHURCH.addressLine;
 const GOOGLE = `https://maps.google.com/?q=${encodeURIComponent(ADDRESS)}`;
 const APPLE = `https://maps.apple.com/?q=${encodeURIComponent(ADDRESS)}`;
-const PHONE = '(205) 675-0703';
-const EMAIL = 'info@brooksidecog.com';
+const PHONE = CHURCH.phone;
+const EMAIL = CHURCH.email;
 ---
 
 <SiteLayout
@@ -199,9 +200,9 @@ const EMAIL = 'info@brooksidecog.com';
 					reasons outside this site. Two links cannot.
 				*/}
 				<address class="where__addr">
-					Brookside Church of God<br />
-					200 Cardiff Street<br />
-					Brookside, Alabama 35036
+					{CHURCH.name}<br />
+					{CHURCH.street}<br />
+					{CHURCH.locality}, Alabama {CHURCH.postalCode}
 				</address>
 				<div class="actions where__actions">
 					<a class="btn btn--solid" href={GOOGLE} target="_blank" rel="noopener">Google Maps</a>
@@ -263,7 +264,7 @@ const EMAIL = 'info@brooksidecog.com';
 		<dl class="reach">
 			<div>
 				<dt>Call</dt>
-				<dd><a class="link" href="tel:+12056750703">{PHONE}</a></dd>
+				<dd><a class="link" href={CHURCH.phoneHref}>{PHONE}</a></dd>
 			</div>
 			<div>
 				<dt>Email</dt>

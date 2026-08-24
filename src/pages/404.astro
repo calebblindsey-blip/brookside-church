@@ -1,4 +1,5 @@
 ---
+import { CHURCH } from '../data/church';
 /**
  * 404.
  *
@@ -81,7 +82,7 @@ const doors = [
 		</ul>
 		<div class="actions doors__actions">
 			<a class="btn btn--solid" href="/">Back to the home page</a>
-			<a class="btn btn--line" href="tel:+12056750703">Call the church</a>
+			<a class="btn btn--line" href={CHURCH.phoneHref}>Call the church</a>
 		</div>
 	</section>
 </SiteLayout>

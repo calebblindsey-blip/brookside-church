@@ -1,0 +1,64 @@
+---
+/**
+ * The church as a machine-readable entity. Rendered on every page.
+ *
+ * WHY IT MATTERS HERE MORE THAN USUAL. Real organic search on this site runs at
+ * roughly twenty sessions a month, and 28.7% of real traffic is Birmingham
+ * metro. Almost nobody arrives by researching; they arrive looking for a church
+ * near them. That is a local-entity question, and until now Google had to infer
+ * the address, the phone number and the service times from prose. Every fact
+ * below was already on the page in English; this states it in the form the
+ * answer boxes actually read.
+ *
+ * WHAT IS DELIBERATELY NOT HERE.
+ *
+ * No FAQPage. The list on /visit reads Nursery, Kids Church, Corporate Sunday,
+ * Sunday School: those are topic labels, not questions, and marking them as
+ * questions would misrepresent the page. Google also retired FAQ rich results in
+ * August 2023 for everything except authoritative government and health sites,
+ * so even a real FAQ would earn nothing.
+ *
+ * No geo, no foundingDate. Neither is confirmed. See src/data/church.ts.
+ *
+ * No Wednesday in openingHoursSpecification. Its start is confirmed and its end
+ * is not, and a specification needs both.
+ *
+ * A single @id so any page can be the entry point and every page describes the
+ * same entity rather than seven similar ones.
+ */
+import { CHURCH } from '../data/church';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Church',
+	'@id': `${CHURCH.url}/#church`,
+	name: CHURCH.name,
+	url: CHURCH.url,
+	telephone: CHURCH.phoneE164,
+	email: CHURCH.email,
+	image: `${CHURCH.url}/og-brookside.jpg`,
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: CHURCH.street,
+		addressLocality: CHURCH.locality,
+		addressRegion: CHURCH.region,
+		postalCode: CHURCH.postalCode,
+		addressCountry: CHURCH.country,
+	},
+	openingHoursSpecification: CHURCH.openingHours.map((h) => ({
+		'@type': 'OpeningHoursSpecification',
+		dayOfWeek: h.days.map((d) => `https://schema.org/${d}`),
+		opens: h.opens,
+		closes: h.closes,
+	})),
+	hasMap: CHURCH.mapsUrl,
+	sameAs: [...CHURCH.profiles],
+};
+---
+
+{/*
+	set:html rather than interpolation. Astro escapes interpolated text, which
+	turns the JSON's quotes into &quot; and produces a script block that looks
+	right in the page source and fails every parser silently.
+*/}
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

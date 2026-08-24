@@ -1,4 +1,5 @@
 ---
+import { CHURCH } from '../data/church';
 /**
  * Knowing Christ.
  *
@@ -143,7 +144,7 @@ const steps = [
 		</p>
 		<div class="actions next__actions">
 			<a class="btn btn--solid" href="/visit/">Plan a visit</a>
-			<a class="btn btn--line" href="mailto:info@brooksidecog.com">Email the church</a>
+			<a class="btn btn--line" href={CHURCH.emailHref}>Email the church</a>
 		</div>
 	</section>
 </SiteLayout>
