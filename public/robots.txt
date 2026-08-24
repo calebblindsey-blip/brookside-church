@@ -5,6 +5,9 @@ Allow: /
 # the signal that actually matters — robots.txt asks a crawler not to fetch a
 # page, a sitemap invites it to index one.
 Disallow: /design-system
+# /directions/{a,b,c} were deleted from source 2026-08-24 once the design round
+# closed. This rule is retained deliberately: production still serves them until
+# the next deploy, and a rule guarding a path that 404s costs nothing.
 Disallow: /directions
 
 Sitemap: https://brooksidechurchofgod.com/sitemap-index.xml

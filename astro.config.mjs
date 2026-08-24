@@ -15,6 +15,8 @@ import mdx from '@astrojs/mdx';
  * Filtered rather than deleted, because whether those pages get deleted is a
  * separate decision (they are the last consumers of the legacy layout).
  */
+// '/directions' is kept here after the pages were deleted 2026-08-24: harmless
+// against a path that no longer builds, and correct again if one is ever restored.
 const PRIVATE = ['/design-system', '/directions'];
 
 export default defineConfig({
