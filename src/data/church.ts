@@ -22,9 +22,10 @@
  *                 be derived from the address, but a derived coordinate that is
  *                 wrong puts the church on the wrong pin, and no one would
  *                 notice. Add when someone confirms them.
- *   Wednesday end The Wednesday gathering has a confirmed 6:30 PM start and no
- *                 confirmed end, so it cannot appear in openingHours below.
- *                 One sentence from anyone who attends unlocks it.
+ *
+ * (The Wednesday end time was the third of these until 2026-08-24, when Caleb
+ * Lindsey confirmed 7:30 PM. He is Worship Pastor, so that is first-party staff
+ * confirmation rather than hearsay, and it is recorded in church-facts.md.)
  */
 
 export const CHURCH = {
@@ -65,12 +66,16 @@ export const CHURCH = {
 	],
 
 	/**
-	 * Only the Sunday span appears here, and only because both ends are sourced:
-	 * 9:45 AM start, around 12:15 PM finish. Wednesday has a confirmed start and
-	 * no confirmed end, and inventing one to make the markup look complete is
-	 * precisely the failure mode church-facts.md exists to prevent.
+	 * Both spans have both ends sourced, which is the bar for appearing here.
+	 * Sunday 9:45 AM to around 12:15 PM; Wednesday 6:30 to 7:30 PM (the end time
+	 * confirmed by Caleb Lindsey, Worship Pastor, 2026-08-24). Inventing an end
+	 * time to make the markup look complete is the failure mode church-facts.md
+	 * exists to prevent, so a gathering with an unconfirmed end stays out.
 	 */
-	openingHours: [{ days: ['Sunday'], opens: '09:45', closes: '12:15' }],
+	openingHours: [
+		{ days: ['Sunday'], opens: '09:45', closes: '12:15' },
+		{ days: ['Wednesday'], opens: '18:30', closes: '19:30' },
+	],
 
 	profiles: [
 		'https://facebook.com/BrooksideChurchofGod',
