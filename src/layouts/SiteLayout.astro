@@ -18,6 +18,16 @@
 import '@fontsource-variable/bricolage-grotesque';
 import '@fontsource-variable/public-sans';
 import '@fontsource/jetbrains-mono/400.css';
+/*
+ * The two latin faces, imported again as URLs so they can be preloaded.
+ *
+ * The CSS above is what declares them; this is only how their hashed build
+ * filenames become knowable at author time. Vite rewrites both to the same
+ * emitted asset, so the preload and the @font-face point at one file and the
+ * browser fetches it once.
+ */
+import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import publicSansLatin from '@fontsource-variable/public-sans/files/public-sans-latin-wght-normal.woff2?url';
 import '../styles/site.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -88,6 +98,28 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		{/*
+			Font preloads, first in the head and before anything else can compete.
+
+			WHAT THIS FIXES, measured rather than assumed. On an emulated Pixel 5 at
+			4x CPU throttle and slow 4G, /what-we-believe scored CLS 0.143 against a
+			0.1 budget. Blocking every .woff2 request dropped it to 0.0015, which is
+			what identified the cause: the fonts are declared inside bundled CSS, so
+			the browser cannot discover them until that CSS parses, and the page has
+			already painted in system-ui by then. Sixteen articles of text then
+			reflow when the real faces arrive.
+
+			Only the two latin subsets are preloaded. Preloading latin-ext and
+			vietnamese as well would spend bandwidth on files this congregation will
+			not use, and a preload the browser does not consume within a few seconds
+			is a console warning and wasted transfer.
+
+			crossorigin is required even though these are same-origin: fonts are
+			fetched in CORS mode, and without it the preload is ignored and the file
+			is fetched a second time.
+		*/}
+		<link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={publicSansLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="generator" content={Astro.generator} />
 		{/*
 			Two things here are load-bearing and both fail SILENTLY if changed.
