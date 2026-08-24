@@ -3,7 +3,11 @@
  * The Direction B layout. New pages use this.
  *
  * `BaseLayout.astro` is the legacy Reverent & Modern shell and still carries
- * /visit and /design-system until those are migrated. The two do not share
+ * /design-system until that is migrated. (/visit moved here and this comment
+ * had not caught up. It matters more than a stale comment usually does: the
+ * analytics tag below lives in this file, so anything still on BaseLayout is
+ * silently unmeasured, and the wrong list here is how that goes unnoticed.)
+ * The two do not share
  * tokens, components, or CSS, so they can coexist without bleeding into each
  * other. Delete BaseLayout once the last page is off it.
  *
@@ -45,6 +49,35 @@ const fullTitle =
  * wrong for right now: previews will not resolve until the DNS cutover lands.
  * Do not "fix" it by hardcoding pages.dev, which would break at cutover.
  */
+/*
+ * Analytics. The SAME GA4 property the Squarespace site has used since December
+ * 2022, deliberately, and this is the whole point of it.
+ *
+ * WHY NOT A NEW PROPERTY. A new one starts the trend series over on the day
+ * DNS moves, which is the exact day 292 indexed podcast URLs collapse into
+ * /watch/. A successful consolidation and a traffic collapse both look like
+ * "the numbers went down", and with a fresh property there is no way to tell
+ * them apart. Reusing the ID is what makes the migration falsifiable.
+ *
+ * WHY NOT CLOUDFLARE WEB ANALYTICS, which design.md picked. That decision was
+ * made in April without accounting for GA4 already running on the live site, so
+ * it reads as a privacy choice but would in practice have been a continuity
+ * loss with no privacy gain. Superseded 2026-08-24; the reasoning is recorded
+ * in design.md rather than only here.
+ *
+ * WHY NOT COOKIELESS MODE. gtag with client_storage:'none' looks like it
+ * threads the needle. It does not: with no persisted client id, sessions cannot
+ * be stitched and session counts inflate, which breaks the one comparison this
+ * tag exists to support.
+ *
+ * THIS FIRES ON THE PAGES.DEV PREVIEW TOO, on purpose. The tag has to be
+ * verified working before the cutover, not after, and preview volume is
+ * trivial. Segment it out at analysis time with the hostName dimension rather
+ * than with a GA4 data filter, which is not retroactive and silently drops real
+ * traffic when it is drawn too wide.
+ */
+const GA_MEASUREMENT_ID = 'G-1FL38RQRQL';
+
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 ---
@@ -55,6 +88,28 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
+		{/*
+			Two things here are load-bearing and both fail SILENTLY if changed.
+
+			`is:inline` stops Astro bundling these into a module. A bundled gtag
+			renders fine, errors nothing, and sends no hit at all.
+
+			`window.gtag = ...` rather than Google's own `function gtag()`.
+			`define:vars` wraps the script in an IIFE to scope the injected
+			constant, which puts a bare function declaration inside the closure
+			instead of on window. The config call below still works, so page
+			views arrive and everything looks correct, but every later
+			`gtag('event', ...)` from any other script hits an undefined global
+			and does nothing. That is the key-event tracking this site still has
+			to add, so the assignment is explicit.
+		*/}
+		<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+		<script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+			window.dataLayer = window.dataLayer || [];
+			window.gtag = function gtag() { window.dataLayer.push(arguments); };
+			window.gtag('js', new Date());
+			window.gtag('config', GA_MEASUREMENT_ID);
+		</script>
 		{/*
 			Three icons, not one. The SVG is what modern browsers take. The .ico is
 			what everything else asks for by name whether it is declared or not, so
