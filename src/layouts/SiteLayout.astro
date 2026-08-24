@@ -111,6 +111,44 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			window.gtag('config', GA_MEASUREMENT_ID);
 		</script>
 		{/*
+			Contact intent, measured.
+
+			The old Squarespace /contact-us page took 607 sessions and shipped no
+			working <form> at all, and nobody noticed for years, because nothing
+			on it was ever instrumented. There was no number to look at. That is
+			the actual failure worth not repeating: not the missing form, the
+			missing measurement.
+
+			ONE DELEGATED LISTENER RATHER THAN PER-LINK MARKUP. These links live
+			in the footer and on /visit today and will land on other pages later.
+			Annotating each one means the next person to add a phone number
+			silently adds an unmeasured one, which is how the original hole
+			opened. Listening on document catches every link that ever exists,
+			including ones rendered after this runs.
+
+			Attached in <head> deliberately: the listener is on document, not on
+			the anchors, so it does not care whether the DOM has been parsed yet.
+		*/}
+		<script is:inline>
+			document.addEventListener('click', function (e) {
+				var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+				if (!a) return;
+				var href = a.getAttribute('href') || '';
+				var name = null;
+				if (href.indexOf('tel:') === 0) name = 'phone_click';
+				else if (href.indexOf('mailto:') === 0) name = 'email_click';
+				else if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl/.test(href)) name = 'directions_click';
+				if (!name) return;
+				/* Optional-call: if the tag is blocked by an extension, a dead
+				   gtag must not take the click's default behaviour down with it.
+				   Calling the phone still has to work when analytics does not. */
+				if (window.gtag) window.gtag('event', name, {
+					link_url: href,
+					page_path: window.location.pathname,
+				});
+			});
+		</script>
+		{/*
 			Three icons, not one. The SVG is what modern browsers take. The .ico is
 			what everything else asks for by name whether it is declared or not, so
 			a missing one is a 404 and a blank tab rather than a graceful fallback.

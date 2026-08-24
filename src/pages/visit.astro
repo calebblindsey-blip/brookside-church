@@ -402,6 +402,14 @@ const EMAIL = 'info@brooksidecog.com';
 		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
 		text-transform: uppercase; color: var(--iron); margin-bottom: 0.4rem;
 	}
+	/* The phone and email are the whole point of this section and 69.5% of real
+	   traffic is on a phone, where a text link's hit area is its glyphs. Padding
+	   the anchor to a comfortable target costs nothing visually (the border-bottom
+	   still hugs the text) and stops a mis-tap from being the reason nobody
+	   called. Applied at every width; there is no case for a mean target on
+	   desktop either. */
+	.reach dd a { display: inline-block; padding: 0.35rem 0; }
+
 	.reach dd {
 		margin: 0 0 1rem; font-family: var(--display);
 		font-size: clamp(1.05rem, 2vw, 1.25rem);
