@@ -167,10 +167,44 @@ main, .foot { position: relative; z-index: 1; }
 /* ---------- controls ---------- */
 
 .link {
+	position: relative;
 	font-weight: 600; color: var(--coral);
 	border-bottom: 1.5px solid transparent; transition: border-color 0.2s;
 }
 .link:hover { border-color: var(--coral); }
+
+/*
+	The tap target, taken to 44px without moving one visible pixel.
+
+	These are the site's standalone actions: call, email, the two app store links
+	on /give, the declaration link on /about. Measured on a phone they ran 20px to
+	33px tall. 20px is under the 24px floor in WCAG 2.5.8, and all of them are well
+	under Apple's 44px, on a set of links that includes the single most valuable
+	tap on the site (the phone number, on a device that can dial).
+
+	Padding is the obvious fix and it is the wrong one here: it would push the
+	border-bottom rule away from the text it underlines, and reflow every block
+	that holds one. So the hit area is a transparent overlay centred on the text
+	instead. Baseline, rule and layout all stay exactly where they were, and only
+	the thing your thumb lands on changes.
+*/
+.link::after {
+	content: ''; position: absolute; left: 0; right: 0;
+	top: 50%; height: 44px; transform: translateY(-50%);
+}
+
+/*
+	The exception, and the reason this is opt-OUT rather than opt-in: nine of the
+	ten .link uses are standalone actions and want the bigger target, so the
+	default serves the majority and the one oddity is named.
+
+	A link set inside a SENTENCE cannot have a 44px box. It would stand over the
+	lines above and below it and swallow taps meant for the prose around it. WCAG
+	2.5.8 exempts inline links for precisely this reason, so this is the standard
+	drawing the exception, not us opting out of it.
+*/
+.link--inline { position: static; }
+.link--inline::after { content: none; }
 
 .actions { display: flex; flex-wrap: wrap; gap: 0.85rem; }
 .btn {
@@ -204,7 +238,9 @@ main, .foot { position: relative; z-index: 1; }
 .prior { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ash); }
 .prior a {
 	display: flex; gap: 1.1rem; align-items: baseline;
-	padding: 0.7rem 0; border-bottom: 1px solid var(--ash);
+	/* 0.7rem left the row at 40px. Rows are the one control on the home page and
+	   44px is the target they were sitting just under. */
+	padding: 0.85rem 0; border-bottom: 1px solid var(--ash);
 }
 .prior a:hover .prior__title { color: var(--coral); }
 .prior__date {
@@ -213,6 +249,26 @@ main, .foot { position: relative; z-index: 1; }
 	color: var(--iron);
 }
 .prior__title { font-size: 0.95rem; transition: color 0.18s; text-wrap: balance; }
+
+/*
+	This list had NO phone rule at all, which is the actual defect: it carried the
+	desktop 3.6rem date column and 1.1rem gap all the way down to 360px. The
+	archive list on /watch has had a phone override this whole time (3.4rem and
+	0.8rem), so the site's two sermon lists disagreed about mobile and this was the
+	one nobody tuned.
+
+	What that cost, measured on a Pixel 5: "Benefits of Being Holy Spirit Filled"
+	cleared the container's right edge by 5px. The titles come off the sermon feed,
+	so that number is not stable and nothing guarantees the next one is shorter.
+
+	Matching /watch buys the title column 8px. The real safety net is that the
+	title is free to wrap and `text-wrap: balance` makes two lines look deliberate,
+	but 5px was too close to the edge to be leaning on it.
+*/
+@media (max-width: 720px) {
+	.prior a { gap: 0.8rem; }
+	.prior__date { width: 3.4rem; }
+}
 
 /* ---------- chrome ---------- */
 

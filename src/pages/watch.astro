@@ -464,8 +464,20 @@ const spanWord = WORDS[span] ?? String(span);
 	.seek__count [data-shown] { color: var(--coral); }
 
 	.seek__years { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.25rem; }
+	/*
+		44px, because filtering is not a convenience on this page. The archive is
+		291 sermons and roughly 21 phone screens tall, so search and these chips
+		are the only realistic way through it, and they were the smallest controls
+		on the site at 30px.
+
+		inline-flex rather than more vertical padding: the pill keeps its shape and
+		its text stays optically centred, and the width floor stops "All" from
+		rendering as a stub next to the four-digit years.
+	*/
 	.chip {
-		padding: 0.4rem 0.85rem; border: 1px solid var(--ash); border-radius: 999px;
+		display: inline-flex; align-items: center; justify-content: center;
+		min-height: 44px; min-width: 44px;
+		padding: 0.4rem 0.95rem; border: 1px solid var(--ash); border-radius: 999px;
 		background: none; color: var(--iron); cursor: pointer;
 		font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
 		font-variant-numeric: tabular-nums;
@@ -514,10 +526,17 @@ const spanWord = WORDS[span] ?? String(span);
 		for "291 sermons" to be navigable, and the whole width has to be the hit
 		target because a 0.98rem title is a poor thing to ask anyone to hit.
 	*/
+	/*
+		padding 0.62rem left the row at 41px, three short of the 44px target.
+		Closing it costs real page height here (291 rows), and that is a trade
+		taken deliberately: the archive is long either way and search and the year
+		chips are what make it navigable, so a row you can reliably hit is worth
+		more than a marginally shorter wall.
+	*/
 	.row__hit {
 		display: grid; grid-template-columns: 3.9rem minmax(0, 1fr) auto;
 		gap: 1.1rem; align-items: baseline;
-		width: 100%; margin: 0; padding: 0.62rem 0;
+		width: 100%; margin: 0; padding: 0.75rem 0;
 		background: none; border: 0; border-radius: 0;
 		color: inherit; font: inherit; text-align: left; cursor: pointer;
 	}
@@ -667,9 +686,24 @@ const spanWord = WORDS[span] ?? String(span);
 		same instrument, a horizontal you act on. --p is written by the script as
 		a unitless 0 to 1.
 	*/
+	/*
+		The hit area is 44px. The control still LOOKS 14px, and the deck is still
+		the same height, because the extra 30px is taken back as negative margin.
+
+		Why this one gets the fuss: it is the control this entire page exists to
+		provide. A 45 minute sermon that cannot be scrubbed is a 45 minute sermon
+		you have to sit through from the start, and on a phone the old geometry
+		asked a thumb to land on an 11px dot inside a 14px strip. Height alone
+		would have pushed the deck from 64px to ~94px, which is 13% of a phone
+		screen spent on furniture, so the margin gives the layout back.
+
+		It overlaps the title above it, which is deliberate and harmless: the title
+		is a plain span, nothing else in the deck is interactive there, and the
+		result is that the whole width of the deck's middle column seeks.
+	*/
 	.deck__scrub input {
 		-webkit-appearance: none; appearance: none;
-		display: block; width: 100%; height: 14px; margin: 0;
+		display: block; width: 100%; height: 44px; margin: -15px 0;
 		background: none; cursor: pointer;
 	}
 	.deck__scrub input::-webkit-slider-runnable-track {
@@ -688,13 +722,16 @@ const spanWord = WORDS[span] ?? String(span);
 			color-mix(in srgb, var(--paper) 26%, transparent) 0
 		);
 	}
+	/* 11px was a mouse-sized dot. 16px is still a dot against a 2px rule, and it
+	   is something a thumb can actually catch and drag.
+	   margin-top centres it on the track: (track 2px - thumb 16px) / 2. */
 	.deck__scrub input::-webkit-slider-thumb {
 		-webkit-appearance: none; appearance: none;
-		width: 11px; height: 11px; margin-top: -4.5px;
+		width: 16px; height: 16px; margin-top: -7px;
 		border: 0; border-radius: 50%; background: var(--coral);
 	}
 	.deck__scrub input::-moz-range-thumb {
-		width: 11px; height: 11px;
+		width: 16px; height: 16px;
 		border: 0; border-radius: 50%; background: var(--coral);
 	}
 	.deck__scrub input:focus-visible { outline-offset: 2px; }
@@ -745,9 +782,18 @@ const spanWord = WORDS[span] ?? String(span);
 		.roll__origin { margin-left: 0; }
 		.roll__empty { margin-left: 0; }
 
-		/* Two rows would eat a third of a phone screen, so the timecode drops to
-		   elapsed-only and the close control goes: swipe-free dismissal is the
-		   pause button, which is already the biggest target here. */
+		/*
+			Two rows would eat a third of a phone screen, so the timecode drops to
+			elapsed-only and the date goes.
+
+			The close button STAYS, and an earlier version of this comment claimed
+			otherwise ("the close control goes: dismissal is the pause button").
+			Nothing in the file ever hid it, and the claim was wrong on its own
+			terms: pause pauses, it does not dismiss, so removing the X would leave
+			the deck with no way to send it away at all. It is 30px, which is over
+			the 24px floor and under the 44px target, and it is the one control
+			here that a mistaken tap costs nothing.
+		*/
 		.deck__in { gap: 0.7rem; padding-block: 0.7rem; }
 		.deck__slash, .deck__time [data-dur] { display: none; }
 		.deck__when { display: none; }
