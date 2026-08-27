@@ -1,9 +1,20 @@
 # Cloudflare Pages project config.
 #
-# The site is a pure static build: 10 HTML pages plus fingerprinted assets, no
-# server rendering, no adapter, no Functions. Astro's default static output is
-# already exactly what Pages wants, which is why `astro.config.mjs` has no
-# `adapter` and no `output` line and should not grow one.
+# The PAGES are a pure static build: 9 HTML files plus fingerprinted assets, no
+# server rendering and no adapter. Astro's default static output is already
+# exactly what Pages wants, which is why `astro.config.mjs` has no `adapter` and
+# no `output` line and should not grow one.
+#
+# There is now exactly ONE Function, `functions/api/live.js`, answering
+# `/api/live`. It is deliberately NOT an Astro adapter: an adapter would make
+# all 9 pages server-rendered and end the property this file exists to protect.
+# `public/_routes.json` confines the Worker to `/api/*`, so every page is still
+# a static file served straight off the edge. Check that file before adding a
+# second Function; without an `include` entry a new route silently 404s.
+#
+# It needs one secret, set once at the project level (it survives deploys):
+#   npx wrangler pages secret put YOUTUBE_API_KEY --project-name brookside-church
+# Locally the same value comes from `.dev.vars`, which is gitignored.
 #
 # `pages_build_output_dir` is what makes `wrangler pages deploy` work with no
 # arguments and no dashboard configuration, so the deploy command is the same
@@ -18,6 +29,6 @@
 name = "brookside-church"
 pages_build_output_dir = "dist"
 
-# Only consulted if Functions are ever added. Harmless today, and it stops a
-# future function from silently inheriting whatever the default was that week.
+# Consulted by the Function above. Pinned so it cannot silently inherit
+# whatever the platform default was the week of a given deploy.
 compatibility_date = "2026-07-27"

@@ -28,6 +28,7 @@
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
 import data from '../data/sermons.json';
+import live from '../data/live.json';
 
 const APPLE = 'https://podcasts.apple.com/us/podcast/id1094539094';
 const SPOTIFY = 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76';
@@ -89,6 +90,28 @@ for (const ep of episodes) {
 const WORDS = ['zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve'];
 const span = Number(data.newest.slice(0, 4)) - Number(data.oldest.slice(0, 4));
 const spanWord = WORDS[span] ?? String(span);
+
+/*
+	The most recent completed live stream, from src/data/live.json, rebuilt by
+	`npm run live`. Every field is optional on purpose: if the poster pull found
+	nothing it could stand behind, it writes nothing, and the card has to render
+	as the flat ink panel it was before rather than as a broken image.
+
+	The date is formatted from actualStartTime, which is the moment the broadcast
+	actually began. It is NOT publishedAt: YouTube reported the August 23 service
+	as published on August 24, so publishedAt would print the wrong Sunday.
+
+	Two timezones have to be pinned down here and neither can be left to default.
+	actualStartTime is UTC, so slicing the string dates a Wednesday 6:30 PM
+	service (00:30 UTC) to Thursday. Passing it through a bare Date uses the BUILD
+	MACHINE's zone, so the same build produces different copy on a laptop in a
+	different state. America/Chicago is named explicitly because that is the zone
+	the service actually happened in, which is the only one a reader cares about.
+*/
+const inChicago = new Intl.DateTimeFormat('en-US', {
+	month: 'long', day: 'numeric', timeZone: 'America/Chicago',
+});
+const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) : null;
 ---
 
 <SiteLayout
@@ -158,26 +181,72 @@ const spanWord = WORDS[span] ?? String(span);
 		</div>
 
 		{/*
-			Click-to-play rather than a bare iframe: no third-party request and no
-			YouTube cookie until a visitor actually asks for one, and the page
-			cannot be made to look broken by something outside our control.
+			Click-to-play rather than a bare iframe, and this is the load-bearing
+			property of the whole panel: no third-party request and no YouTube
+			cookie until a visitor actually asks for one, and the page cannot be
+			made to look broken by something outside our control.
 
-			The copy names both states on purpose. The player is the uploads
-			playlist, so it is the live broadcast during the service and the most
-			recent service afterwards. Promising only "the live stream" would be a
-			lie six days a week.
+			The poster keeps that promise. It is a frame of THIS room, pulled at
+			build time and served from our own origin (see scripts/pull-live.mjs),
+			not a hotlinked i.ytimg.com thumbnail — which would be a third-party
+			request on load and would put us back where we started. The /api/live
+			call below is same-origin for the same reason.
+
+			The copy names both states on purpose. Idle it offers the most recent
+			service by name and date; live it says so. Promising only "the live
+			stream" would be a lie six days a week.
 
 			Note this panel and the sermon on the left are NOT the same thing: the
-			left column is the newest podcast episode, the right is the newest
-			YouTube upload, and the channel carries full services as well as cut
-			sermons, so in a given week they can legitimately name different
-			things. Hence "the service" here and "Most recent" sermon there.
+			left column is the newest podcast EPISODE, this is the newest full
+			SERVICE from the channel, and the channel carries both, so in a given
+			week they can legitimately name different things. Hence "the service"
+			here and "Most recent" sermon there.
 		*/}
 		<div class="feature__media">
-			<button class="screen" type="button" data-play>
-				<span class="screen__state"><span class="screen__dot" aria-hidden="true"></span>Live Sundays, 10:45 AM</span>
-				<span class="screen__cue">Watch the service</span>
-				<span class="screen__note">Live on Sunday morning. The rest of the week, the most recent one.</span>
+			<button
+				class="screen"
+				class:list={[{ 'screen--posterless': !live.poster }]}
+				type="button"
+				data-play
+				data-video={live.videoId}
+				aria-label={streamDate
+					? `Watch the service from ${streamDate}`
+					: 'Watch the service'}
+			>
+				{live.poster && (
+					/*
+						A real <img> rather than a CSS background: it is assertable by
+						audit-brookside-site.mjs, so a poster that stops being written
+						fails a check instead of quietly reverting to a black box.
+						alt="" because the button's accessible name is on the button
+						itself, and a described image inside it would be announced twice.
+					*/
+					<img
+						class="screen__poster"
+						src={live.poster}
+						alt=""
+						width={live.posterWidth}
+						height={live.posterHeight}
+						loading="lazy"
+						decoding="async"
+					/>
+				)}
+				{/*
+					aria-live so the one state change this element ever makes, offline
+					to LIVE NOW, is announced. It is populated at render, so nothing is
+					announced on load.
+				*/}
+				<span class="screen__state" aria-live="polite" data-state>
+					{/*
+						No dot in the idle state, and that is a change. The old copy lit a
+						coral dot beside "Live Sundays, 10:45 AM" seven days a week, which
+						is a live indicator that means nothing. Now the dot only appears
+						when the church is actually live, so it can be believed.
+					*/}
+					{streamDate ? `Most recent service · ${streamDate}` : 'Live Sundays, 10:45 AM'}
+				</span>
+				<span class="screen__cue" data-cue-text>Watch the service</span>
+				<span class="screen__note" data-note>Live on Sunday morning. The rest of the week, the most recent one.</span>
 			</button>
 			<a class="link feature__past" href={YOUTUBE} target="_blank" rel="noopener">
 				Every service on YouTube &rarr;
@@ -375,36 +444,115 @@ const spanWord = WORDS[span] ?? String(span);
 
 	/*
 		The one dark surface on the site, and the only place a screen belongs.
-		Kept flat (no gradient, no drop shadow, no play-triangle badge) so it
-		reads as the room's projector rather than as a media player chrome.
+		Still no drop shadow and NO PLAY-TRIANGLE BADGE: "Watch the service" is
+		the affordance, and a triangle would turn the room's projector into a
+		media player chrome. That rule has not changed.
+
+		The flatness has. There is a photograph behind the type now, so the scrim
+		below is not decoration; it is the only thing keeping the copy legible
+		over a lit sanctuary wall, and it was measured rather than eyeballed.
+		See the note on .screen__note.
 	*/
 	.feature__media { width: 100%; }
 	.screen {
+		position: relative; overflow: hidden;
 		display: flex; flex-direction: column; align-items: flex-start;
 		justify-content: flex-end; gap: 0.3rem;
 		width: 100%; aspect-ratio: 16 / 9; margin: 0;
 		padding: clamp(1.1rem, 2.5vw, 1.9rem);
 		background: var(--ink); border: 0; border-radius: 0;
 		color: var(--paper); text-align: left; cursor: pointer;
-		transition: background 0.2s;
 	}
-	.screen:hover { background: #000; }
+	/*
+		The poster is about 1.9:1 once its letterbox is cropped off and the card
+		is 16:9, so cover trims a little from the sides rather than putting bars
+		back. The 40% keeps the platform in frame instead of the ceiling.
+	*/
+	.screen__poster {
+		position: absolute; inset: 0;
+		width: 100%; height: 100%;
+		object-fit: cover; object-position: center 40%;
+		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.screen:hover .screen__poster { transform: scale(1.02); }
+	/*
+		The scrim. Two gradients, one per band of type, rather than a flat wash
+		over the whole picture: the middle of the frame is where the room is, and
+		it stays close to full strength.
+
+		The top band is not symmetry, it is a measured fix. With only the bottom
+		gradient, the status line sat over the lit sanctuary wall at rgb(159,163,141)
+		and measured 2.48:1 against --paper, which fails WCAG AA for text that
+		size. Both bands were then re-measured against the real poster rather than
+		adjusted by eye; the numbers are on .screen__state and .screen__note.
+	*/
+	.screen::after {
+		content: ''; position: absolute; inset: 0;
+		background:
+			linear-gradient(
+				to bottom,
+				color-mix(in srgb, var(--ink) 82%, transparent) 0%,
+				color-mix(in srgb, var(--ink) 55%, transparent) 12%,
+				transparent 30%
+			),
+			linear-gradient(
+				to top,
+				color-mix(in srgb, var(--ink) 88%, transparent) 0%,
+				color-mix(in srgb, var(--ink) 62%, transparent) 34%,
+				color-mix(in srgb, var(--ink) 12%, transparent) 72%
+			);
+	}
+	/* No poster, no scrim: this is the flat ink panel the card used to be, and
+	   it is what renders if `npm run live` ever refuses to pick a frame. */
+	.screen--posterless::after { display: none; }
+	.screen--posterless { transition: background 0.2s; }
+	.screen--posterless:hover { background: #000; }
+	/* Everything has to sit above the poster and the scrim. */
+	.screen > span { position: relative; z-index: 1; }
+
 	.screen__state {
 		display: flex; align-items: center; gap: 0.5rem; margin-bottom: auto;
 		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-		text-transform: uppercase; color: var(--ash);
+		text-transform: uppercase; color: var(--paper);
 	}
+	.screen--posterless .screen__state { color: var(--ash); }
 	.screen__dot {
 		width: 7px; height: 7px; border-radius: 50%; background: var(--coral);
 		flex: none;
 	}
+	/*
+		Only ever rendered by the live path, so this cannot run on a page where
+		nothing is happening. Opacity rather than scale: a growing dot nudges the
+		text beside it, and the two share a baseline.
+	*/
+	@keyframes screen-pulse { 50% { opacity: 0.3; } }
+	.screen[data-live] .screen__dot { animation: screen-pulse 1.8s ease-in-out infinite; }
 	.screen__cue {
 		font-family: var(--display); font-variation-settings: 'wght' 700, 'opsz' 24;
 		font-size: clamp(1.25rem, 2.6vw, 1.85rem); letter-spacing: -0.03em;
 		line-height: 1.1;
 	}
 	.screen:hover .screen__cue { color: var(--coral); }
-	.screen__note { font-size: 0.85rem; color: var(--ash); }
+	/*
+		--paper over a poster, --ash on the flat panel.
+
+		Measured against the actual poster at the actual type position, sampling
+		the worst (lightest) pixel behind each line with the text hidden. On the
+		August 23 frame:
+
+		            --paper   --ash
+		  state      6.59:1   3.53:1   <- --ash FAILS here
+		  cue        9.27:1   4.96:1
+		  note      11.39:1   6.09:1
+
+		So --paper is only strictly REQUIRED on the status line. It goes on all
+		three anyway, because the pixels behind this card are a different
+		photograph every week, and 6.09:1 is not enough margin to bet a church's
+		accessibility on. These numbers and the scrim's gradient stops were
+		measured together; neither can be loosened without re-measuring both.
+	*/
+	.screen__note { font-size: 0.85rem; color: var(--paper); }
+	.screen--posterless .screen__note { color: var(--ash); }
 	.feature__past { display: inline-block; margin-top: 0.9rem; font-size: 0.92rem; }
 	/* Replaced in place by the iframe, so the frame keeps its exact geometry and
 	   the page does not jump when the video loads. */
@@ -810,6 +958,12 @@ const spanWord = WORDS[span] ?? String(span);
 
 	@media (prefers-reduced-motion: reduce) {
 		.deck { transition: none; }
+		/* The live dot still appears, it just stops blinking: it is a state
+		   indicator, and the colour and the word beside it carry the meaning.
+		   The poster's hover push-in goes entirely. */
+		.screen[data-live] .screen__dot { animation: none; }
+		.screen__poster { transition: none; }
+		.screen:hover .screen__poster { transform: none; }
 	}
 </style>
 
@@ -1114,17 +1268,131 @@ const spanWord = WORDS[span] ?? String(span);
 	const CHANNEL = 'UCFVvTNQHSyICAekmJdQ47Eg';
 	const UPLOADS = `UU${CHANNEL.slice(2)}`;
 
-	document.querySelector<HTMLButtonElement>('[data-play]')?.addEventListener('click', (ev) => {
+	const screen = document.querySelector<HTMLButtonElement>('[data-play]');
+
+	/*
+		What the button will actually play.
+
+		The uploads playlist stays as the FALLBACK, not the default, and the
+		distinction matters. Playlist position 1 is the newest upload, and the
+		channel posts cut sermons as well as full services — measured 2026-08-26,
+		position 1 was "How To Process The Pain", a 47 minute sermon, while the
+		card said "Watch the service" and the most recent service was the
+		August 23 broadcast. So the playlist alone made the card play something
+		other than what it named, most weeks.
+
+		With a poster naming a specific service, the click has to follow it. The
+		playlist is still exactly right whenever we do NOT know better, because it
+		is correct in both states, so it is what an unknown id or a failed
+		/api/live falls back to.
+	*/
+	const playlistUrl = `https://www.youtube-nocookie.com/embed/videoseries?list=${UPLOADS}&autoplay=1`;
+	const videoUrl = (id: string) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+
+	let target = screen?.dataset.video ? videoUrl(screen.dataset.video) : playlistUrl;
+
+	screen?.addEventListener('click', (ev) => {
 		const btn = ev.currentTarget as HTMLButtonElement;
 		const frame = document.createElement('iframe');
 		// nocookie host: no YouTube cookie is set unless the visitor actually plays.
-		frame.src = `https://www.youtube-nocookie.com/embed/videoseries?list=${UPLOADS}&autoplay=1`;
+		frame.src = target;
 		frame.title = 'Brookside Church of God, live stream and recent services';
 		frame.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; web-share';
 		frame.allowFullscreen = true;
 		btn.replaceWith(frame);
 		frame.focus();
 	});
+
+	/*
+		Live state, from our own edge. See functions/api/live.js.
+
+		Same-origin on purpose: asking googleapis.com from here would put a
+		third-party request on every page load and expose the API key, and the
+		whole point of this panel is that nothing leaves for YouTube until a
+		visitor clicks. The poster is self-hosted for the same reason, which is
+		also why a live broadcast keeps showing the last service's frame: there is
+		no way to fetch the live thumbnail without breaking that promise, and a
+		LIVE NOW badge over last Sunday's room reads correctly anyway.
+
+		Every failure path here is silent and leaves the card in its offline
+		state. `npm run dev` serves the Astro dev server, which does not run Pages
+		Functions at all, so /api/live 404s locally and this must be a non-event.
+	*/
+	const stateEl = screen?.querySelector<HTMLElement>('[data-state]');
+	const cueEl = screen?.querySelector<HTMLElement>('[data-cue-text]');
+	const noteEl = screen?.querySelector<HTMLElement>('[data-note]');
+
+	// The offline copy, captured before anything overwrites it, so going off air
+	// while somebody has the tab open restores exactly what was rendered rather
+	// than a second copy of the same strings maintained by hand.
+	const offline = {
+		state: stateEl?.textContent ?? '',
+		cue: cueEl?.textContent ?? '',
+		note: noteEl?.textContent ?? '',
+		label: screen?.getAttribute('aria-label') ?? '',
+	};
+
+	function paintLive(on: boolean, videoId?: string) {
+		if (!screen || !stateEl || !cueEl || !noteEl) return;
+
+		if (!on) {
+			if (!screen.hasAttribute('data-live')) return;
+			screen.removeAttribute('data-live');
+			stateEl.textContent = offline.state;
+			cueEl.textContent = offline.cue;
+			noteEl.textContent = offline.note;
+			screen.setAttribute('aria-label', offline.label);
+			target = screen.dataset.video ? videoUrl(screen.dataset.video) : playlistUrl;
+			return;
+		}
+
+		screen.setAttribute('data-live', '');
+		// Rebuilt rather than set with innerHTML: the dot is an element, and this
+		// text comes from an API response.
+		stateEl.replaceChildren(
+			Object.assign(document.createElement('span'), { className: 'screen__dot' }),
+			document.createTextNode('Live now'),
+		);
+		stateEl.querySelector('.screen__dot')?.setAttribute('aria-hidden', 'true');
+		cueEl.textContent = 'Watch live';
+		noteEl.textContent = 'The service is on the air right now.';
+		screen.setAttribute('aria-label', 'Watch the service, live now');
+		// An id from the API is better than the playlist, but the playlist is
+		// still correct while live, so a response without one is not a problem.
+		target = videoId ? videoUrl(videoId) : playlistUrl;
+	}
+
+	async function checkLive() {
+		try {
+			const res = await fetch('/api/live', { headers: { accept: 'application/json' } });
+			if (!res.ok) return;
+			const data = await res.json();
+			paintLive(Boolean(data?.live), data?.videoId);
+		} catch {
+			// Offline, blocked, or no Function behind this path. Card stays as built.
+		}
+	}
+
+	if (screen) {
+		checkLive();
+		/*
+			Polling exists for one specific person: somebody who opens /watch at
+			10:40 on a Sunday and waits. Without it they would sit on a card that
+			says "most recent service" while the service starts behind it.
+
+			Sixty seconds against a response the edge caches for five minutes, so
+			nearly every one of these is served from cache and costs no quota.
+			Gated on visibility so a forgotten tab is not polling all week, and
+			capped at an hour, which outlasts the gap between someone arriving
+			early and the stream starting.
+		*/
+		let polls = 0;
+		setInterval(() => {
+			if (document.visibilityState !== 'visible') return;
+			if (++polls > 60) return;
+			checkLive();
+		}, 60_000);
+	}
 
 	/* ---------- motion ---------- */
 

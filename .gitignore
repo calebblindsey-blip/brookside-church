@@ -25,3 +25,12 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Cloudflare Pages Function secrets for `wrangler pages dev`. Carries the
+# YouTube Data API key, so this must never be committed. The real copy lives at
+# ~/.config/compass/youtube.env and in the Pages project's own secrets.
+.dev.vars
+
+# Candidate frames from `npm run live`. Kept on disk so an automatic poster pick
+# is explicable after the fact, never committed: they are raw 1080p stills.
+.live-frames/
