@@ -1,52 +1,57 @@
 {
-	"total": 291,
+	"total": 296,
 	"oldest": "2020-03-18",
-	"newest": "2026-07-20",
+	"newest": "2026-08-24",
 	"recent": [
+		{
+			"title": "How To Process The Pain",
+			"date": "2026-08-24",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124679974/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-24%2F7f052aa0-0e0f-77c1-ecac-8f02b9110b32.mp3",
+			"seconds": 2848,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "In The Day Of Judgement",
+			"date": "2026-08-21",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124537227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-21%2Fc7cdc147-1bf1-999d-bd8f-afa1ea1915c5.mp3",
+			"seconds": 3086,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "What Is The Mission & Where Is The Mission Field",
+			"date": "2026-08-10",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124041505/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-10%2F2a5b7d99-9258-0440-d67e-4069e01f3857.mp3",
+			"seconds": 2781,
+			"speaker": "Corey Jackson"
+		},
+		{
+			"title": "Coming Back to Spiritual Strength",
+			"date": "2026-08-09",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994386/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2F7ed75ce8-d914-328d-5f0a-0bf3bf0b5227.mp3",
+			"seconds": 2649,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "When The Clay Breaks",
+			"date": "2026-08-09",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2Fd559e7c3-5265-42dc-5a32-ff1f0d2a554c.mp3",
+			"seconds": 3539,
+			"speaker": "Daniel Howard"
+		},
 		{
 			"title": "The Power Of Joy",
 			"date": "2026-07-20",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/123401091/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723913-44100-2-5f3f48625e8b017f.mp3",
 			"seconds": 2652,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Can Jesus Come Back To America",
-			"date": "2026-07-13",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123400957/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723764-44100-2-5be18893eb070305.mp3",
-			"seconds": 2590,
-			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Go With Wisdom",
-			"date": "2026-07-09",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123400981/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723793-44100-2-55567d7987c04109.mp3",
-			"seconds": 2774,
-			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "God’s Broken Heart",
-			"date": "2026-07-07",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123401061/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723904-44100-2-f3dcfb1a6e2db6c8.mp3",
-			"seconds": 2359,
-			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Benefits of Being Holy Spirit Filled",
-			"date": "2026-06-29",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123401000/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723864-44100-2-16ae9c6eabe1de20.mp3",
-			"seconds": 1740,
-			"speaker": "Sasha Bragari"
-		},
-		{
-			"title": "Wait For The Moving of The Water",
-			"date": "2026-06-15",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123400933/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723771-44100-2-8905bb04b0506a00.mp3",
-			"seconds": 1985,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-08-24",
+		"2026-08-21",
+		"2026-08-10",
+		"2026-08-09",
+		"2026-08-09",
 		"2026-07-20",
 		"2026-07-13",
 		"2026-07-09",
@@ -340,6 +345,41 @@
 		"2020-03-18"
 	],
 	"episodes": [
+		{
+			"title": "How To Process The Pain",
+			"date": "2026-08-24",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124679974/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-24%2F7f052aa0-0e0f-77c1-ecac-8f02b9110b32.mp3",
+			"seconds": 2848,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "In The Day Of Judgement",
+			"date": "2026-08-21",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124537227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-21%2Fc7cdc147-1bf1-999d-bd8f-afa1ea1915c5.mp3",
+			"seconds": 3086,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "What Is The Mission & Where Is The Mission Field",
+			"date": "2026-08-10",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/124041505/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-10%2F2a5b7d99-9258-0440-d67e-4069e01f3857.mp3",
+			"seconds": 2781,
+			"speaker": "Corey Jackson"
+		},
+		{
+			"title": "Coming Back to Spiritual Strength",
+			"date": "2026-08-09",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994386/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2F7ed75ce8-d914-328d-5f0a-0bf3bf0b5227.mp3",
+			"seconds": 2649,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "When The Clay Breaks",
+			"date": "2026-08-09",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2Fd559e7c3-5265-42dc-5a32-ff1f0d2a554c.mp3",
+			"seconds": 3539,
+			"speaker": "Daniel Howard"
+		},
 		{
 			"title": "The Power Of Joy",
 			"date": "2026-07-20",
