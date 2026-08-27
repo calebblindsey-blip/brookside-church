@@ -167,10 +167,16 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 				var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
 				if (!a) return;
 				var href = a.getAttribute('href') || '';
-				var name = null;
-				if (href.indexOf('tel:') === 0) name = 'phone_click';
-				else if (href.indexOf('mailto:') === 0) name = 'email_click';
-				else if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl/.test(href)) name = 'directions_click';
+				/* An explicit name wins over sniffing. The giving links go to
+				   Church Center and PayPal, and matching those by hostname would
+				   put a vendor list in here that rots the day the church changes
+				   processor. A link that knows what it is says so. */
+				var name = a.getAttribute('data-ga-event');
+				if (!name) {
+					if (href.indexOf('tel:') === 0) name = 'phone_click';
+					else if (href.indexOf('mailto:') === 0) name = 'email_click';
+					else if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl/.test(href)) name = 'directions_click';
+				}
 				if (!name) return;
 				/* Optional-call: if the tag is blocked by an extension, a dead
 				   gtag must not take the click's default behaviour down with it.

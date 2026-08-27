@@ -1,0 +1,70 @@
+---
+/**
+ * The sermon archive as a machine-readable series. Rendered on /watch only.
+ *
+ * WHY IT IS WORTH HAVING AT ALL, given the traffic. The 292 per-episode pages on
+ * the old site earned 37 organic search sessions in three and a half years, and
+ * 95.1% of podcast landings were Direct rather than search. Collapsing them into
+ * this one page is right, but a 301 removes a ranking as well as a visit, and the
+ * one thing that ranking rested on was 291 crawlable sermon titles. Those titles
+ * still render here as HTML. This node tells Google what the page they sit on
+ * actually IS, which the prose alone cannot: a podcast, with a feed, available in
+ * Apple and Spotify.
+ *
+ * ONE ENTITY, NOT TWO. `publisher` points at the same @id the Church node on this
+ * page declares, so the series belongs to the church rather than describing a
+ * second, similar-looking organisation at the same address. Changing the @id in
+ * ChurchSchema.astro without changing it here silently breaks that link: both
+ * nodes still validate, and nothing connects them.
+ *
+ * SOURCING, same bar as src/data/church.ts. Every field below is read off the
+ * feed at build time or is a URL that resolves today. Nothing is asserted about
+ * the series that is not already true of it.
+ *
+ * Deliberately absent:
+ *   datePublished / dateModified   Available, and schema.org does not define
+ *                                  either on PodcastSeries. A field a type does
+ *                                  not have is noise, not extra signal.
+ *   author                         The archive spans six years and more than one
+ *                                  preacher. Naming one would be wrong for most
+ *                                  of the 296 episodes.
+ *   image                          The series has no artwork of its own here.
+ *                                  The Church node already carries the og image.
+ */
+import { CHURCH } from '../data/church';
+
+interface Props {
+	/** Total episodes, from src/data/sermons.json, so it stays true as the feed grows. */
+	total: number;
+	/** ISO date of the oldest episode. */
+	oldest: string;
+	/** ISO date of the newest episode. */
+	newest: string;
+	/** The RSS feed the archive is built from. */
+	feed: string;
+	/** Public listening apps, for sameAs. */
+	profiles: string[];
+}
+
+const { total, oldest, newest, feed, profiles } = Astro.props;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'PodcastSeries',
+	'@id': `${CHURCH.url}/watch/#podcast`,
+	name: 'Brookside Church of God',
+	url: `${CHURCH.url}/watch/`,
+	description: `Every recorded service from ${CHURCH.name} in Brookside, Alabama. ${total} sermons, ${oldest.slice(0, 4)} to ${newest.slice(0, 4)}.`,
+	inLanguage: 'en-US',
+	webFeed: feed,
+	publisher: { '@id': `${CHURCH.url}/#church` },
+	sameAs: profiles,
+};
+---
+
+{/*
+	set:html rather than interpolation, for the reason spelled out in
+	ChurchSchema.astro: Astro escapes interpolated text, and the escaped quotes
+	produce a block that reads correctly in view-source and fails every parser.
+*/}
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

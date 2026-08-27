@@ -27,6 +27,7 @@
  * payoff and repeating it on every page spends it.
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
+import PodcastSchema from '../components/PodcastSchema.astro';
 import data from '../data/sermons.json';
 import live from '../data/live.json';
 
@@ -118,6 +119,23 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	title="Watch"
 	description={`All ${data.total} sermons Brookside Church of God has recorded since ${monthYear(data.oldest)}, plus the Sunday livestream. Worship streams live at 10:45 AM.`}
 >
+	{/*
+		In the body rather than the head, which JSON-LD permits and Google reads
+		either way. SiteLayout owns the head and exposes no slot for it, and
+		adding one for a single page would put an always-empty slot on all nine.
+
+		Props rather than a second import of sermons.json inside the component:
+		the page already holds the numbers, and passing them means the schema
+		cannot disagree with the eyebrow directly above it.
+	*/}
+	<PodcastSchema
+		total={data.total}
+		oldest={data.oldest}
+		newest={data.newest}
+		feed={data.feed}
+		profiles={[APPLE, SPOTIFY, YOUTUBE]}
+	/>
+
 	<section class="bay wtop">
 		<p class="eyebrow">{data.total} sermons · {monthYear(data.oldest)} to {monthYear(data.newest)}</p>
 		<h1 class="display" data-split>
@@ -972,6 +990,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	import ScrollTrigger from 'gsap/ScrollTrigger';
 	import SplitText from 'gsap/SplitText';
 	import Lenis from 'lenis';
+	import { track } from '../lib/analytics';
 
 	gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -1175,6 +1194,21 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 
 			open();
 			audio!.play().catch(() => fail('Could not play. Try Apple Podcasts.'));
+
+			/*
+				sermon_play, fired here rather than in the toggle branch above, so
+				it counts sermons STARTED and not pause/resume taps. A visitor who
+				pauses to answer the door and resumes is one play, not three.
+
+				Optional-called for the same reason the SiteLayout listener is: an
+				extension blocking the tag must not be able to break playback. The
+				sermon plays whether or not anyone is counting it.
+			*/
+			track('sermon_play', {
+				medium: 'audio',
+				sermon_title: btn.dataset.label || '',
+				page_path: window.location.pathname,
+			});
 		}
 
 		for (const btn of document.querySelectorAll<HTMLElement>('[data-cue]')) {
@@ -1293,6 +1327,31 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 
 	screen?.addEventListener('click', (ev) => {
 		const btn = ev.currentTarget as HTMLButtonElement;
+
+		/*
+			The same key event as the audio rows, separated by `medium` rather
+			than given a second name. Both answer one question — did anyone
+			actually watch or listen to a sermon — and splitting the name would
+			mean every report has to remember to add the two together.
+
+			`live` is read off the card's own state, so the number can tell a
+			Sunday-morning stream apart from someone catching up on Tuesday.
+		*/
+		track('sermon_play', {
+			medium: 'video',
+			/*
+				The video id, not only the cue text. The cue starts as the generic
+				"Watch the service" and is rewritten to the specific service by the
+				/api/live handler below, so a visitor who clicks before that fetch
+				resolves would otherwise be recorded against a label that names
+				nothing. The id is in the markup at build time and never moves.
+			*/
+			video_id: btn.dataset.video || 'uploads-playlist',
+			sermon_title: btn.querySelector('[data-cue-text]')?.textContent?.trim() || '',
+			live: btn.hasAttribute('data-live') ? 'yes' : 'no',
+			page_path: window.location.pathname,
+		});
+
 		const frame = document.createElement('iframe');
 		// nocookie host: no YouTube cookie is set unless the visitor actually plays.
 		frame.src = target;

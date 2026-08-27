@@ -70,11 +70,23 @@ const APP_ANDROID =
 					church uses for its groups and scheduling. Give once or set giving to
 					repeat, with a card or straight from a bank account.
 				</p>
+				{/*
+					data-ga-event, read by the delegated listener in SiteLayout.
+					Both links leave the site, so nothing downstream of the click is
+					measurable from here and this is the last observable moment of
+					giving intent. The link_url parameter separates Planning Center
+					from PayPal without needing two event names.
+
+					The two app-store links below are deliberately NOT give_click.
+					Installing an app is a different intent from giving today, and
+					folding them together would inflate the number that decides
+					whether the giving page works.
+				*/}
 				<div class="actions way__actions">
-					<a class="btn btn--solid" href={CHURCH_CENTER} target="_blank" rel="noopener">
+					<a class="btn btn--solid" data-ga-event="give_click" href={CHURCH_CENTER} target="_blank" rel="noopener">
 						Give through Planning Center
 					</a>
-					<a class="btn btn--line" href={PAYPAL} target="_blank" rel="noopener">
+					<a class="btn btn--line" data-ga-event="give_click" href={PAYPAL} target="_blank" rel="noopener">
 						Give with PayPal
 					</a>
 				</div>

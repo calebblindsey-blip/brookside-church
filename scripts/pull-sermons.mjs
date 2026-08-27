@@ -100,6 +100,13 @@ const named = episodes.filter((e) => e.speaker).length;
 console.log(`Speaker parsed on ${named} of ${episodes.length}; newest is ${episodes[0].speaker ?? 'unnamed'}.`);
 
 const data = {
+	/*
+		The feed URL travels WITH the data it produced. /watch declares a
+		PodcastSeries whose webFeed has to be this exact URL, and the alternative
+		was a second hardcoded copy in an .astro file that nothing would ever
+		re-check. The feed has already moved once, off Squarespace in July 2026.
+	*/
+	feed: FEED,
 	total: episodes.length,
 	oldest: episodes[episodes.length - 1].date,
 	newest: episodes[0].date,

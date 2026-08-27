@@ -111,6 +111,30 @@ const EMAIL = CHURCH.email;
 				needs to know you are coming. Morning Worship starts at 10:45 and
 				we are usually done by around 12:15.
 			</p>
+			{/*
+				The contact path, above the fold, and the reason it is here rather
+				than only at the foot of the page.
+
+				The old Squarespace /contact-us took 607 sessions and fired zero
+				form_start and zero form_submit events over the same period /give
+				fired 12 and 15. The tracking worked; the form was not there. Up to
+				585 people reached a page whose only purpose was to be contacted
+				through and had nothing to reach.
+
+				This page repeated that quietly: the phone number was a <dd> in a
+				definition list in the last section. Reachable, and reachable is not
+				the same as offered. 70% of real organic traffic here is mobile, so
+				the single highest-value action on this page is a tappable phone
+				number that does not need a scroll to find.
+
+				Both hrefs come from src/data/church.ts. Do not inline either one:
+				the number was hardcoded in five files once, which is the same
+				mechanism that put the wrong number on Facebook and Yelp.
+			*/}
+			<div class="actions vtop__actions">
+				<a class="btn btn--solid" href={CHURCH.phoneHref}>{PHONE}</a>
+				<a class="btn btn--line" href={CHURCH.emailHref}>{EMAIL}</a>
+			</div>
 		</div>
 	</section>
 
@@ -268,7 +292,7 @@ const EMAIL = CHURCH.email;
 			</div>
 			<div>
 				<dt>Email</dt>
-				<dd><a class="link" href={`mailto:${EMAIL}`}>{EMAIL}</a></dd>
+				<dd><a class="link" href={CHURCH.emailHref}>{EMAIL}</a></dd>
 			</div>
 			<div>
 				<dt>Or simply</dt>
@@ -283,6 +307,7 @@ const EMAIL = CHURCH.email;
 
 	.vtop { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2.5rem, 6vw, 4rem); }
 	.vtop__foot { margin-top: clamp(2rem, 4vw, 3rem); }
+	.vtop__actions { margin-top: clamp(1.75rem, 3vw, 2.25rem); }
 
 	/* ---------- when ---------- */
 
