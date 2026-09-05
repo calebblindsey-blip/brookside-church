@@ -1,7 +1,9 @@
 <!--
   Favicon: the church's mark, from the official brand package (adopted 2026-07-29).
   Source: branding/brookside-church/assets/Brookside-Brand-Package/02-Final-Logos/
-  in Compass. Paths copied verbatim from brookside-mark-primary.svg.
+  in Compass. Paths copied verbatim from brookside-mark-primary.svg, which since
+  2026-09-05 is the DM Sans 550 redraw written by the Compass branding tooling
+  (redraw-mark.py). Same construction, heavier letter.
 
   WHY THE WHOLE MARK NOW, AND NOT A CROSS ON ITS OWN. The mark this replaces was
   a filled letterform with the cross fused into it. At 16px it collapsed into an
@@ -19,6 +21,6 @@
   forced the previous favicon to be a separate drawing.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Brookside Church of God">
-  <path fill="#B8BAB8" d="M116 68h148c76 0 120 34 120 92 0 41-22 68-59 80 46 12 72 44 72 91 0 65-47 102-127 102H160v-38h109c55 0 85-23 85-66 0-43-30-67-87-67h-24v-38h22c50 0 76-20 76-59 0-39-28-59-82-59H154v50h-38V68z"/>
-  <path fill="#E6534E" d="M116 162h38v65h77v35h-77v171h-38V262H45v-35h71v-65z"/>
+  <path fill="#B8BAB8" d="M116 135.51V68H255.18Q293.45 68 319.13 80.1Q344.81 92.2 357.79 113.31Q370.78 134.43 370.78 161.44Q370.78 189.28 358.68 208.05Q346.58 226.83 326.95 236.81Q317.29 241.72 306.93 244.69Q322.8 247.61 336.46 256.1Q356.12 268.33 367.62 288.59Q379.12 308.85 379.12 333.41Q379.12 361.82 365.33 384.43Q351.54 407.03 324.97 420.02Q298.41 433 259.82 433H181.36V385.9H251.85Q284.51 385.9 302.61 370.62Q320.72 355.33 320.72 327.63Q320.72 300.14 302.09 283.96Q283.47 267.79 250.81 267.79H247.84V223.82Q279.25 223.82 295.73 209.24Q312.22 194.65 312.22 168.94Q312.22 143.95 295.73 129.29Q279.25 114.63 246.75 114.63H173.36V135.51Z"/>
+  <path fill="#E6534E" d="M116 143.51H173.36V223.82H239.84V267.79H173.36V433H116V267.79H49.46V223.82H116Z"/>
 </svg>
