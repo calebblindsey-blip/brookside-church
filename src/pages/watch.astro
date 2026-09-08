@@ -115,7 +115,7 @@ const inChicago = new Intl.DateTimeFormat('en-US', {
 const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) : null;
 ---
 
-<SiteLayout
+<SiteLayout legacy
 	title="Watch"
 	description={`All ${data.total} sermons Brookside Church of God has recorded since ${monthYear(data.oldest)}, plus the Sunday livestream. Worship streams live at 10:45 AM.`}
 >

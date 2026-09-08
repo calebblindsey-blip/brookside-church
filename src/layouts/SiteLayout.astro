@@ -42,12 +42,15 @@ interface Props {
 	crossAt?: string;
 	/** Page-level class on the shell, e.g. "home" for the page current's layout. */
 	class?: string;
+	/** Set on pages not yet ported from Direction B; loads legacy-b.css's scoped rules. Gone when the last page is ported. */
+	legacy?: boolean;
 }
 
 const {
 	title = 'Brookside Church of God',
 	description = 'A Christ-centered church family in Brookside, Alabama. Join us Sunday at 10:45 AM or watch online.',
 	class: pageClass,
+	legacy = false,
 } = Astro.props;
 
 const fullTitle =
@@ -229,7 +232,7 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			main (the home page's current). `main` is not positioned, so section
 			offsets stay relative to the shell, which the current's layout depends on.
 		*/}
-		<div class:list={['site', pageClass]} data-site>
+		<div class:list={['site', pageClass, { 'legacy-b': legacy }]} data-site>
 			<a class="skip-link" href="#content">Skip to content</a>
 			<SiteHeader />
 			<slot name="decoration" />

@@ -1,5 +1,20 @@
 ---
+/**
+ * Home, in Codex's design (Round 2 of the port). Markup follows app/page.tsx in
+ * brookside-church-website section for section: hero with the ribbon field and
+ * gather card, the scripture, vision and mission as layered cards, the visit
+ * band, the watch band, the mission grid, and the page current that Motion.astro
+ * lays out from the hero's creek to the cross of the footer lockup.
+ *
+ * One thing folded in from the Astro site that Codex's build had dropped: the
+ * watch band names THIS WEEK'S SERMON from the feed rather than a static line.
+ * The speaker comes from the feed too, never hardcoded: about one Sunday in five
+ * is a guest, and a fixed name here credits the senior pastor for other people's
+ * preaching on the page most visitors land on first. When the feed names nobody,
+ * the date stands alone.
+ */
 import SiteLayout from '../layouts/SiteLayout.astro';
+import { CHURCH } from '../data/church';
 import data from '../data/sermons.json';
 
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -7,252 +22,150 @@ const longDate = (iso: string) => {
 	const [y, m, d] = iso.split('-');
 	return `${months[Number(m) - 1]} ${Number(d)}, ${y}`;
 };
-const shortDate = (iso: string) => {
-	const [, m, d] = iso.split('-');
-	return `${months[Number(m) - 1].slice(0, 3)} ${Number(d)}`;
-};
-
 const latest = data.recent[0];
-const previous = data.recent.slice(1, 5);
-const years = new Date(data.newest).getFullYear() - new Date(data.oldest).getFullYear();
+const youtubeLive = `${CHURCH.profiles[2]}/live`;
+
+/* A placeholder shape; Motion.astro rewrites `d` from the real section
+   positions before the current is shown (.page-current starts at opacity 0). */
+const currentPath = 'M1050 750 C1050 1100 100 1200 100 1800 S1080 2300 1080 3000 S100 3600 100 4200 S1060 5000 1060 6000';
+const ribbon = (line: number) =>
+	`M${350 + line * 15} -100 C${-80 + line * 15} 180 ${890 + line * 15} 230 ${410 + line * 15} 500 S${190 + line * 15} 820 ${770 + line * 15} 1000`;
 ---
 
-<SiteLayout crossAt=".verse">
-	<section class="bay hero">
-		<p class="eyebrow">200 Cardiff Street · Brookside, Alabama</p>
-		<h1 class="display" data-split>
-			Preaching<br />Christ<br /><em>crucified</em>
-		</h1>
-		<div class="hero__foot">
-			<p class="lede">
-				Everyone is welcome here, and we would love you to be part of our
-				family. Morning Worship is at 10:45 and we are usually done by around
-				12:15. Come as you are and sit wherever you like.
-			</p>
-			<dl class="hours">
-				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
-				<div><dt>Morning Worship</dt><dd>10:45 AM</dd></div>
-				<div><dt>Wednesday Classes</dt><dd>6:30 PM</dd></div>
+<SiteLayout class="home">
+	<Fragment slot="decoration">
+		<div class="page-current" aria-hidden="true">
+			<svg viewBox="0 0 1200 6000" preserveAspectRatio="none">
+				<defs>
+					<linearGradient id="current-to-cross" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#176bb3" />
+						<stop offset=".84" stop-color="#176bb3" />
+						<stop offset=".94" stop-color="#667d8f" />
+						<stop offset="1" stop-color="#ac432b" />
+					</linearGradient>
+				</defs>
+				<path class="current-bank" pathLength="1" d={currentPath} />
+				<path class="current-track" pathLength="1" d={currentPath} />
+				<path class="current-progress" pathLength="1" d={currentPath} />
+			</svg>
+		</div>
+	</Fragment>
+
+	<section id="top" class="hero">
+		<div class="hero-flow" aria-hidden="true">
+			<svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice">
+				<g class="flow-lines">
+					{Array.from({ length: 22 }, (_, line) => <path data-ribbon={line} d={ribbon(line)} />)}
+				</g>
+			</svg>
+		</div>
+		<div class="hero-content">
+			<p class="eyebrow light">{CHURCH.street} · {CHURCH.locality}, Alabama</p>
+			<h1><span class="hero-line"><span>Preaching</span></span><span class="hero-line hero-christ"><span>Christ</span></span><em class="hero-line"><span>crucified.</span></em></h1>
+			<p class="hero-intro">A Christ-centered church family in the heart of Brookside. Come as you are. Sit wherever you like.</p>
+			<div class="hero-actions">
+				<a class="button button-light" href="#visit">Plan your visit <span class="arrow" aria-hidden="true">↗</span></a>
+				<a class="text-link light" href="#watch">Watch online <span class="arrow" aria-hidden="true">↗</span></a>
+			</div>
+		</div>
+		<aside class="gather-card" aria-label="Weekly gathering times">
+			<p class="eyebrow">We gather</p>
+			<dl>
+				{CHURCH.gatherings.map((g) => <div><dt>{g.name}</dt><dd>{g.time}</dd></div>)}
 			</dl>
-		</div>
-		<div class="actions hero__actions">
-			<a class="btn btn--solid" href="/visit/">Plan your visit</a>
-			<a class="btn btn--line" href="/watch/">Hear this week's sermon</a>
-		</div>
+		</aside>
+		<a class="scroll-note" href="#about"><span>Follow the current</span><i aria-hidden="true"></i></a>
 	</section>
 
-	<section class="bay rule latest" aria-labelledby="this-week">
-		<p class="eyebrow" id="this-week">This week</p>
-		<div class="latest__lead">
-			<h2 class="headline">{latest.title}</h2>
-			{/*
-				The speaker comes from the feed, never hardcoded — the same rule
-				/watch has carried since the field existed, which was simply never
-				applied here. This line read "Brad Lindsey · {date}" in production
-				until 2026-08-21 and was correct only by luck: 46 of the 247
-				episodes that name anyone are somebody else, about one Sunday in
-				five, most recently Sasha Bragari on 2026-06-29. A fixed name here
-				credits the senior pastor for other people's preaching, on the page
-				most people land on first.
-
-				When the feed names nobody (44 episodes) the date stands alone
-				rather than being filled in with an assumption.
-			*/}
-			<p class="latest__by">
-				{latest.speaker ? `${latest.speaker} · ${longDate(latest.date)}` : longDate(latest.date)}
-			</p>
-			<a class="link" href="/watch/">Listen to this sermon &rarr;</a>
-		</div>
-		<ol class="prior">
-			{previous.map((s) => (
-				<li>
-					<a href="/watch/">
-						<span class="prior__date">{shortDate(s.date)}</span>
-						<span class="prior__title">{s.title}</span>
-					</a>
-				</li>
-			))}
-		</ol>
-		<a class="link link--quiet" href="/watch/">All {data.total} sermons &rarr;</a>
-	</section>
-
-	<section class="bay verse" aria-label="Scripture">
+	<section id="about" class="scripture-section section-pad">
+		<p class="eyebrow">Christ · Our center</p>
 		<blockquote>
-			<p>
-				For I determined not to know any thing among you, save Jesus Christ,
-				and him <em>crucified</em>.
-			</p>
+			“For I determined not to know any thing among you, save Jesus Christ, and him <em>crucified.</em>”
 			<cite>1 Corinthians 2:2</cite>
 		</blockquote>
+		<div class="scripture-note">
+			<p>Everything we do returns to one message: Jesus Christ died and rose again so people could come home to God.</p>
+			<a class="text-link" href="/knowing-christ/">Read the Gospel plainly <span class="arrow" aria-hidden="true">↗</span></a>
+		</div>
 	</section>
 
-	<section class="bay rule mission" aria-labelledby="mission-heading">
-		<p class="eyebrow" id="mission-heading">Why we are here</p>
-		<p class="mission__text">
-			To preach and support the Gospel of Jesus Christ both locally and abroad,
-			opening the door for lives to be changed and transformed through the power
-			of Jesus Christ.
-		</p>
-		<p class="prose mission__where">
-			"Abroad" is not a figure of speech. Brookside supports work in Romania,
-			Moldova, Honduras, Guatemala and Israel, and it does not stop there.
-		</p>
+	<section class="family-section section-pad">
+		<div class="family-heading">
+			<p class="eyebrow">Family · Our life together</p>
+			<h2>Rooted in Christ.<br /><em>Alive in the Spirit.</em></h2>
+		</div>
+		<div class="belief-stack">
+			<div class="vision-card layered-card">
+				<span>Vision</span>
+				<p>To see a family of believers rooted in Christ, alive in the Spirit, and carrying the hope of the Gospel from Brookside to the world.</p>
+			</div>
+			<div class="mission-card layered-card">
+				<span>Mission</span>
+				<p>We gather to worship, seek God through prayer, grow in Scripture, live in authentic community, and equip every believer to serve wherever Christ calls them.</p>
+			</div>
+		</div>
+		<ul class="family-practices" aria-label="Our shared practices">
+			<li>Worship</li><li>Prayer</li><li>Scripture</li><li>Community</li><li>Calling</li>
+		</ul>
 	</section>
 
-	{/*
-		The gospel invitation, and it is a section of its own rather than a fourth
-		card in the grid below. As a card it would sit as a peer of "Kids on
-		Sunday", which is the wrong weight for the thing the H1 of this page
-		promises. It goes directly after the mission because the mission says why
-		this church is here and this says what that message actually is — until it
-		shipped, the page headline read "Preaching Christ crucified" and the page
-		never once said what that meant.
-	*/}
-	<section class="bay rule gospel" aria-labelledby="gospel-heading">
-		<p class="eyebrow" id="gospel-heading">The message</p>
-		<h2 class="headline gospel__head">Christ crucified, written down.</h2>
-		<p class="prose gospel__body">
-			Everything this church does comes back to one message: that God loves
-			people who have gone their own way, and that Jesus died and rose again so
-			they could come home. If you have never heard it laid out plainly, or you
-			want to read it without anybody watching, it is written out here.
-		</p>
-		<a class="link gospel__link" href="/knowing-christ/">How a person comes to Christ &rarr;</a>
+	<section id="visit" class="visit-section section-pad">
+		<div class="visit-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+		<div class="visit-copy">
+			<p class="eyebrow light">Your first Sunday</p>
+			<h2>A church you can<br /><em>walk into.</em></h2>
+			<p>Everyone is welcome. There is nothing to sign up for, and nobody needs to know you are coming. Morning Worship starts at 10:45 and we are usually done around 12:15.</p>
+			<a class="button button-copper" href={CHURCH.mapsUrl}>Get directions <span class="arrow" aria-hidden="true">↗</span></a>
+		</div>
+		<div class="visit-details">
+			<article>
+				<span>01</span><h3>Come as you are</h3>
+				<p>The music is a mix of contemporary and traditional. Nobody will ask you to stand up or introduce yourself.</p>
+			</article>
+			<article>
+				<span>02</span><h3>Bring the kids</h3>
+				<p>Nursery is open through Sunday School and worship. Kids Church begins at 10:45 after children worship with everyone.</p>
+			</article>
+			<article>
+				<span>03</span><h3>Look for the crosses</h3>
+				<p>Find us at {CHURCH.street}. Look for the two crosses and the blue doors.</p>
+			</article>
+		</div>
 	</section>
 
-	<section class="bay rule grid" aria-label="Start here">
-		<article>
-			<h3 class="subhead">New here?</h3>
-			<p class="prose">
-				There is a band, and the music is a mix of contemporary and traditional.
-				Come in the front doors and someone will point you the rest of the way.
-				Nobody will ask you to stand up.
-			</p>
-			<a class="link" href="/visit/">What a Sunday looks like &rarr;</a>
-		</article>
-		<article>
-			<h3 class="subhead">{data.total} sermons</h3>
-			<p class="prose">
-				{years} years of preaching, all of it free, on Apple Podcasts, Spotify,
-				and right here.
-			</p>
-			<a class="link" href="/watch/">Browse the archive &rarr;</a>
-		</article>
-		<article>
-			<h3 class="subhead">Kids on Sunday</h3>
-			<p class="prose">
-				Nursery runs every Sunday, through both Sunday School and the main
-				service. Kids Church starts at 10:45, and the children stay in with
-				everyone for worship before heading out together.
-			</p>
-			<a class="link" href="/visit/#kids">Kids and childcare &rarr;</a>
-		</article>
+	<section id="watch" class="watch-section section-pad">
+		<div class="watch-top">
+			<div>
+				<p class="eyebrow light">Church, wherever you are</p>
+				<h2>Hear the<br /><em>message.</em></h2>
+			</div>
+			<div class="live-orbit" aria-hidden="true"><span>Sunday<br />10:45</span></div>
+		</div>
+		<div class="watch-feature">
+			<div class="play-mark" aria-hidden="true"><span>▶</span></div>
+			<div>
+				<p class="eyebrow light">This week's sermon · {longDate(latest.date)}</p>
+				<h3>{latest.title}</h3>
+				<p>{latest.speaker ? `${latest.speaker}. ` : ''}Every sermon since {new Date(data.oldest).getUTCFullYear()} plays right here, and Sunday worship streams live at 10:45 AM.</p>
+			</div>
+			<a class="button button-light" href="/watch/">Listen to this sermon <span class="arrow" aria-hidden="true">↗</span></a>
+		</div>
+		<div class="platform-links">
+			<a href={CHURCH.applePodcastsUrl}><span>Listen on</span>Apple Podcasts <span class="arrow" aria-hidden="true">↗</span></a>
+			<a href={CHURCH.spotifyUrl}><span>Listen on</span>Spotify <span class="arrow" aria-hidden="true">↗</span></a>
+			<a href={youtubeLive}><span>Sunday 10:45 AM</span>Watch live on YouTube <span class="arrow" aria-hidden="true">↗</span></a>
+		</div>
+	</section>
+
+	<section class="mission-section section-pad">
+		<p class="eyebrow">Mission · Our direction</p>
+		<h2>From Brookside<br />to the <em>world.</em></h2>
+		<div class="mission-grid">
+			<p>Our mission is to preach and support the Gospel of Jesus Christ both locally and abroad, opening the door for lives to be transformed through His power.</p>
+			<ul class="places" aria-label="Places where Brookside supports ministry">
+				<li>Brookside</li><li>Romania</li><li>Moldova</li><li>Honduras</li><li>Guatemala</li><li>Israel</li>
+			</ul>
+		</div>
+		<div class="water-words" aria-hidden="true">go · tell · serve · love · go · tell · serve · love</div>
 	</section>
 </SiteLayout>
-
-<style is:global>
-	/* Page-level composition only. Anything reusable belongs in site.css. */
-	.hero { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3rem, 7vw, 4.5rem); }
-	.hero__foot {
-		display: flex; flex-wrap: wrap; gap: clamp(1.75rem, 5vw, 4.5rem);
-		align-items: start; margin-top: clamp(2rem, 4vw, 3rem);
-	}
-	.hero__foot .lede { flex: 1 1 24rem; }
-	.hero__foot .hours { margin-left: auto; flex: 0 1 auto; min-width: 15rem; }
-	.hero__actions { margin-top: clamp(2rem, 4vw, 2.75rem); }
-
-	.latest {
-		padding-block: clamp(3rem, 7vw, 5rem);
-		display: grid; gap: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.75rem, 4vw, 3.5rem);
-		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-		align-items: start;
-	}
-	.latest .eyebrow { grid-column: 1 / -1; margin-bottom: 0; }
-	.latest__by { margin: 0.9rem 0 1.25rem; color: var(--iron); font-size: 0.95rem; }
-	.link--quiet { grid-column: 1 / -1; justify-self: start; font-size: 0.92rem; }
-
-	.verse { padding-block: clamp(4.5rem, 11vw, 8rem); }
-	.verse blockquote { margin: 0; }
-	.verse p {
-		/* The measure has to live on the element carrying the display size: a ch
-		   on the blockquote resolves against body text and crushes this into a
-		   one-word column. */
-		margin: 0; max-width: 17ch; font-family: var(--display);
-		font-size: clamp(1.9rem, 5.2vw, 3.9rem);
-		font-variation-settings: 'wght' 500, 'opsz' 36;
-		line-height: 1.06; letter-spacing: -0.03em; text-wrap: pretty;
-	}
-	.verse cite {
-		display: block; margin-top: 1.6rem; font-style: normal;
-		font-family: var(--mono); font-size: 0.7rem;
-		letter-spacing: 0.18em; text-transform: uppercase; color: var(--iron);
-	}
-
-	.mission { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
-	.mission__text {
-		margin: 0; max-width: 34ch; font-family: var(--display);
-		font-size: clamp(1.3rem, 2.6vw, 2rem);
-		font-variation-settings: 'wght' 500, 'opsz' 24;
-		line-height: 1.25; letter-spacing: -0.025em; text-wrap: pretty;
-	}
-	/* The countries sit under the mission statement rather than beside it: the
-	   claim comes first, the evidence second. */
-	.mission__where { margin: 1.5rem 0 0; max-width: 46ch; }
-
-	/* ---------- gospel ---------- */
-	.gospel { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
-	.gospel__head { max-width: 20ch; }
-	.gospel__body { margin: 1rem 0 0; max-width: 56ch; }
-	.gospel__link { display: inline-block; margin-top: clamp(1.25rem, 2.5vw, 1.75rem); }
-
-	.grid {
-		display: grid; gap: clamp(1.75rem, 3.5vw, 3rem);
-		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-		padding-block: clamp(3rem, 6vw, 4.5rem);
-	}
-
-	@media (max-width: 720px) {
-		.latest { grid-template-columns: 1fr; }
-		.hero__foot .hours { width: 100%; margin-left: 0; }
-	}
-</style>
-
-<script>
-	import gsap from 'gsap';
-	import ScrollTrigger from 'gsap/ScrollTrigger';
-	import SplitText from 'gsap/SplitText';
-	import Lenis from 'lenis';
-
-	gsap.registerPlugin(ScrollTrigger, SplitText);
-
-	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-		const lenis = new Lenis({ duration: 1.05 });
-		lenis.on('scroll', ScrollTrigger.update);
-		gsap.ticker.add((t) => lenis.raf(t * 1000));
-		gsap.ticker.lagSmoothing(0);
-
-		const heading = document.querySelector<HTMLElement>('[data-split]');
-		if (heading) {
-			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
-			gsap.from(split.lines, {
-				yPercent: 130, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
-			});
-		}
-
-		gsap.from('.hero .eyebrow, .hero__foot, .hero__actions', {
-			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
-		});
-
-		// Reveals start high in the viewport so anything below the fold is already
-		// on screen by the time it plays: nothing sits at zero opacity waiting for
-		// a trigger that might never fire.
-		gsap.utils.toArray<HTMLElement>(
-			'.latest__lead, .prior, .verse blockquote, .mission__text, .gospel__body, .grid > article, .foot > *',
-		).forEach((el) => {
-			gsap.from(el, {
-				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
-				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-			});
-		});
-	}
-</script>
