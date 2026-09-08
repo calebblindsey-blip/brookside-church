@@ -401,6 +401,11 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	/* ---------- deck ---------- */
 	/* Floating card, pinned beside the motion toggle on desktop and above it on phones. */
 	body.has-deck { padding-bottom: calc(var(--deck-h, 76px) + 40px); }
+	/* site.css gives .deck `display: grid`, an author rule that beats the UA's
+	   [hidden] { display: none }. Without this line the closed deck is laid out
+	   off-screen by its transform, and on phones (bottom: 76px) the top 52px of
+	   it peeked back into the viewport above the motion toggle. */
+	.deck[hidden] { display: none; }
 	.deck { position: fixed; z-index: 45; left: 18px; right: 190px; bottom: 18px; max-width: 900px; background: #fffffff6; border: 1px solid #a5bece; border-radius: 16px; box-shadow: 0 12px 40px #30587326; backdrop-filter: blur(12px); transform: translateY(calc(100% + 24px)); transition: transform .38s cubic-bezier(.22, 1, .36, 1); }
 	.deck[data-open] { transform: none; }
 	.deck__in { display: flex; align-items: center; gap: 14px; padding: 12px 14px; }
@@ -422,7 +427,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	.deck__scrub input:focus-visible { outline-offset: 2px; }
 	.deck__time { margin: 0; flex: none; color: #587083; font-size: .8rem; font-variant-numeric: tabular-nums; }
 	.deck__slash { padding: 0 .35rem; opacity: .5; }
-	.deck__close { flex: none; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1px solid #a5bece; border-radius: 50%; background: #fff; color: #294f6b; cursor: pointer; }
+	.deck__close { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid #a5bece; border-radius: 50%; background: #fff; color: #294f6b; cursor: pointer; }
 
 	@media (max-width: 800px) {
 		:root { --chrome-h: 82px; }

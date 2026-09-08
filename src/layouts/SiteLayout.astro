@@ -4,9 +4,9 @@
  * calebblindsey-blip/brookside-church-website; plan in Compass at
  * projects/personal/brookside-church-website/PLAN.md).
  *
- * `BaseLayout.astro` is the legacy Reverent & Modern shell and still carries
- * /design-system until the port's last round deletes both. The analytics tag
- * lives HERE, so anything still on BaseLayout is silently unmeasured.
+ * This is the only layout. BaseLayout (Reverent & Modern) and Direction B's
+ * shared rules were deleted at the end of the port; every page carries the
+ * analytics tag through this file.
  *
  * Fonts are imported as JS side effects rather than @import in CSS: @fontsource
  * @import inside Tailwind-scoped CSS fails under rolldown. Keep this pattern.
@@ -29,7 +29,6 @@ import dmSansLatin from '@fontsource-variable/dm-sans/files/dm-sans-latin-opsz-n
 import serifLatin from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
 import serifLatinItalic from '@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url';
 import '../styles/site.css';
-import '../styles/legacy-b.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Motion from '../components/Motion.astro';
@@ -38,19 +37,14 @@ import ChurchSchema from '../components/ChurchSchema.astro';
 interface Props {
 	title?: string;
 	description?: string;
-	/** Direction B's crossbar selector. Ignored now; removed when the last page is ported. */
-	crossAt?: string;
 	/** Page-level class on the shell, e.g. "home" for the page current's layout. */
 	class?: string;
-	/** Set on pages not yet ported from Direction B; loads legacy-b.css's scoped rules. Gone when the last page is ported. */
-	legacy?: boolean;
 }
 
 const {
 	title = 'Brookside Church of God',
 	description = 'A Christ-centered church family in Brookside, Alabama. Join us Sunday at 10:45 AM or watch online.',
 	class: pageClass,
-	legacy = false,
 } = Astro.props;
 
 const fullTitle =
@@ -232,7 +226,7 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			main (the home page's current). `main` is not positioned, so section
 			offsets stay relative to the shell, which the current's layout depends on.
 		*/}
-		<div class:list={['site', pageClass, { 'legacy-b': legacy }]} data-site>
+		<div class:list={['site', pageClass]} data-site>
 			<a class="skip-link" href="#content">Skip to content</a>
 			<SiteHeader />
 			<slot name="decoration" />

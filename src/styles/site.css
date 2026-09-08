@@ -5,8 +5,7 @@
  * Kept as ONE flat stylesheet on purpose, the way it arrived: the port's whole
  * claim is that the visitor sees the same site, and a stylesheet that is a copy
  * can be diffed against its source. Page sections are here too, so the page
- * files carry markup and their own data only. Direction B's shared rules live in
- * legacy-b.css, scoped under main, until the last page is ported.
+ * files carry markup and their own data only.
  *
  * Two edits from the source, both because this is Astro and not Next:
  *   - the font variables point at the @fontsource family names;
@@ -284,7 +283,7 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 .platform-cards { display: grid; gap: 16px; }
 .platform-cards a { display: grid; grid-template-columns: 1fr auto; padding: 27px 30px; background: #fff; border: 1px solid #a7c4d7; box-shadow: 7px 7px 0 #c6deed; transition: transform .3s,box-shadow .3s; }
 .platform-cards a:hover { transform: translate(-3px,-3px); box-shadow: 11px 11px 0 #c6deed; }
-.platform-cards span { grid-column: 1/-1; margin-bottom: 6px; color: #587083; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+.platform-cards span:not(.arrow) { grid-column: 1/-1; margin-bottom: 6px; color: #587083; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; } /* :not(.arrow) is an Astro-side fix: the source rule also caught the arrow and dropped it onto its own line. */
 .platform-cards strong { font-size: clamp(1.25rem,2vw,1.7rem); }
 .archive-section { background: #fff; align-items: start; }
 .archive-panel label { display: block; margin-bottom: 9px; font-size: .875rem; font-weight: 650; text-transform: uppercase; letter-spacing: .1em; }

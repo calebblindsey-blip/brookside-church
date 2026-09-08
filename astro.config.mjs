@@ -1,8 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import mdx from '@astrojs/mdx';
 
 /**
  * Pages that exist for us, not for the public: the visual reference and the
@@ -17,17 +15,16 @@ import mdx from '@astrojs/mdx';
  */
 // '/directions' is kept here after the pages were deleted 2026-08-24: harmless
 // against a path that no longer builds, and correct again if one is ever restored.
-const PRIVATE = ['/design-system', '/directions'];
+// '/design-system' left the list when the page itself was deleted (2026-09, end of
+// the Codex-design port). Tailwind left with it: nothing in site.css uses it, and
+// @tailwindcss/vite was the piece that broke under Astro 6's rolldown-vite.
+const PRIVATE = ['/directions'];
 
 export default defineConfig({
 	site: 'https://brooksidechurchofgod.com',
 	integrations: [
-		mdx(),
 		sitemap({
 			filter: (page) => !PRIVATE.some((p) => new URL(page).pathname.startsWith(p)),
 		}),
 	],
-	vite: {
-		plugins: [tailwindcss()],
-	},
 });
