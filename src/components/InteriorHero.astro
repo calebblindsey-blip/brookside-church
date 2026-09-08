@@ -1,0 +1,23 @@
+---
+/**
+ * The interior page opener from Codex's design: eyebrow, a display title with
+ * one serif word, an intro, and an optional aside card that sits on the ribbon
+ * field. Title, intro and aside are slots so pages keep their own markup.
+ */
+interface Props {
+	eyebrow: string;
+}
+const { eyebrow } = Astro.props;
+---
+
+<section class="inner-hero">
+	<div class="inner-ribbons" aria-hidden="true">
+		{Array.from({ length: 12 }, (_, i) => <i style={`--ribbon: ${i}`}></i>)}
+	</div>
+	<div class="inner-hero-copy">
+		<p class="eyebrow">{eyebrow}</p>
+		<h1><slot name="title" /></h1>
+		<div class="inner-intro"><slot name="intro" /></div>
+	</div>
+	{Astro.slots.has('aside') && <aside class="inner-aside"><slot name="aside" /></aside>}
+</section>

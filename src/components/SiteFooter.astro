@@ -1,89 +1,68 @@
 ---
-import BrooksideMark from './BrooksideMark.astro';
+/**
+ * The footer from Codex's design. Its first act is the invitation, "Come to"
+ * set in the serif above the full lockup, and on the home page the scroll-linked
+ * current ends on that lockup's cross: `data-current-destination` is what
+ * Motion.astro measures to land it. Keep the attribute on the wordmark image.
+ */
 import { CHURCH } from '../data/church';
 
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const here = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
+const explore = [
+	{ href: '/visit/', label: 'Plan a visit' },
+	{ href: '/watch/', label: 'Watch & listen' },
+	{ href: '/about/', label: 'About Brookside' },
+	{ href: '/what-we-believe/', label: 'What we believe' },
+	{ href: '/knowing-christ/', label: 'Knowing Christ' },
+	{ href: '/give/', label: 'Give' },
+];
+const follow = [
+	{ href: CHURCH.profiles[0], label: 'Facebook' },
+	{ href: CHURCH.profiles[1], label: 'Instagram' },
+	{ href: CHURCH.profiles[2], label: 'YouTube' },
+	{ href: CHURCH.applePodcastsUrl, label: 'Apple Podcasts' },
+	{ href: CHURCH.spotifyUrl, label: 'Spotify' },
+];
 const year = new Date().getFullYear();
 ---
 
-<footer class="bay rule rule--heavy foot">
-	<div class="foot__brand">
-		<BrooksideMark class="foot__mark" letter="#101010" cross="#E6534E" />
-		<p class="foot__name">Brookside<br />Church of God</p>
+<footer class="site-footer">
+	<div class="footer-lead">
+		<div class="footer-call">
+			<p class="eyebrow"><span>There is a place</span> <span>for you here.</span></p>
+			<span class="footer-come" aria-hidden="true">Come to</span>
+		</div>
+		<h2 class="footer-invitation">
+			<span class="sr-only">Come to {CHURCH.name}</span>
+			<span class="footer-brookside" aria-hidden="true"><img class="footer-primary-wordmark" data-current-destination src="/images/brookside-primary.svg" width="1384" height="420" alt="" loading="lazy" /></span>
+		</h2>
 	</div>
-	<div class="foot__cols">
+	<div class="footer-grid">
 		<div>
-			<h4>Find us</h4>
+			<strong>Find us</strong>
 			<p>{CHURCH.street}<br />{CHURCH.locality}, Alabama {CHURCH.postalCode}</p>
-			<a
-				class="link"
-				href={CHURCH.mapsUrl}
-				target="_blank"
-				rel="noopener"
-			>Directions &rarr;</a>
+			<a href={CHURCH.mapsUrl}>Directions <span class="arrow" aria-hidden="true">↗</span></a>
 		</div>
 		<div>
-			<h4>Reach us</h4>
-			<p>
-				<a href={CHURCH.phoneHref}>{CHURCH.phone}</a><br />
-				<a href={CHURCH.emailHref}>{CHURCH.email}</a>
-			</p>
+			<strong>Reach us</strong>
+			<p><a href={CHURCH.phoneHref}>{CHURCH.phone}</a><br /><a href={CHURCH.emailHref}>{CHURCH.email}</a></p>
 		</div>
+		<nav aria-label="Explore">
+			<strong>Explore</strong>
+			<ul>{explore.map((item) => <li><a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a></li>)}</ul>
+		</nav>
+		<nav aria-label="Follow">
+			<strong>Follow</strong>
+			<ul>{follow.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul>
+		</nav>
 		<div>
-			<h4>Gather</h4>
-			{/*
-				Each line is nowrap: the column is narrow enough that "Morning
-				Worship 10:45 AM" broke before the meridiem on every page, leaving a
-				line reading just "AM". The times are also the church's own names for
-				these gatherings, not "Sunday service" and "Bible study".
-			*/}
-			<p class="foot__times">
-				<span>Sunday School 9:45 AM</span>
-				<span>Morning Worship 10:45 AM</span>
-				<span>Wednesday Classes 6:30 PM</span>
-			</p>
-		</div>
-		{/*
-			Explore, added 2026-08-21. Both pages are reachable from the body of the
-			site as well (the declaration from /about, Knowing Christ from Home and
-			the foot of /watch), but neither is in the main nav and neither should
-			be: that was cut from seven items to five on purpose, and a doctrinal
-			statement is not a top-level destination. The footer is how a reference
-			document stays findable without spending a nav slot.
-
-			`.foot__cols` is `auto-fit, minmax(150px, 1fr)`, so this fifth column
-			reflows on its own and needs no grid change. It lands 4 + 1 at 1440,
-			with Follow alone on the second row.
-
-			DO NOT try to squeeze five onto one row. Measured at 1440: the grid is
-			842px with a 40px gap, and the Gather column's widest nowrap string
-			("Morning Worship 10:45 AM") needs 181px. Five columns in 842px gives
-			136px even at ZERO gap, so it cannot fit, and narrowing the columns
-			re-breaks the exact wrap those nowrap spans were added to fix — the one
-			that left a line reading just "AM". The wrap is forced arithmetic, not
-			an oversight.
-
-			Follow is the deliberate orphan: Gather and Explore are both site
-			content and belong together on the first row, and Follow is external
-			links, so it is the one that loses least by dropping down.
-		*/}
-		<div>
-			<h4>Explore</h4>
-			<p>
-				<a href="/what-we-believe/">What we believe</a><br />
-				<a href="/knowing-christ/">Knowing Christ</a>
-			</p>
-		</div>
-		<div>
-			<h4>Follow</h4>
-			<p>
-				<a href="https://facebook.com/BrooksideChurchofGod" target="_blank" rel="noopener">Facebook</a><br />
-				<a href="https://instagram.com/brooksidechurchofgod" target="_blank" rel="noopener">Instagram</a><br />
-				<!-- The channel's own canonical handle. The raw UC… channel ID still
-				     works and is what the /watch embed needs, but this is the URL to
-				     show a human. -->
-				<a href="https://www.youtube.com/@brooksidechurchofgod" target="_blank" rel="noopener">YouTube</a>
-			</p>
+			<strong>Gather</strong>
+			<dl class="footer-times">{CHURCH.gatherings.map((g) => <div><dt>{g.name}</dt><dd>{g.time}</dd></div>)}</dl>
 		</div>
 	</div>
-	<p class="foot__legal">&copy; {year} Brookside Church of God</p>
+	<div class="footer-bottom">
+		<span class="footer-brand"><img class="footer-brand-lockup" src="/images/brookside-primary.svg" width="1384" height="420" alt="" loading="lazy" /></span>
+		<span>&copy; {year} · {CHURCH.tagline}</span>
+	</div>
 </footer>

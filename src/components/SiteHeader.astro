@@ -1,33 +1,38 @@
 ---
-import BrooksideMark from './BrooksideMark.astro';
-
-interface Props {
-	/** Path of the current page, used to mark the active nav item. */
-	path?: string;
-}
-
-/* Hrefs carry the trailing slash on purpose. Astro serves these as directory
-   URLs, so a bare /visit costs every nav click a 308 before the real request.
-   public/_redirects already writes trailing-slash destinations for exactly this
-   reason; leaving the in-site links bare contradicted the file's own rule. */
-const { path = Astro.url.pathname } = Astro.props;
+/**
+ * The header from Codex's design: the full primary lockup at the left, three
+ * destinations and the boxed Give at the right. No hamburger; at 390 wide the
+ * four items fit at .78rem, which is what the mobile audit measures.
+ *
+ * Hrefs carry the trailing slash on purpose. Astro serves these as directory
+ * URLs, so a bare /visit costs every nav click a 308 before the real request.
+ */
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const nav = [
 	{ href: '/visit/', label: 'Visit' },
 	{ href: '/watch/', label: 'Watch' },
 	{ href: '/about/', label: 'About' },
 ];
-const here = (href: string) => path === href || `${path}/` === href;
+const here = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
 ---
 
-<header class="chrome">
-	<a class="chrome__brand" href="/" aria-label="Brookside Church of God, home">
-		<BrooksideMark class="chrome__mark" letter="#101010" cross="#E6534E" />
-		<span class="chrome__word">Brookside</span>
+<header class="site-header">
+	<a class="brand" href="/" aria-label="Brookside Church of God, home" aria-current={here('/') ? 'page' : undefined}>
+		{/*
+			The lockup is an <img>, not the inline mark component: this design uses
+			the whole wordmark, and inlining 9 KB of paths three times a page bought
+			nothing. The file is Codex's copy of the brand package lockup, recoloured
+			to this design's ink and copper. Colour aside, the geometry is the
+			package's, verbatim.
+		*/}
+		<img class="brand-lockup" src="/images/brookside-primary.svg" width="1384" height="420" alt="" fetchpriority="high" />
 	</a>
-	<nav class="chrome__nav" aria-label="Main">
-		{nav.map((item) => (
-			<a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-		))}
-		<a class="chrome__give" href="/give/" aria-current={here('/give/') ? 'page' : undefined}>Give</a>
+	<nav aria-label="Primary">
+		<ul class="nav-list">
+			{nav.map((item) => (
+				<li><a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a></li>
+			))}
+			<li><a class="nav-give" href="/give/" aria-current={here('/give/') ? 'page' : undefined}>Give</a></li>
+		</ul>
 	</nav>
 </header>

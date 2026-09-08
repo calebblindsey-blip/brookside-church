@@ -1,0 +1,8 @@
+---
+/** The three gatherings as a definition list. Used in interior-page asides. */
+import { CHURCH } from '../data/church';
+---
+
+<dl class="times-list">
+	{CHURCH.gatherings.map((g) => <div><dt>{g.name}</dt><dd>{g.time}</dd></div>)}
+</dl>

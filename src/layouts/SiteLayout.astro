@@ -1,50 +1,53 @@
 ---
 /**
- * The Direction B layout. New pages use this.
+ * The site shell, in Codex's design (ported September 2026 from
+ * calebblindsey-blip/brookside-church-website; plan in Compass at
+ * projects/personal/brookside-church-website/PLAN.md).
  *
  * `BaseLayout.astro` is the legacy Reverent & Modern shell and still carries
- * /design-system until that is migrated. (/visit moved here and this comment
- * had not caught up. It matters more than a stale comment usually does: the
- * analytics tag below lives in this file, so anything still on BaseLayout is
- * silently unmeasured, and the wrong list here is how that goes unnoticed.)
- * The two do not share
- * tokens, components, or CSS, so they can coexist without bleeding into each
- * other. Delete BaseLayout once the last page is off it.
+ * /design-system until the port's last round deletes both. The analytics tag
+ * lives HERE, so anything still on BaseLayout is silently unmeasured.
  *
- * Fonts are imported here as JS side effects rather than @import in CSS:
- * @fontsource @import inside Tailwind-scoped CSS fails under rolldown. Keep
- * this pattern.
+ * Fonts are imported as JS side effects rather than @import in CSS: @fontsource
+ * @import inside Tailwind-scoped CSS fails under rolldown. Keep this pattern.
+ * DM Sans is the opsz build so the display sizes get the optical-size axis the
+ * brand wordmark was set with; Instrument Serif is one weight with a true italic,
+ * and both styles load so every <em> uses that italic rather than a slant.
  */
-import '@fontsource-variable/bricolage-grotesque';
-import '@fontsource-variable/public-sans';
-import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource-variable/dm-sans/opsz.css';
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/instrument-serif/latin-400-italic.css';
 /*
- * The two latin faces, imported again as URLs so they can be preloaded.
+ * The latin faces, imported again as URLs so they can be preloaded.
  *
  * The CSS above is what declares them; this is only how their hashed build
  * filenames become knowable at author time. Vite rewrites both to the same
  * emitted asset, so the preload and the @font-face point at one file and the
  * browser fetches it once.
  */
-import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
-import publicSansLatin from '@fontsource-variable/public-sans/files/public-sans-latin-wght-normal.woff2?url';
+import dmSansLatin from '@fontsource-variable/dm-sans/files/dm-sans-latin-opsz-normal.woff2?url';
+import serifLatin from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
+import serifLatinItalic from '@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url';
 import '../styles/site.css';
+import '../styles/legacy-b.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import Thread from '../components/Thread.astro';
+import Motion from '../components/Motion.astro';
 import ChurchSchema from '../components/ChurchSchema.astro';
 
 interface Props {
 	title?: string;
 	description?: string;
-	/** Selector the line's crossbar forms at. Omit for pages with no scripture. */
+	/** Direction B's crossbar selector. Ignored now; removed when the last page is ported. */
 	crossAt?: string;
+	/** Page-level class on the shell, e.g. "home" for the page current's layout. */
+	class?: string;
 }
 
 const {
 	title = 'Brookside Church of God',
-	description = 'A church in Brookside, Alabama, working through the Bible a passage at a time. Sunday worship 10:45 AM.',
-	crossAt,
+	description = 'A Christ-centered church family in Brookside, Alabama. Join us Sunday at 10:45 AM or watch online.',
+	class: pageClass,
 } = Astro.props;
 
 const fullTitle =
@@ -118,8 +121,9 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			fetched in CORS mode, and without it the preload is ignored and the file
 			is fetched a second time.
 		*/}
-		<link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href={publicSansLatin} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={dmSansLatin} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={serifLatinItalic} as="font" type="font/woff2" crossorigin />
 		<meta name="generator" content={Astro.generator} />
 		{/*
 			Two things here are load-bearing and both fail SILENTLY if changed.
@@ -214,13 +218,24 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			content="Brookside Church of God on Cardiff Street: a brick building with a white gable, a bell tower, and two crosses against a blue sky."
 		/>
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="theme-color" content="#fafaf8" />
+		<meta name="theme-color" content="#fcfcf9" />
 		<ChurchSchema />
 	</head>
 	<body>
-		<Thread crossAt={crossAt} />
-		<SiteHeader />
-		<main><slot /></main>
-		<SiteFooter />
+		{/*
+			One shell for every page: skip link first, then header, main, footer, and
+			the fixed motion control last so it never sits ahead of the content in tab
+			order. `decoration` is for page-level art that sits between header and
+			main (the home page's current). `main` is not positioned, so section
+			offsets stay relative to the shell, which the current's layout depends on.
+		*/}
+		<div class:list={['site', pageClass]} data-site>
+			<a class="skip-link" href="#content">Skip to content</a>
+			<SiteHeader />
+			<slot name="decoration" />
+			<main id="content" tabindex="-1"><slot /></main>
+			<SiteFooter />
+			<Motion />
+		</div>
 	</body>
 </html>

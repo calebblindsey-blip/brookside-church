@@ -83,6 +83,13 @@ export const CHURCH = {
 		'https://www.youtube.com/@brooksidechurchofgod',
 	],
 
+	/** The line under the name on the lockup, and the site's one-sentence self-description. */
+	tagline: 'Preaching Christ crucified.',
+
+	/** Where the sermon podcast is listed. The feed itself is in sermons.json. */
+	applePodcastsUrl: 'https://podcasts.apple.com/us/podcast/id1094539094',
+	spotifyUrl: 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76',
+
 	mapsUrl:
 		'https://www.google.com/maps/search/?api=1&query=200+Cardiff+Street+Brookside+AL+35036',
 } as const;
