@@ -1,82 +1,21 @@
 ---
-import { CHURCH } from '../data/church';
 /**
- * Knowing Christ.
- *
- * THE COPY ON THIS PAGE IS A REWRITE AND IS AWAITING BRAD'S APPROVAL.
- *
- * The Squarespace original could not be carried across as-is for two reasons.
- * It opened on a survey anecdote about three-word sentences, which is tract
- * filler, and it said "Sharing the Faith wants to help you explore how you can
- * know Christ personally" — naming an outside organisation that means nothing
- * on this church's site and reads as though the page was pasted in. It was
- * almost certainly imported material, which is also the likeliest reason it sat
- * unlinked.
- *
- * What was kept is the substance, because the substance is not ours to improve:
- * the four-movement structure (God's plan, our problem, God's remedy, our
- * response) with the same four verses the church used, and the four steps of
- * receiving Christ in the same order. What changed is that it now speaks in
- * this church's voice instead of a tract's.
- *
- * WHY A PAGE AND NOT A SECTION. It is the one page that tells a stranger how to
- * become a Christian, and it needs to be linkable on its own — from a text
- * message, from the pulpit, from a conversation. But a page nobody links to is
- * exactly how this content ended up buried on Squarespace, so it is reached
- * from the two highest-intent places on the site: the end of /watch, where
- * somebody has just listened to a sermon, and Home, whose headline promises
- * "Preaching Christ crucified" and until now never said what that message is.
- *
- * HEADLINE RULE. Every headline on this site is a declarative statement and
- * none of them address the reader; a first round of /visit headlines was
- * rejected for exactly that. So the H1 is third person even though the body
- * deliberately is not — the body is an invitation and should sound like one.
- *
- * No crossAt, matching /about, /watch and /what-we-believe. The crossbar is
- * Home's payoff. Scripture on the page is not a reason to spend it again.
+ * Knowing Christ, in Codex's design (Round 4 of the port). Layout follows
+ * app/knowing-christ/page.tsx: four movements each with a heading, a body and a
+ * verse, then four steps, then what happens next. The bodies and steps are the
+ * Astro page's fuller wording, which Codex had trimmed; the scripture is the same
+ * translation on both and is carried in full.
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
+import InteriorHero from '../components/InteriorHero.astro';
+import { CHURCH } from '../data/church';
 
-/*
- * The four movements. `verse` is the church's wording of each reference, kept
- * with the same translation the old page quoted so the text a returning visitor
- * remembers is the text they find.
- */
 const movements = [
-	{
-		term: 'God’s plan is peace and life',
-		body:
-			'God is not distant and He is not indifferent. He made you, He loves you, and what He wants for you is life rather than the wearing-down most people settle for.',
-		verse:
-			'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.',
-		ref: 'John 3:16',
-	},
-	{
-		term: 'Our problem is separation',
-		body:
-			'People choose their own way instead of God’s, and that choice puts distance between us and Him. It is not a matter of being worse than the person next to you. It is true of every one of us, and no amount of effort closes the gap from our side.',
-		verse: 'For all have sinned and fall short of the glory of God.',
-		ref: 'Romans 3:23',
-	},
-	{
-		term: 'God’s remedy is the cross',
-		body:
-			'God closed the gap Himself. Jesus paid the penalty for our sin by dying in our place, and then walked out of the grave. This is what this church means when it says it preaches Christ crucified.',
-		verse:
-			'But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.',
-		ref: 'Romans 5:8',
-	},
-	{
-		term: 'The response is to receive Him',
-		body:
-			'Knowing all of this is not the same as receiving it. What God offers has to be taken, and it is taken by trusting Christ and asking Him to be Lord of your life.',
-		verse:
-			'Yet to all who received him, to those who believed in his name, he gave the right to become children of God.',
-		ref: 'John 1:12',
-	},
+	{ term: 'God’s plan is peace and life', body: 'God is not distant and He is not indifferent. He made you, He loves you, and what He wants for you is life rather than the wearing-down most people settle for.', verse: 'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.', ref: 'John 3:16' },
+	{ term: 'Our problem is separation', body: 'People choose their own way instead of God’s, and that choice puts distance between us and Him. It is not a matter of being worse than the person next to you. It is true of every one of us, and no amount of effort closes the gap from our side.', verse: 'For all have sinned and fall short of the glory of God.', ref: 'Romans 3:23' },
+	{ term: 'God’s remedy is the cross', body: 'God closed the gap Himself. Jesus paid the penalty for our sin by dying in our place, and then walked out of the grave. This is what this church means when it says it preaches Christ crucified.', verse: 'But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.', ref: 'Romans 5:8' },
+	{ term: 'The response is to receive Him', body: 'Knowing all of this is not the same as receiving it. What God offers has to be taken, and it is taken by trusting Christ and asking Him to be Lord of your life.', verse: 'Yet to all who received him, to those who believed in his name, he gave the right to become children of God.', ref: 'John 1:12' },
 ];
-
-/* The church's four steps, in the church's order. */
 const steps = [
 	'Admit your need. You are a sinner, the same as everyone who has ever walked into this building.',
 	'Be willing to turn from your sin. That is what repentance means, and it is a change of direction rather than a change of mood.',
@@ -85,159 +24,47 @@ const steps = [
 ];
 ---
 
-<SiteLayout legacy
+<SiteLayout
 	title="Knowing Christ"
 	description="How a person comes to Christ: God's plan, our problem, the cross, and how to receive Him. Written plainly by Brookside Church of God."
 >
-	<section class="bay gtop">
-		<p class="eyebrow">Knowing Christ &middot; Brookside Church of God</p>
-		<h1 class="display" data-split>
-			How a person<br />comes to<br /><em>Christ</em>
-		</h1>
-		<div class="gtop__foot">
-			<p class="lede">
-				This church exists to preach one message, and this page is that message
-				written down rather than preached. It takes about three minutes to read.
-				Nothing on it is complicated, and none of it depends on you cleaning
-				yourself up first.
-			</p>
-		</div>
-	</section>
+	<InteriorHero eyebrow="Knowing Christ">
+		<Fragment slot="title">How a person<br />comes to <em>Christ.</em></Fragment>
+		<p slot="intro">This church exists to preach one message, and this page is that message written down rather than preached. It takes about three minutes to read. Nothing on it is complicated, and none of it depends on you cleaning yourself up first.</p>
+	</InteriorHero>
 
-	<section class="bay rule move" aria-labelledby="move-heading">
-		<p class="eyebrow" id="move-heading">The message</p>
-		<h2 class="headline move__head">Four things the Bible says, in order.</h2>
-		<div class="move__list">
-			{movements.map((m) => (
-				<article class="move__item">
-					<h3 class="move__term">{m.term}</h3>
-					<p class="prose move__body">{m.body}</p>
-					<blockquote class="move__verse">
-						<p>{m.verse}</p>
-						<cite>{m.ref}</cite>
-					</blockquote>
+	<section class="inner-section gospel-section" aria-labelledby="move-heading">
+		<div><p class="eyebrow">The message</p><h2 id="move-heading">Four things the Bible says, in order.</h2></div>
+		<div class="gospel-grid">
+			{movements.map((m, i) => (
+				<article>
+					<span>{String(i + 1).padStart(2, '0')}</span>
+					<h3>{m.term}</h3>
+					<p>{m.body}</p>
+					<blockquote>{m.verse}<cite>{m.ref}</cite></blockquote>
 				</article>
 			))}
 		</div>
 	</section>
 
-	<section class="bay rule steps" aria-labelledby="steps-heading">
-		<p class="eyebrow" id="steps-heading">How to receive Christ</p>
-		<h2 class="headline steps__head">There are four steps, and they are all honest ones.</h2>
-		<ol class="steps__list">
-			{steps.map((s) => <li class="steps__item">{s}</li>)}
-		</ol>
-		<p class="prose steps__note">
-			There are no particular words that have to be used. God is not listening
-			for a formula, He is listening for somebody who means it.
-		</p>
+	<section class="inner-section inner-copper" aria-labelledby="steps-heading">
+		<div><p class="eyebrow">How to receive Christ</p><h2 id="steps-heading">There are four steps, and they are all honest ones.</h2></div>
+		<div>
+			<ol class="step-list">
+				{steps.map((s, i) => <li><span>{String(i + 1).padStart(2, '0')}</span>{s}</li>)}
+			</ol>
+			<p class="lead">There are no particular words that have to be used. God is not listening for a formula, He is listening for somebody who means it.</p>
+		</div>
 	</section>
 
-	<section class="bay rule next" aria-labelledby="next-heading">
-		<p class="eyebrow" id="next-heading">What happens next</p>
-		<h2 class="headline next__head">Tell somebody, and do not do this alone.</h2>
-		<p class="prose next__body">
-			If you prayed that, this church would count it a privilege to hear about
-			it and to help you take the next step. Come on a Sunday and say so, or
-			email ahead if walking in cold is easier. Either reaches a real person,
-			and nobody will make a spectacle of you.
-		</p>
-		<div class="actions next__actions">
-			<a class="btn btn--solid" href="/visit/">Plan a visit</a>
-			<a class="btn btn--line" href={CHURCH.emailHref}>Email the church</a>
+	<section class="inner-section split-section" aria-labelledby="next-heading">
+		<div><p class="eyebrow">What happens next</p><h2 id="next-heading">Tell somebody, and do not do this alone.</h2></div>
+		<div>
+			<p class="lead">If you prayed that, this church would count it a privilege to hear about it and to help you take the next step. Come on a Sunday and say so, or email ahead if walking in cold is easier. Either reaches a real person, and nobody will make a spectacle of you.</p>
+			<div class="card-actions">
+				<a class="button button-light" href="/visit/">Plan a visit <span class="arrow" aria-hidden="true">↗</span></a>
+				<a class="text-link" href={CHURCH.emailHref}>Email the church <span class="arrow" aria-hidden="true">↗</span></a>
+			</div>
 		</div>
 	</section>
 </SiteLayout>
-
-<style>
-	.move { padding-block: clamp(3rem, 6vw, 4.5rem) clamp(1rem, 2vw, 1.5rem); }
-	.move__head { max-width: 22ch; margin-bottom: clamp(2rem, 4vw, 3rem); }
-	.move__list { display: grid; gap: clamp(2rem, 4vw, 3rem); }
-	.move__item {
-		display: grid;
-		gap: 0.7rem;
-		padding-top: clamp(1.2rem, 2.5vw, 1.75rem);
-		border-top: 1px solid var(--ash);
-		max-width: 62ch;
-	}
-	.move__term {
-		margin: 0;
-		font-family: var(--display);
-		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
-		font-variation-settings: "wght" 500, "opsz" 24;
-		line-height: 1.2;
-		letter-spacing: -0.02em;
-		color: var(--ink);
-	}
-	.move__body { margin: 0; max-width: 56ch; }
-	/*
-	 * The verse is set on a coral rule rather than in quotation marks, which
-	 * keeps the accent doing the one job it does everywhere else on this site:
-	 * marking a line. Scripture is the only thing on the page that gets it.
-	 */
-	.move__verse {
-		margin: 0.35rem 0 0;
-		padding: 0.15rem 0 0.15rem clamp(0.9rem, 2vw, 1.25rem);
-		border-left: 2px solid var(--coral);
-		max-width: 52ch;
-	}
-	.move__verse p {
-		margin: 0;
-		font-family: var(--display);
-		font-size: clamp(1.02rem, 1.9vw, 1.2rem);
-		font-variation-settings: "wght" 400, "opsz" 18;
-		line-height: 1.45;
-		color: var(--ink);
-		text-wrap: pretty;
-	}
-	.move__verse cite {
-		display: block;
-		margin-top: 0.45rem;
-		font-family: var(--mono);
-		font-style: normal;
-		font-size: 0.68rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--iron);
-	}
-
-	.steps { padding-block: clamp(3rem, 6vw, 4.5rem); }
-	.steps__head { max-width: 26ch; }
-	.steps__list {
-		margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
-		padding: 0;
-		list-style: none;
-		counter-reset: step;
-		max-width: 60ch;
-	}
-	.steps__item {
-		counter-increment: step;
-		display: flex;
-		gap: clamp(0.85rem, 2vw, 1.35rem);
-		align-items: baseline;
-		padding: clamp(0.7rem, 1.6vw, 1rem) 0;
-		border-top: 1px solid var(--ash);
-		color: var(--iron);
-		font-size: 1rem;
-		line-height: 1.6;
-		text-wrap: pretty;
-	}
-	.steps__item::before {
-		content: counter(step, decimal-leading-zero);
-		flex: none;
-		font-family: var(--mono);
-		font-size: 0.68rem;
-		letter-spacing: 0.06em;
-		color: var(--coral);
-	}
-	.steps__note { max-width: 52ch; margin-block: clamp(1.5rem, 3vw, 2rem) 0; }
-
-	.next { padding-block: clamp(3rem, 6vw, 4.5rem); }
-	.next__head { max-width: 24ch; }
-	.next__body { max-width: 54ch; margin-block: 1rem 0; }
-	.next__actions { margin-top: clamp(1.5rem, 3vw, 2rem); }
-
-	@media (max-width: 720px) {
-		.steps__item { flex-direction: column; gap: 0.4rem; }
-	}
-</style>

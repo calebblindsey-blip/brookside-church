@@ -453,3 +453,7 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
    sentence are exempt on purpose (WCAG 2.5.8) and these are all standalone. */
 .text-link, .inline-links a { position: relative; }
 .text-link::after, .inline-links a::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+/* Give: the mailing address inside its method card. */
+.method-addr { display: block; margin-top: 12px; font-style: normal; color: #496274; line-height: 1.6; }
+/* A link inside running text keeps the sentence's size and gets no 44px overlay (WCAG 2.5.8 exempts inline links). */
+.inline-text-link { color: var(--water); font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
