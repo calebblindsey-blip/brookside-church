@@ -1,502 +1,91 @@
 ---
-import { CHURCH } from '../data/church';
 /**
- * Visit: the page for the one person on this site who has not decided yet.
+ * Visit, in Codex's design (Round 3 of the port). Layout follows app/visit/page.tsx
+ * in brookside-church-website. Folded in from the Astro site:
  *
- * Every other page serves someone who already chose to be here. This one
- * serves somebody working out whether to walk into a small church where they
- * know nobody, so its only job is to remove reasons not to come.
- *
- * WHAT IS NOT HERE, AND WHY. The previous version of this page was written by
- * a design tool and almost none of it was reported. The church publishes ten
- * real pages (the other 292 URLs in its sitemap are podcast episodes) and
- * across all ten there is no visit page, no service-structure page, no kids
- * page and no "what to expect" page. So these claims, all on the old page,
- * had no source and are gone:
- *
- *   - that the service "lands around 12:15 or 12:30"
- *   - that Pastor Brad "preaches expositionally"
- *   - that music is contemporary, that a live band leads, that lyrics are on
- *     screen
- *   - that there are greeters at the door
- *   - that parking is on-site with "plenty of space" and no overflow
- *   - a paragraph on what people wear
- *   - the kids programme names "Children's Nursery" and "Kids Church"
- *   - the frequency of communion and whether the table is open
- *
- * Several of these are probably true, and anyone who attends could confirm
- * them in a sentence. That is the point: they need confirming, not composing.
- * This is the same failure that put an invented 1948 founding on the About
- * page. Add them back the moment somebody at the church says them, and not
- * one moment sooner.
- *
- * One correction rather than a cut: the old page called Wednesday "Bible
- * Study" and described "adult Bible study plus a parallel study for kids."
- * The church calls it "Wednesday Classes" and says nothing about a kids
- * track. The church's wording wins.
- *
- * The structural device is the time. Watch runs the year down a sticky rail
- * to count backwards through the archive; here the times run down the page to
- * count forward through one morning, which is the thing a nervous visitor is
- * actually trying to work out. Same instrument, opposite direction.
- *
- * The headline was the church's own invitation quoted off its home page, "come
- * and see what all the fuss is about". Changed on Caleb's call, 2026-08-03.
- *
- * Why, since quoting the church usually wins here and does elsewhere on this
- * page: that particular line is on the project's voice kill-list, and quoting
- * it verbatim put the exact phrase the guide rejects into the largest type on
- * the page. Attribution in the lede underneath ("those are the church's own
- * words") made it honest without making it good. The home page keeps its own
- * quoted invitation, which is the church's voice in a lede rather than as a
- * headline, and that distinction is the whole decision.
- *
- * The replacement is a statement rather than an instruction, which is the
- * pattern every other headline on the site follows: Home "Preaching Christ
- * crucified", Watch "Six years of preaching, one subject", About "A church
- * built on one person", Give "One church, kept going by its people". None of
- * them address the reader, and an earlier round of replacements was rejected
- * for doing exactly that.
- *
- * The lede lost its opening sentence with the quote, since it existed only to
- * attribute it.
- *
- * No crossAt: the crossbar is Home's payoff and repeating it spends it.
+ *   - The contact path stays ABOVE THE FOLD. The old Squarespace /contact-us took
+ *     607 sessions and had nothing to contact through; this page must never
+ *     repeat that by leaving the phone number at the foot. Both hrefs come from
+ *     church.ts, never inlined: the number was hardcoded in five files once,
+ *     which is how the wrong one ended up on Facebook and Yelp.
+ *   - The children's programme in the church's own confirmed wording (Caleb
+ *     Lindsey, 2026-07-28; Compass church-facts.md). Do not add to it without
+ *     the same kind of source. The section keeps id="kids" for inbound links.
+ *   - The building photograph, shot from Cardiff Street so it matches what a
+ *     visitor sees from the road, and the mailing address, because mail does not
+ *     come to the building.
+ *   - "Ask anything first", the closing invitation to call or email before Sunday.
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
+import InteriorHero from '../components/InteriorHero.astro';
+import Times from '../components/Times.astro';
+import { CHURCH } from '../data/church';
 
-/**
- * Verbatim from the church's own /contact-us, including its naming. Do not
- * retitle these: "Morning Worship" and "Wednesday Classes" are what the church
- * calls them, not "Sunday service" and "Bible study".
- *
- * Grouped by day rather than tagged per row. A day tag beside every slot reads
- * "Wednesday Classes WEDNESDAY", and the day is the thing two of the three
- * names already contain. As a group heading it says each day once and gives
- * the page the same shape as Watch, where the year heads its own stack.
- */
-const days = [
-	{
-		day: 'Sunday',
-		slots: [
-			{ time: '9:45', meridiem: 'AM', name: 'Sunday School' },
-			{ time: '10:45', meridiem: 'AM', name: 'Morning Worship' },
-		],
-	},
-	{
-		day: 'Wednesday',
-		slots: [{ time: '6:30', meridiem: 'PM', name: 'Wednesday Classes' }],
-	},
-];
-
-const ADDRESS = CHURCH.addressLine;
-const GOOGLE = `https://maps.google.com/?q=${encodeURIComponent(ADDRESS)}`;
-const APPLE = `https://maps.apple.com/?q=${encodeURIComponent(ADDRESS)}`;
-const PHONE = CHURCH.phone;
-const EMAIL = CHURCH.email;
+const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(CHURCH.addressLine)}`;
+const mailing = 'P.O. Box 24, Brookside, AL 35036';
 ---
 
-<SiteLayout legacy
+<SiteLayout
 	title="Visit"
-	description={`Plan a visit to Brookside Church of God. Sunday School 9:45 AM, Morning Worship 10:45 AM, Wednesday Classes 6:30 PM, at ${ADDRESS}.`}
+	description={`Plan a visit to Brookside Church of God. Sunday School 9:45 AM, Morning Worship 10:45 AM, Wednesday Classes 6:30 PM, at ${CHURCH.addressLine}.`}
 >
-	<section class="bay vtop">
-		<p class="eyebrow">Plan a visit &middot; Brookside Church of God</p>
-		<h1 class="display" data-split>
-			A church<br />you can<br /><em>walk into</em>
-		</h1>
-		<div class="vtop__foot">
-			<p class="lede">
-				Everyone is welcome, there is nothing to sign up for, and nobody
-				needs to know you are coming. Morning Worship starts at 10:45 and
-				we are usually done by around 12:15.
-			</p>
-			{/*
-				The contact path, above the fold, and the reason it is here rather
-				than only at the foot of the page.
-
-				The old Squarespace /contact-us took 607 sessions and fired zero
-				form_start and zero form_submit events over the same period /give
-				fired 12 and 15. The tracking worked; the form was not there. Up to
-				585 people reached a page whose only purpose was to be contacted
-				through and had nothing to reach.
-
-				This page repeated that quietly: the phone number was a <dd> in a
-				definition list in the last section. Reachable, and reachable is not
-				the same as offered. 70% of real organic traffic here is mobile, so
-				the single highest-value action on this page is a tappable phone
-				number that does not need a scroll to find.
-
-				Both hrefs come from src/data/church.ts. Do not inline either one:
-				the number was hardcoded in five files once, which is the same
-				mechanism that put the wrong number on Facebook and Yelp.
-			*/}
-			<div class="actions vtop__actions">
-				<a class="btn btn--solid" href={CHURCH.phoneHref}>{PHONE}</a>
-				<a class="btn btn--line" href={CHURCH.emailHref}>{EMAIL}</a>
+	<InteriorHero eyebrow="Plan a visit · Brookside, Alabama">
+		<Fragment slot="title">A church you can<br /><em>walk into.</em></Fragment>
+		<Fragment slot="intro">
+			<p>Everyone is welcome. There is nothing to sign up for, and nobody needs to know you are coming. Morning Worship starts at 10:45 and we are usually done around 12:15.</p>
+			<div class="inline-links">
+				<a href={CHURCH.phoneHref}>{CHURCH.phone}</a>
+				<a href={CHURCH.emailHref}>Email us</a>
 			</div>
+		</Fragment>
+		<Fragment slot="aside"><p class="eyebrow">When we meet</p><Times /></Fragment>
+	</InteriorHero>
+
+	<section class="inner-section inner-blue" id="kids" aria-labelledby="kids-heading">
+		<div>
+			<p class="eyebrow">Bringing children</p>
+			<h2 id="kids-heading">Yes, bring them.</h2>
+			<p class="lead">Nobody has to sit through a service wondering whether their child is welcome. Here is exactly what happens on Sunday morning.</p>
+		</div>
+		<div class="detail-list">
+			<article><span>01</span><h3>Nursery</h3><p>Every Sunday, and open through both Sunday School and Morning Worship. Bring your babies.</p></article>
+			<article><span>02</span><h3>Kids Church</h3><p>Starts at 10:45. The children stay in the sanctuary with everyone else for worship, then are dismissed together once the singing is over.</p></article>
+			<article><span>03</span><h3>Corporate Sunday</h3><p>Every fourth Sunday the children stay in for the whole service, and the whole church is in one room.</p></article>
+			<article><span>04</span><h3>Sunday School</h3><p>9:45, with classes for every age: nursery, kids, youth and adults.</p></article>
 		</div>
 	</section>
 
-	{/*
-		The device. Times in display type running down the page, which is the
-		one thing on here somebody genuinely needs before Sunday. Set as a
-		description list because that is what it is: a term and its time.
-	*/}
-	<section class="bay rule when" aria-labelledby="when-heading">
-		<p class="eyebrow" id="when-heading">When we meet</p>
-		{days.map((g) => (
-			<div class="stack" aria-labelledby={`d-${g.day}`}>
-				<h2 class="stack__day" id={`d-${g.day}`}>{g.day}</h2>
-				<dl class="stack__list">
-					{g.slots.map((s) => (
-						<div class="slot">
-							<dt class="slot__mark">
-								<span class="slot__time">{s.time}</span>
-								<span class="slot__mer">{s.meridiem}</span>
-							</dt>
-							<dd class="slot__body">
-								<span class="slot__name">{s.name}</span>
-							</dd>
-						</div>
-					))}
-				</dl>
-			</div>
-		))}
-	</section>
-
-	{/*
-		Kids. This section is why the home page's "Kids and childcare" link
-		existed with nowhere to go: the programme names were cut from this page
-		for having no source, and the link was never repointed. Every claim here
-		was confirmed by Caleb Lindsey (Worship Pastor) on 2026-07-28 and is
-		recorded in Compass at projects/personal/brookside-church-website/
-		church-facts.md. Do not add to it without the same kind of source.
-	*/}
-	<section class="bay rule kids" id="kids" aria-labelledby="kids-heading">
-		<p class="eyebrow" id="kids-heading">Bringing children</p>
-		<h2 class="headline kids__head">Yes, bring them.</h2>
-		<p class="lede kids__lede">
-			Nobody has to sit through a service worrying about whether their child is
-			welcome, so here is exactly what happens to them on a Sunday morning.
-		</p>
-		<dl class="kids__list">
-			<div>
-				<dt>Nursery</dt>
-				<dd>
-					Every Sunday, and open through both Sunday School and Morning
-					Worship. Bring your babies.
-				</dd>
-			</div>
-			<div>
-				<dt>Kids Church</dt>
-				<dd>
-					Starts at 10:45. The children stay in the sanctuary with everyone
-					else for worship, then are dismissed together once the singing is
-					over.
-				</dd>
-			</div>
-			<div>
-				<dt>Corporate Sunday</dt>
-				<dd>
-					Every fourth Sunday the children stay in for the whole service, and
-					the whole church is in one room.
-				</dd>
-			</div>
-			<div>
-				<dt>Sunday School</dt>
-				<dd>
-					9:45, with classes for every age: nursery, kids, youth and adults.
-				</dd>
-			</div>
-		</dl>
-	</section>
-
-	<section class="bay rule where" aria-labelledby="where-heading">
-		<p class="eyebrow" id="where-heading">Where we are</p>
-		<div class="where__grid">
-			<div>
-				<h2 class="headline">200 Cardiff Street.</h2>
-				{/*
-					Address links out rather than embedding a map. A map iframe is a
-					third-party request and a tracking surface on a page whose whole
-					job is to lower a stranger's guard, and it can render broken for
-					reasons outside this site. Two links cannot.
-				*/}
-				<address class="where__addr">
-					{CHURCH.name}<br />
-					{CHURCH.street}<br />
-					{CHURCH.locality}, Alabama {CHURCH.postalCode}
-				</address>
-				<div class="actions where__actions">
-					<a class="btn btn--solid" href={GOOGLE} target="_blank" rel="noopener">Google Maps</a>
-					<a class="btn btn--line" href={APPLE} target="_blank" rel="noopener">Apple Maps</a>
+	<section class="inner-section split-section" aria-labelledby="where-heading">
+		<div>
+			<p class="eyebrow">Where we are</p>
+			<h2 id="where-heading">{CHURCH.street}.</h2>
+			<p class="lead">Brookside sits just northwest of Birmingham, off I&#8209;22. Mail does not come to the building; anything posted to the church goes to the P.O. Box.</p>
+		</div>
+		<div>
+			<figure class="where-shot">
+				<img src="/building.webp" width="1600" height="900" alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses." loading="lazy" decoding="async" />
+				<figcaption>Look for the two crosses and the blue doors.</figcaption>
+			</figure>
+			<div class="address-card">
+				<strong>{CHURCH.name}</strong>
+				<p>{CHURCH.street}<br />{CHURCH.locality}, Alabama {CHURCH.postalCode}</p>
+				<div class="card-actions">
+					<a class="button button-light" href={CHURCH.mapsUrl}>Google Maps <span class="arrow" aria-hidden="true">↗</span></a>
+					<a class="text-link" href={appleMaps}>Apple Maps <span class="arrow" aria-hidden="true">↗</span></a>
 				</div>
-			</div>
-			<div class="where__note">
-				{/*
-					The one photograph on the site, and it earns its place here rather
-					than on the home page: the job of this page is to remove reasons not
-					to come, and "will I know the building when I get there" is one of
-					them. Shot from Cardiff Street, so it matches what a visitor sees
-					from the road.
-
-					Source: the brand package's hero-1600 webp, adopted 2026-07-29.
-					1600x900 at 210KB rather than the 1920x1080 JPEG at 415KB, because
-					this slot is column-constrained and renders around 313px wide, so
-					`max-height: 30rem` never engages. Half the bytes for an image
-					nobody can tell apart at this size.
-
-					Note for anyone comparing it to the original: the packaged photo is
-					AI-reprocessed. Same building, same composition, but the stained
-					glass is sharpened into swirls the real windows do not have and the
-					siding is softened. Caleb chose it knowing that. The faithful
-					original is in Compass at
-					branding/brookside-church/photography/source/building-exterior-original.jpg
-					at 2656x2742 if it is ever wanted back.
-				*/}
-				<figure class="where__shot">
-					<img
-						src="/building.webp"
-						width="1600"
-						height="900"
-						alt="Brookside Church of God from Cardiff Street: red brick with a white gable, a bell tower, and two crosses."
-						loading="lazy"
-						decoding="async"
-					/>
-					<figcaption>Look for the two crosses and the blue doors.</figcaption>
-				</figure>
-				<p class="prose">
-					Brookside sits just north west of Birmingham, off I&#8209;22.
-				</p>
-				<p class="prose">
-					Mail does not come here. Anything posted to the church goes to
-					P.O. Box 24, Brookside, AL 35036.
-				</p>
+				<small>Mail: {mailing}</small>
 			</div>
 		</div>
 	</section>
 
-	<section class="bay rule ask" aria-labelledby="ask-heading">
-		<p class="eyebrow" id="ask-heading">Before Sunday</p>
-		<h2 class="headline ask__head">Ask anything first, if that is easier.</h2>
-		<p class="lede ask__lede">
-			Some people would rather know a thing or two before walking in than find
-			out on the doorstep. That is a completely reasonable way to come to
-			church, and either of these reaches somebody.
-		</p>
-		<dl class="reach">
-			<div>
-				<dt>Call</dt>
-				<dd><a class="link" href={CHURCH.phoneHref}>{PHONE}</a></dd>
+	<section class="inner-section inner-copper split-section" aria-labelledby="ask-heading">
+		<div><p class="eyebrow">Before Sunday</p><h2 id="ask-heading">Ask anything first, if that is easier.</h2></div>
+		<div>
+			<p class="lead">Some people would rather know a thing or two before walking in than find out on the doorstep. That is a completely reasonable way to come to church, and either of these reaches somebody. Or simply turn up on a Sunday.</p>
+			<div class="card-actions">
+				<a class="button button-light" href={CHURCH.phoneHref}>{CHURCH.phone} <span class="arrow" aria-hidden="true">↗</span></a>
+				<a class="text-link" href={CHURCH.emailHref}>{CHURCH.email} <span class="arrow" aria-hidden="true">↗</span></a>
 			</div>
-			<div>
-				<dt>Email</dt>
-				<dd><a class="link" href={CHURCH.emailHref}>{EMAIL}</a></dd>
-			</div>
-			<div>
-				<dt>Or simply</dt>
-				<dd>Turn up on a Sunday.</dd>
-			</div>
-		</dl>
+		</div>
 	</section>
 </SiteLayout>
-
-<style is:global>
-	/* Page-level composition only. Anything reusable belongs in site.css. */
-
-	.vtop { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2.5rem, 6vw, 4rem); }
-	.vtop__foot { margin-top: clamp(2rem, 4vw, 3rem); }
-	.vtop__actions { margin-top: clamp(1.75rem, 3vw, 2.25rem); }
-
-	/* ---------- when ---------- */
-
-	.when { padding-block: clamp(2.5rem, 6vw, 4rem); }
-
-	/*
-		Same two-column grid as Watch's archive, so the two pages' rails line up:
-		a reader moving between them sees one system, not two. The day sits where
-		Watch puts the year.
-	*/
-	.stack {
-		display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
-		gap: clamp(1rem, 3vw, 2.5rem);
-		padding-top: clamp(1.25rem, 3vw, 2rem);
-	}
-	.stack__day {
-		margin: 0; align-self: start; padding-top: 0.75rem;
-		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-		text-transform: uppercase; color: var(--iron); font-weight: 400;
-	}
-	.stack__list { margin: 0; max-width: 44rem; }
-
-	.slot {
-		display: grid; grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
-		gap: clamp(0.75rem, 2vw, 1.75rem);
-		align-items: baseline;
-		padding: clamp(0.85rem, 2vw, 1.3rem) 0;
-		border-top: 1px solid var(--ash);
-	}
-	/* Bottom edge comes from the next section's rule. A border here as well puts
-	   two hairlines a few pixels apart at the foot of the list. */
-
-	.slot__mark { display: flex; align-items: baseline; gap: 0.5rem; }
-	.slot__time {
-		font-family: var(--display);
-		font-size: clamp(2.1rem, 5vw, 3.4rem);
-		font-variation-settings: 'wght' 800, 'opsz' 36;
-		line-height: 0.9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
-	}
-	.slot__mer {
-		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-		text-transform: uppercase; color: var(--iron);
-	}
-
-	.slot__body { margin: 0; }
-	.slot__name {
-		font-family: var(--display); font-size: clamp(1.15rem, 2.4vw, 1.5rem);
-		font-variation-settings: 'wght' 600, 'opsz' 24; letter-spacing: -0.025em;
-	}
-
-	/* ---------- where ---------- */
-
-	.where { padding-block: clamp(2.5rem, 6vw, 4rem); }
-	.where__grid {
-		display: grid; gap: clamp(1.75rem, 4vw, 3.5rem);
-		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-		align-items: start;
-	}
-	.where__addr {
-		margin: 1.25rem 0 0; font-style: normal;
-		font-size: 1.02rem; line-height: 1.7; color: var(--iron);
-	}
-	.where__actions { margin-top: 1.75rem; }
-	.where__note { max-width: 32ch; padding-top: 0.4rem; }
-
-	/* ---------- ask ---------- */
-
-	/* Square-ish crop, not the full 2:3, so the photo sits beside the address
-	   rather than towering over it. No radius and no shadow: the system has
-	   neither anywhere else. */
-	.where__shot { margin: 0 0 1.5rem; }
-	/*
-		object-position was 50% 32% when this slot held a 1200x1800 portrait and
-		had to bias upward to keep the gable in a landscape crop. The brand
-		package photo is 1920x1080 and already composed on the building, so it
-		centres. Revisit only if the source aspect changes again.
-	*/
-	.where__shot img {
-		display: block; width: 100%; height: auto;
-		max-height: 30rem; object-fit: cover; object-position: 50% 50%;
-		background: color-mix(in srgb, var(--ash) 26%, var(--paper));
-	}
-	.where__shot figcaption {
-		margin-top: 0.6rem; font-family: var(--mono); font-size: 0.68rem;
-		letter-spacing: 0.14em; text-transform: uppercase; color: var(--iron);
-	}
-
-	.kids { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
-	.kids__head { max-width: 14ch; }
-	.kids__lede { margin-top: 1.1rem; }
-	/* Fixed two columns, not auto-fit. These are paragraphs rather than labels,
-	   so the auto-fit row the .reach list uses crushes them to a three-word
-	   measure, and with four items it lands 3 + 1 and orphans the last one. */
-	.kids__list {
-		margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
-		display: grid; gap: clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3.5vw, 3.5rem);
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		border-top: 2px solid var(--ink); padding-top: 1.25rem;
-	}
-	@media (max-width: 720px) { .kids__list { grid-template-columns: 1fr; } }
-	.kids__list dt {
-		font-family: var(--display); font-variation-settings: 'wght' 700;
-		font-size: 1.12rem; letter-spacing: -0.02em; margin-bottom: 0.3rem;
-	}
-	.kids__list dd { margin: 0; color: var(--iron); font-size: 0.96rem; line-height: 1.6; }
-
-	.ask { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
-	.ask__head { max-width: 18ch; }
-	.ask__lede { margin-top: 1.1rem; }
-
-	.reach {
-		margin: clamp(2rem, 4vw, 3rem) 0 0;
-		display: grid; gap: 0.5rem clamp(1.5rem, 3.5vw, 3rem);
-		grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-		border-top: 2px solid var(--ink); padding-top: 1.25rem;
-	}
-	.reach dt {
-		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-		text-transform: uppercase; color: var(--iron); margin-bottom: 0.4rem;
-	}
-	/* The phone and email are the whole point of this section and 69.5% of real
-	   traffic is on a phone, where a text link's hit area is its glyphs. Padding
-	   the anchor to a comfortable target costs nothing visually (the border-bottom
-	   still hugs the text) and stops a mis-tap from being the reason nobody
-	   called. Applied at every width; there is no case for a mean target on
-	   desktop either. */
-	.reach dd a { display: inline-block; padding: 0.35rem 0; }
-
-	.reach dd {
-		margin: 0 0 1rem; font-family: var(--display);
-		font-size: clamp(1.05rem, 2vw, 1.25rem);
-		font-variation-settings: 'wght' 600, 'opsz' 24; letter-spacing: -0.02em;
-	}
-
-	/* ---------- responsive ---------- */
-
-	@media (max-width: 860px) {
-		.where__grid { grid-template-columns: 1fr; }
-		.where__note { max-width: none; }
-	}
-
-	@media (max-width: 720px) {
-		/* The day becomes a label above its times rather than a column, matching
-		   how Watch's year bar behaves at this width. */
-		.stack { grid-template-columns: 1fr; gap: 0.5rem; }
-		.stack__day { padding-top: 0; }
-		/* The time keeps its own line rather than shrinking to fit beside the
-		   name: at this width a 3.4rem numeral and a 1.5rem name on one row
-		   force the name to wrap mid-phrase. */
-		.slot { grid-template-columns: 1fr; gap: 0.35rem; }
-	}
-</style>
-
-<script>
-	import gsap from 'gsap';
-	import ScrollTrigger from 'gsap/ScrollTrigger';
-	import SplitText from 'gsap/SplitText';
-	import Lenis from 'lenis';
-
-	gsap.registerPlugin(ScrollTrigger, SplitText);
-
-	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-		const lenis = new Lenis({ duration: 1.05 });
-		lenis.on('scroll', ScrollTrigger.update);
-		gsap.ticker.add((t) => lenis.raf(t * 1000));
-		gsap.ticker.lagSmoothing(0);
-
-		const heading = document.querySelector<HTMLElement>('[data-split]');
-		if (heading) {
-			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
-			gsap.from(split.lines, {
-				yPercent: 130, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
-			});
-		}
-
-		gsap.from('.vtop .eyebrow, .vtop__foot', {
-			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
-		});
-
-		// Reveals start high in the viewport so anything below the fold is already
-		// on screen by the time it plays, rather than sitting at zero opacity
-		// waiting for a trigger that may never fire.
-		gsap.utils.toArray<HTMLElement>(
-			'.when .eyebrow, .slot, .kids > *, .where > *, .ask > *, .foot > *',
-		).forEach((el) => {
-			gsap.from(el, {
-				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
-				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-			});
-		});
-	}
-</script>

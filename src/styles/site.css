@@ -441,3 +441,15 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 .deck-scrub { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; color: #587083; font-size: .8rem; font-variant-numeric: tabular-nums; }
 .deck-scrub input { width: 100%; margin: 0; accent-color: var(--water); }
 .deck-close { width: 40px; height: 40px; border: 1px solid #a5bece; border-radius: 50%; background: #fff; color: #294f6b; font: 1.2rem/1 var(--font-sans),sans-serif; cursor: pointer; }
+
+/* Astro-side additions to the ported sheet. Kept at the foot so the section
+   above stays a clean diff against Codex's globals.css. */
+/* About: the five foundational doctrines under "Foundational". */
+.identity-five { grid-column: 2; margin: 4px 0 0; padding-left: 1.25em; color: #496274; }
+.identity-five li { margin: 4px 0; }
+/* Tap targets. Text links keep their visible size and gain a 44px hit area,
+   the same overlay trick Direction B used: padding would move the underline
+   away from the text and reflow every block that holds one. Inline links in a
+   sentence are exempt on purpose (WCAG 2.5.8) and these are all standalone. */
+.text-link, .inline-links a { position: relative; }
+.text-link::after, .inline-links a::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
