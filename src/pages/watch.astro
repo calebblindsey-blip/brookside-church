@@ -28,12 +28,14 @@
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PodcastSchema from '../components/PodcastSchema.astro';
+import InteriorHero from '../components/InteriorHero.astro';
 import data from '../data/sermons.json';
 import live from '../data/live.json';
 
 const APPLE = 'https://podcasts.apple.com/us/podcast/id1094539094';
 const SPOTIFY = 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76';
 const YOUTUBE = 'https://www.youtube.com/channel/UCFVvTNQHSyICAekmJdQ47Eg';
+const YOUTUBE_LIVE = `${YOUTUBE}/live`;
 
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const longDate = (iso: string) => {
@@ -115,18 +117,15 @@ const inChicago = new Intl.DateTimeFormat('en-US', {
 const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) : null;
 ---
 
-<SiteLayout legacy
+<SiteLayout
 	title="Watch"
 	description={`All ${data.total} sermons Brookside Church of God has recorded since ${monthYear(data.oldest)}, plus the Sunday livestream. Worship streams live at 10:45 AM.`}
 >
 	{/*
 		In the body rather than the head, which JSON-LD permits and Google reads
-		either way. SiteLayout owns the head and exposes no slot for it, and
-		adding one for a single page would put an always-empty slot on all nine.
-
-		Props rather than a second import of sermons.json inside the component:
-		the page already holds the numbers, and passing them means the schema
-		cannot disagree with the eyebrow directly above it.
+		either way. Props rather than a second import of sermons.json inside the
+		component: the page already holds the numbers, so the schema cannot
+		disagree with the eyebrow directly above it.
 	*/}
 	<PodcastSchema
 		total={data.total}
@@ -136,156 +135,103 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		profiles={[APPLE, SPOTIFY, YOUTUBE]}
 	/>
 
-	<section class="bay wtop">
-		<p class="eyebrow">{data.total} sermons · {monthYear(data.oldest)} to {monthYear(data.newest)}</p>
-		<h1 class="display" data-split>
-			{spanWord} years<br />of preaching,<br />one <em>subject</em>
-		</h1>
-		<div class="wtop__foot">
-			<p class="lede">
-				Sunday worship streams live at 10:45 AM. Everything before it is here,
-				back to the first recording in March 2020. Search the archive, then
-				listen wherever you already listen.
-			</p>
-			<dl class="hours">
-				<div><dt>Sunday School</dt><dd>9:45 AM</dd></div>
-				<div><dt>Morning Worship</dt><dd>10:45 AM</dd></div>
-				<div><dt>Wednesday Classes</dt><dd>6:30 PM</dd></div>
-			</dl>
-		</div>
-	</section>
+	<InteriorHero eyebrow={`Watch & listen · ${data.total} sermons`}>
+		<Fragment slot="title">{spanWord} years of<br />preaching.<br /><em>One subject.</em></Fragment>
+		<p slot="intro">Sunday worship streams live at 10:45 AM. Everything before it is here, back to the first recording in {monthYear(data.oldest)}. Search the archive, then listen right here or wherever you already listen.</p>
+		<Fragment slot="aside">
+			<p class="eyebrow">Live Sunday</p>
+			<p class="broadcast-time">10:45<small>AM</small></p>
+			<a class="button button-light" href={YOUTUBE_LIVE} target="_blank" rel="noopener">Watch live <span class="arrow" aria-hidden="true">↗</span></a>
+			<a class="text-link inner-aside-link" href="#live">Watch on this page</a>
+		</Fragment>
+	</InteriorHero>
 
-	<section class="bay rule feature" aria-labelledby="latest-heading">
+	{/*
+		Two different things side by side, on purpose: the left column is the
+		newest podcast EPISODE from the feed, the right is the newest full SERVICE
+		from the channel. The channel carries both, so in a given week they can
+		legitimately name different things.
+	*/}
+	<section class="inner-section live-section" id="live" aria-labelledby="latest-heading">
 		<div class="feature__lead">
-			<p class="eyebrow" id="latest-heading">Most recent</p>
-			<h2 class="headline">{latest.title}</h2>
+			<p class="eyebrow" id="latest-heading">Most recent sermon</p>
+			<h2 class="feature-title">{latest.title}</h2>
 			{/*
-				The speaker comes from the feed, never hardcoded. About one Sunday
-				in five is a guest (51 of the 247 episodes that name anyone), so a
-				fixed "Brad Lindsey" here credits the pastor for other people's
-				preaching regularly. When the feed names nobody the line is dropped
-				rather than filled in with an assumption.
+				The speaker comes from the feed, never hardcoded. About one Sunday in
+				five is a guest, so a fixed name here credits the pastor for other
+				people's preaching regularly. When the feed names nobody the line is
+				dropped rather than filled in with an assumption.
 			*/}
 			<p class="feature__meta">
-				{latest.speaker && (
-					<>
-						<span>{latest.speaker}</span>
-						<span aria-hidden="true">·</span>
-					</>
-				)}
+				{latest.speaker && (<><span>{latest.speaker}</span><span aria-hidden="true">·</span></>)}
 				<span>{longDate(latest.date)}</span>
 				<span aria-hidden="true">·</span>
 				<span class="feature__tag">{clock(latest.seconds)}</span>
 			</p>
-			{/*
-				Play is the primary action now that the archive is playable, so it
-				takes the solid button the platform links used to share. Apple and
-				Spotify stay, but demoted: the bottom section already exists to hand
-				the archive off to a podcast app, and this block's job is to start
-				the most recent sermon.
-			*/}
-			<div class="actions feature__actions">
+			<div class="card-actions feature__actions">
 				<button
-					class="btn btn--solid"
+					class="button button-light"
 					type="button"
 					data-cue
 					data-src={latest.url}
 					data-label={latest.title}
 					data-when={longDate(latest.date)}
-				>Play this sermon</button>
-				<a class="btn btn--line" href={APPLE} target="_blank" rel="noopener">Apple Podcasts</a>
-				<a class="btn btn--line" href={SPOTIFY} target="_blank" rel="noopener">Spotify</a>
+				>Play this sermon <span class="arrow" aria-hidden="true">▶</span></button>
+				<a class="text-link" href={APPLE} target="_blank" rel="noopener">Apple Podcasts <span class="arrow" aria-hidden="true">↗</span></a>
+				<a class="text-link" href={SPOTIFY} target="_blank" rel="noopener">Spotify <span class="arrow" aria-hidden="true">↗</span></a>
 			</div>
 		</div>
-
 		{/*
 			Click-to-play rather than a bare iframe, and this is the load-bearing
-			property of the whole panel: no third-party request and no YouTube
-			cookie until a visitor actually asks for one, and the page cannot be
-			made to look broken by something outside our control.
-
-			The poster keeps that promise. It is a frame of THIS room, pulled at
-			build time and served from our own origin (see scripts/pull-live.mjs),
-			not a hotlinked i.ytimg.com thumbnail — which would be a third-party
-			request on load and would put us back where we started. The /api/live
-			call below is same-origin for the same reason.
-
-			The copy names both states on purpose. Idle it offers the most recent
-			service by name and date; live it says so. Promising only "the live
-			stream" would be a lie six days a week.
-
-			Note this panel and the sermon on the left are NOT the same thing: the
-			left column is the newest podcast EPISODE, this is the newest full
-			SERVICE from the channel, and the channel carries both, so in a given
-			week they can legitimately name different things. Hence "the service"
-			here and "Most recent" sermon there.
+			property of the panel: no third-party request and no YouTube cookie until
+			a visitor asks, and the page cannot be made to look broken by something
+			outside our control. The poster is a frame of THIS room, pulled at build
+			time by scripts/pull-live.mjs and served from our own origin. The script
+			replaces the button with the iframe on click, inside .live-player.
 		*/}
-		<div class="feature__media">
-			<button
-				class="screen"
-				class:list={[{ 'screen--posterless': !live.poster }]}
-				type="button"
-				data-play
-				data-video={live.videoId}
-				aria-label={streamDate
-					? `Watch the service from ${streamDate}`
-					: 'Watch the service'}
-			>
-				{live.poster && (
-					/*
-						A real <img> rather than a CSS background: it is assertable by
-						audit-brookside-site.mjs, so a poster that stops being written
-						fails a check instead of quietly reverting to a black box.
-						alt="" because the button's accessible name is on the button
-						itself, and a described image inside it would be announced twice.
-					*/
-					<img
-						class="screen__poster"
-						src={live.poster}
-						alt=""
-						width={live.posterWidth}
-						height={live.posterHeight}
-						loading="lazy"
-						decoding="async"
-					/>
-				)}
-				{/*
-					aria-live so the one state change this element ever makes, offline
-					to LIVE NOW, is announced. It is populated at render, so nothing is
-					announced on load.
-				*/}
-				<span class="screen__state" aria-live="polite" data-state>
-					{/*
-						No dot in the idle state, and that is a change. The old copy lit a
-						coral dot beside "Live Sundays, 10:45 AM" seven days a week, which
-						is a live indicator that means nothing. Now the dot only appears
-						when the church is actually live, so it can be believed.
-					*/}
-					{streamDate ? `Most recent service · ${streamDate}` : 'Live Sundays, 10:45 AM'}
-				</span>
-				<span class="screen__cue" data-cue-text>Watch the service</span>
-				<span class="screen__note" data-note>Live on Sunday morning. The rest of the week, the most recent one.</span>
-			</button>
-			<a class="link feature__past" href={YOUTUBE} target="_blank" rel="noopener">
-				Every service on YouTube &rarr;
-			</a>
-		</div>
+		<figure class="live-figure feature__media">
+			<div class="live-player">
+				<button
+					class="screen"
+					class:list={[{ 'screen--posterless': !live.poster }]}
+					type="button"
+					data-play
+					data-video={live.videoId}
+					aria-label={streamDate ? `Watch the service from ${streamDate}` : 'Watch the service'}
+				>
+					{live.poster && (
+						<img
+							class="screen__poster"
+							src={live.poster}
+							alt=""
+							width={live.posterWidth}
+							height={live.posterHeight}
+							loading="lazy"
+							decoding="async"
+						/>
+					)}
+					<span class="screen-play" aria-hidden="true"><span>▶</span></span>
+					<span class="screen__state" aria-live="polite" data-state>
+						{streamDate ? `Most recent service · ${streamDate}` : 'Live Sundays, 10:45 AM'}
+					</span>
+					<span class="screen__cue" data-cue-text>Watch the service</span>
+					<span class="screen__note" data-note>Live on Sunday morning. The rest of the week, the most recent one.</span>
+				</button>
+			</div>
+			<figcaption class="live-note">Nothing loads from YouTube until you press play. <a class="feature__past" href={YOUTUBE} target="_blank" rel="noopener">Every service on YouTube</a>.</figcaption>
+		</figure>
 	</section>
 
-	<section class="bay rule archive" aria-labelledby="archive-heading">
-		<div class="seek">
-			<p class="eyebrow" id="archive-heading">The archive</p>
-			<div class="seek__body">
-				<label class="seek__field">
-					<span class="seek__label">Search sermons</span>
-					<input
-						type="search"
-						id="seek"
-						placeholder="Search by title"
-						autocomplete="off"
-						spellcheck="false"
-					/>
-				</label>
+	<section class="inner-section archive-section" aria-labelledby="archive-heading">
+		<div>
+			<p class="eyebrow" id="archive-heading">Sermon archive · {data.total} messages</p>
+			<h2>Find a message.</h2>
+			<p class="lead">Search by title, filter by year, then press play. Every sermon since {monthYear(data.oldest)} plays right here.</p>
+		</div>
+		<div class="archive-panel">
+			<div class="seek">
+				<label class="seek__field" for="seek">Search sermons</label>
+				<input type="search" id="seek" placeholder="Search by title" autocomplete="off" spellcheck="false" />
 				<p class="seek__count" role="status" aria-live="polite" data-count>
 					<span data-shown>{data.total}</span> of {data.total}
 				</p>
@@ -296,116 +242,80 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 					))}
 				</div>
 			</div>
+			<div class="roll" data-roll>
+				{years.map((g) => (
+					<section class="stack" data-group={g.year} aria-labelledby={`y-${g.year}`}>
+						<div class="stack__mark">
+							<h3 class="stack__year" id={`y-${g.year}`}>{g.year}</h3>
+							<p class="stack__count">{g.items.length} sermons</p>
+						</div>
+						{/* The button is inside the li rather than the li being the control, so the list keeps its semantics. */}
+						<ol class="stack__list">
+							{g.items.map((e) => (
+								<li class="row" data-title={e.title.toLowerCase()} data-year={g.year}>
+									<button
+										class="row__hit"
+										type="button"
+										data-cue
+										data-src={e.url}
+										data-label={e.title}
+										data-when={longDate(e.date)}
+										aria-label={`Play “${e.title}”, ${longDate(e.date)}, ${spoken(e.seconds)}`}
+									>
+										<span class="row__date">{rowDate(e.date)}</span>
+										<span class="row__title">{e.title}</span>
+										<span class="row__time">{clock(e.seconds)}</span>
+									</button>
+								</li>
+							))}
+						</ol>
+					</section>
+				))}
+				<p class="roll__empty" data-empty hidden></p>
+			</div>
+			<p class="roll__origin">
+				The archive begins with <em>{longDate(firstEver.date)}</em>, “{firstEver.title}”.
+			</p>
 		</div>
-
-		<div class="roll" data-roll>
-			{years.map((g) => (
-				<section class="stack" data-group={g.year} aria-labelledby={`y-${g.year}`}>
-					<div class="stack__mark">
-						<h3 class="stack__year" id={`y-${g.year}`}>{g.year}</h3>
-						<p class="stack__count">{g.items.length} sermons</p>
-					</div>
-					{/*
-						The button is inside the li rather than the li being the control:
-						an <ol> whose children are buttons loses the list semantics that
-						make "291 sermons" navigable, and the filter reads .row.
-					*/}
-					<ol class="stack__list">
-						{g.items.map((e) => (
-							<li class="row" data-title={e.title.toLowerCase()} data-year={g.year}>
-								<button
-									class="row__hit"
-									type="button"
-									data-cue
-									data-src={e.url}
-									data-label={e.title}
-									data-when={longDate(e.date)}
-									aria-label={`Play “${e.title}”, ${longDate(e.date)}, ${spoken(e.seconds)}`}
-								>
-									<span class="row__date">{rowDate(e.date)}</span>
-									<span class="row__title">{e.title}</span>
-									<span class="row__time">{clock(e.seconds)}</span>
-								</button>
-							</li>
-						))}
-					</ol>
-				</section>
-			))}
-			<p class="roll__empty" data-empty hidden></p>
-		</div>
-
-		<p class="roll__origin">
-			The archive begins with <em>{longDate(firstEver.date)}</em>, “{firstEver.title}”.
-		</p>
 	</section>
 
-	<section class="bay rule subscribe" aria-labelledby="subscribe-heading">
-		<p class="eyebrow" id="subscribe-heading">Take it with you</p>
-		<div class="subscribe__grid">
-			{/*
-				Both notes stick to things that have actually been checked against
-				the feed. "Where most people listen" and a per-platform episode
-				count were both in here and both were guesses. There is no listener
-				breakdown, and the Spotify show's own count has never been verified.
-			*/}
-			<a class="port" href={APPLE} target="_blank" rel="noopener">
-				<span class="port__name">Apple Podcasts</span>
-				<span class="port__note">The full archive, back to 2020.</span>
-			</a>
-			<a class="port" href={SPOTIFY} target="_blank" rel="noopener">
-				<span class="port__name">Spotify</span>
-				<span class="port__note">The same archive, without leaving the app.</span>
-			</a>
-			<a class="port" href={YOUTUBE} target="_blank" rel="noopener">
-				<span class="port__name">YouTube</span>
-				<span class="port__note">Where the Sunday service streams live.</span>
-			</a>
+	<section class="inner-section inner-blue media-section" aria-labelledby="subscribe-heading">
+		<div>
+			<p class="eyebrow">Take it with you</p>
+			<h2 id="subscribe-heading">The message goes with you.</h2>
+			<p class="lead">The complete archive goes back to {monthYear(data.oldest)} and is free on the platforms you already use.</p>
+		</div>
+		<div class="platform-cards">
+			<a class="port" href={APPLE} target="_blank" rel="noopener"><span class="port__note">The full archive, back to 2020.</span><strong class="port__name">Apple Podcasts</strong><span class="arrow" aria-hidden="true">↗</span></a>
+			<a class="port" href={SPOTIFY} target="_blank" rel="noopener"><span class="port__note">The same archive, without leaving the app.</span><strong class="port__name">Spotify</strong><span class="arrow" aria-hidden="true">↗</span></a>
+			<a class="port" href={YOUTUBE} target="_blank" rel="noopener"><span class="port__note">Where the Sunday service streams live.</span><strong class="port__name">YouTube</strong><span class="arrow" aria-hidden="true">↗</span></a>
 		</div>
 	</section>
 
 	{/*
-		The gospel link, and this is the highest-intent position on the whole site:
-		somebody at the bottom of the sermon archive has just listened to
-		preaching. It is deliberately the last thing on the page and deliberately
-		quiet — one line and a link, not a card and not a call-out box. Six years
-		of sermons make the argument; this only has to say where the message is
-		written down.
+		The gospel link, the highest-intent position on the whole site: somebody
+		at the bottom of the sermon archive has just listened to preaching. No
+		hours figure: a draft said "nine hundred hours", which was invented.
 	*/}
-	<section class="bay rule appeal" aria-labelledby="appeal-heading">
-		<p class="eyebrow" id="appeal-heading">The message behind all of it</p>
-		<h2 class="headline appeal__head">
-			Every one of these sermons is about the same thing.
-		</h2>
-		{/*
-			No hours figure here. A first draft said "nine hundred hours of
-			preaching", which was invented — 291 sermons is nearer two hundred
-			hours. This echoes the page's own headline instead, which is verified
-			copy. Same discipline that cut "every Sunday" and the per-platform
-			episode counts from this page.
-		*/}
-		<p class="prose appeal__body">
-			Six years of preaching comes back to one subject, and it is not a
-			complicated one. If you would rather read it than listen to it, it is
-			written out plainly.
-		</p>
-		<a class="link appeal__link" href="/knowing-christ/">How a person comes to Christ &rarr;</a>
+	<section class="inner-section inner-copper split-section" aria-labelledby="appeal-heading">
+		<div><p class="eyebrow">The message behind all of it</p><h2 id="appeal-heading">Every one of these sermons is about the same thing.</h2></div>
+		<div>
+			<p class="lead">{spanWord} years of preaching comes back to one subject, and it is not a complicated one. If you would rather read it than listen to it, it is written out plainly.</p>
+			<a class="button button-light" href="/knowing-christ/">How a person comes to Christ <span class="arrow" aria-hidden="true">↗</span></a>
+		</div>
 	</section>
 
 	{/*
-		The deck. Rendered inert and empty; JS fills it on the first play and it
-		is removed from the a11y tree until then, so nothing here is announced or
-		tab-reachable on a page nobody has asked to play anything on.
-
-		aria-live on the now-playing line rather than role="status" on the whole
-		deck: the scrub position updates four times a second and a live region
-		around it would narrate the timecode forever.
+		The deck. Rendered inert and empty; the script fills it on the first play
+		and it is removed from the a11y tree until then. aria-live on the
+		now-playing line rather than role="status" on the whole deck: the scrub
+		position updates four times a second.
 	*/}
 	<div class="deck" data-deck hidden>
 		<div class="deck__in">
 			<button class="deck__toggle" type="button" data-toggle aria-label="Pause">
 				<span class="deck__glyph" data-glyph aria-hidden="true"></span>
 			</button>
-
 			<div class="deck__body">
 				<p class="deck__now" aria-live="polite">
 					<span class="deck__title" data-deck-title></span>
@@ -416,11 +326,9 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 					<input type="range" data-seek min="0" max="1000" value="0" step="1" />
 				</label>
 			</div>
-
 			<p class="deck__time">
 				<span data-at>0:00</span><span class="deck__slash" aria-hidden="true">/</span><span data-dur>0:00</span>
 			</p>
-
 			<button class="deck__close" type="button" data-close aria-label="Close player">
 				<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
 					<path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" fill="none" />
@@ -432,567 +340,109 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 </SiteLayout>
 
 <style is:global>
-	/* Page-level composition only. Anything reusable belongs in site.css. */
-
-	/* Clears the sticky header before a year mark pins under it. */
-	:root { --chrome-h: 4.25rem; }
-
-	.wtop { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2.5rem, 6vw, 4rem); }
-	.wtop__foot {
-		display: flex; flex-wrap: wrap; gap: clamp(1.75rem, 5vw, 4.5rem);
-		align-items: start; margin-top: clamp(2rem, 4vw, 3rem);
-	}
-	.wtop__foot .lede { flex: 1 1 24rem; }
-	.wtop__foot .hours { margin-left: auto; flex: 0 1 auto; min-width: 15rem; }
-
-	.feature {
-		padding-block: clamp(2.5rem, 6vw, 4rem);
-		display: grid; gap: clamp(1.75rem, 4vw, 3.5rem);
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-		align-items: center;
-	}
-	.feature__meta {
-		display: flex; flex-wrap: wrap; gap: 0.5rem;
-		margin: 1rem 0 1.75rem; color: var(--iron); font-size: 0.95rem;
-	}
-	.feature__tag {
-		font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
-		align-self: center;
-	}
-
 	/*
-		The one dark surface on the site, and the only place a screen belongs.
-		Still no drop shadow and NO PLAY-TRIANGLE BADGE: "Watch the service" is
-		the affordance, and a triangle would turn the room's projector into a
-		media player chrome. That rule has not changed.
+		Watch, page-level composition in Codex's language, drawn around the hooks
+		the deck script depends on ([data-cue], [data-play], [data-deck], .row,
+		.stack, .chip, #seek). Anything reusable belongs in site.css.
+	*/
+	:root { --chrome-h: 96px; }
 
-		The flatness has. There is a photograph behind the type now, so the scrim
-		below is not decoration; it is the only thing keeping the copy legible
-		over a lit sanctuary wall, and it was measured rather than eyeballed.
-		See the note on .screen__note.
-	*/
-	.feature__media { width: 100%; }
-	.screen {
-		position: relative; overflow: hidden;
-		display: flex; flex-direction: column; align-items: flex-start;
-		justify-content: flex-end; gap: 0.3rem;
-		width: 100%; aspect-ratio: 16 / 9; margin: 0;
-		padding: clamp(1.1rem, 2.5vw, 1.9rem);
-		background: var(--ink); border: 0; border-radius: 0;
-		color: var(--paper); text-align: left; cursor: pointer;
-	}
-	/*
-		The poster is about 1.9:1 once its letterbox is cropped off and the card
-		is 16:9, so cover trims a little from the sides rather than putting bars
-		back. The 40% keeps the platform in frame instead of the ceiling.
-	*/
-	.screen__poster {
-		position: absolute; inset: 0;
-		width: 100%; height: 100%;
-		object-fit: cover; object-position: center 40%;
-		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-	}
+	/* ---------- most recent + live ---------- */
+	.live-section { align-items: start; }
+	.inner-section h2.feature-title { font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: 1.08; letter-spacing: -.04em; font-weight: 550; }
+	.feature__meta { display: flex; flex-wrap: wrap; gap: 0 .6rem; margin: 0 0 26px; color: #587083; font-size: .95rem; }
+	.feature__tag { font-variant-numeric: tabular-nums; }
+	.screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: .3rem; width: 100%; margin: 0; padding: clamp(18px, 2.5vw, 30px); background: #10283b; border: 0; color: #fff; text-align: left; font: inherit; cursor: pointer; overflow: hidden; }
+	.screen__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
 	.screen:hover .screen__poster { transform: scale(1.02); }
-	/*
-		The scrim. Two gradients, one per band of type, rather than a flat wash
-		over the whole picture: the middle of the frame is where the room is, and
-		it stays close to full strength.
-
-		The top band is not symmetry, it is a measured fix. With only the bottom
-		gradient, the status line sat over the lit sanctuary wall at rgb(159,163,141)
-		and measured 2.48:1 against --paper, which fails WCAG AA for text that
-		size. Both bands were then re-measured against the real poster rather than
-		adjusted by eye; the numbers are on .screen__state and .screen__note.
-	*/
-	.screen::after {
-		content: ''; position: absolute; inset: 0;
-		background:
-			linear-gradient(
-				to bottom,
-				color-mix(in srgb, var(--ink) 82%, transparent) 0%,
-				color-mix(in srgb, var(--ink) 55%, transparent) 12%,
-				transparent 30%
-			),
-			linear-gradient(
-				to top,
-				color-mix(in srgb, var(--ink) 88%, transparent) 0%,
-				color-mix(in srgb, var(--ink) 62%, transparent) 34%,
-				color-mix(in srgb, var(--ink) 12%, transparent) 72%
-			);
-	}
-	/* No poster, no scrim: this is the flat ink panel the card used to be, and
-	   it is what renders if `npm run live` ever refuses to pick a frame. */
+	.screen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #10283bd9 0%, #10283b8c 38%, #10283b1f 70%, transparent 100%); }
 	.screen--posterless::after { display: none; }
-	.screen--posterless { transition: background 0.2s; }
-	.screen--posterless:hover { background: #000; }
-	/* Everything has to sit above the poster and the scrim. */
 	.screen > span { position: relative; z-index: 1; }
-
-	.screen__state {
-		display: flex; align-items: center; gap: 0.5rem; margin-bottom: auto;
-		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
-		text-transform: uppercase; color: var(--paper);
-	}
-	.screen--posterless .screen__state { color: var(--ash); }
-	.screen__dot {
-		width: 7px; height: 7px; border-radius: 50%; background: var(--coral);
-		flex: none;
-	}
-	/*
-		Only ever rendered by the live path, so this cannot run on a page where
-		nothing is happening. Opacity rather than scale: a growing dot nudges the
-		text beside it, and the two share a baseline.
-	*/
-	@keyframes screen-pulse { 50% { opacity: 0.3; } }
+	.screen-play { position: absolute; left: 50%; top: 42%; translate: -50% -50%; z-index: 1; width: clamp(64px, 8vw, 96px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--bone); color: var(--water); font-size: 1.4rem; box-shadow: 0 12px 40px #00000055; transition: scale .3s; }
+	.screen-play > span { margin-left: 4px; }
+	.screen:hover .screen-play, .screen:focus-visible .screen-play { scale: 1.06; }
+	.screen__state { display: flex; align-items: center; gap: .5rem; margin-bottom: auto; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 650; color: #c7dfef; }
+	.screen__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--copper); flex: none; }
 	.screen[data-live] .screen__dot { animation: screen-pulse 1.8s ease-in-out infinite; }
-	.screen__cue {
-		font-family: var(--display); font-variation-settings: 'wght' 700, 'opsz' 24;
-		font-size: clamp(1.25rem, 2.6vw, 1.85rem); letter-spacing: -0.03em;
-		line-height: 1.1;
-	}
-	.screen:hover .screen__cue { color: var(--coral); }
-	/*
-		--paper over a poster, --ash on the flat panel.
-
-		Measured against the actual poster at the actual type position, sampling
-		the worst (lightest) pixel behind each line with the text hidden. On the
-		August 23 frame:
-
-		            --paper   --ash
-		  state      6.59:1   3.53:1   <- --ash FAILS here
-		  cue        9.27:1   4.96:1
-		  note      11.39:1   6.09:1
-
-		So --paper is only strictly REQUIRED on the status line. It goes on all
-		three anyway, because the pixels behind this card are a different
-		photograph every week, and 6.09:1 is not enough margin to bet a church's
-		accessibility on. These numbers and the scrim's gradient stops were
-		measured together; neither can be loosened without re-measuring both.
-	*/
-	.screen__note { font-size: 0.85rem; color: var(--paper); }
-	.screen--posterless .screen__note { color: var(--ash); }
-	.feature__past { display: inline-block; margin-top: 0.9rem; font-size: 0.92rem; }
-	/* Replaced in place by the iframe, so the frame keeps its exact geometry and
-	   the page does not jump when the video loads. */
-	.feature__media iframe {
-		display: block; width: 100%; aspect-ratio: 16 / 9; border: 0;
-	}
+	.screen__cue { font-size: clamp(1.15rem, 2.2vw, 1.7rem); font-weight: 550; letter-spacing: -.02em; line-height: 1.15; }
+	.screen__note { font-size: .9rem; color: #dbe9f3; }
+	@keyframes screen-pulse { 50% { opacity: .35; } }
+	.feature__past { color: var(--water); font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
 
 	/* ---------- archive ---------- */
-
-	.archive { padding-block: clamp(2.5rem, 6vw, 4rem) clamp(3rem, 7vw, 5rem); }
-
-	/*
-		Search sits on the same two-column grid as the year stacks, so the rule
-		under the input ends exactly where the sermon rows end. Left to span the
-		full bay it overshoots the list by ~500px and the two read as unrelated
-		blocks rather than one instrument and the thing it operates on.
-	*/
-	.seek {
-		display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
-		gap: clamp(1rem, 3vw, 2.5rem);
-		margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
-	}
-	.seek .eyebrow { margin-bottom: 0; }
-	.seek__body { max-width: 44rem; }
-	.seek__field { display: block; }
-	.seek__label {
-		position: absolute; width: 1px; height: 1px;
-		overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-	}
-	/* The input is a rule with type on it, not a boxed control: the page is
-	   built out of horizontals and a pill-shaped field would be the one piece
-	   of furniture that came from somewhere else. */
-	.seek input {
-		width: 100%; margin: 0; padding: 0.55rem 0 0.7rem;
-		background: none; border: 0; border-bottom: 2px solid var(--ink);
-		border-radius: 0; color: var(--ink);
-		font-family: var(--display); font-variation-settings: 'wght' 500, 'opsz' 24;
-		font-size: clamp(1.3rem, 3.2vw, 2rem); letter-spacing: -0.025em;
-		-webkit-appearance: none; appearance: none;
-	}
-	.seek input::placeholder { color: var(--ash); }
-	/*
-		Pointer focus gets the coral rule; keyboard focus additionally keeps the
-		site's real focus ring. Suppressing the outline here left the input with a
-		colour change as its only focus cue, which is no cue at all for anyone who
-		cannot separate the ink and the coral.
-	*/
-	.seek input:focus { border-bottom-color: var(--coral); }
-	.seek input:focus:not(:focus-visible) { outline: none; }
+	.archive-section { align-items: start; }
 	.seek input::-webkit-search-cancel-button { -webkit-appearance: none; }
-
-	.seek__count {
-		margin: 0.75rem 0 0; font-family: var(--mono);
-		font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-		color: var(--iron); font-variant-numeric: tabular-nums;
-	}
-	.seek__count [data-shown] { color: var(--coral); }
-
-	.seek__years { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.25rem; }
-	/*
-		44px, because filtering is not a convenience on this page. The archive is
-		291 sermons and roughly 21 phone screens tall, so search and these chips
-		are the only realistic way through it, and they were the smallest controls
-		on the site at 30px.
-
-		inline-flex rather than more vertical padding: the pill keeps its shape and
-		its text stays optically centred, and the width floor stops "All" from
-		rendering as a stub next to the four-digit years.
-	*/
-	.chip {
-		display: inline-flex; align-items: center; justify-content: center;
-		min-height: 44px; min-width: 44px;
-		padding: 0.4rem 0.95rem; border: 1px solid var(--ash); border-radius: 999px;
-		background: none; color: var(--iron); cursor: pointer;
-		font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
-		font-variant-numeric: tabular-nums;
-		transition: border-color 0.18s, color 0.18s, background 0.18s;
-	}
-	.chip:hover { border-color: var(--ink); color: var(--ink); }
-	.chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-
-	/*
-		The year is the page's signature: scrolling the archive counts backwards
-		through the church's own history and the mark rides along beside it. It is
-		the one place on this page that gets display type at size.
-	*/
-	.stack {
-		display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
-		gap: clamp(1rem, 3vw, 2.5rem);
-		padding-top: clamp(1.5rem, 3vw, 2.25rem);
-	}
-	/* A class setting `display` outranks the UA's [hidden] rule, so filtering
-	   would set the attribute and change nothing. Both need saying explicitly. */
+	.seek__count [data-shown] { color: var(--ink); font-weight: 600; }
+	.seek__years { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; }
+	.chip { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 6px 14px; border: 1px solid #99b9ce; border-radius: 999px; background: #fff; color: #294f6b; cursor: pointer; font: 500 .8rem/1 var(--font-sans), sans-serif; font-variant-numeric: tabular-nums; transition: border-color .18s, color .18s, background .18s; }
+	.chip:hover { border-color: var(--water); color: var(--water); }
+	.chip[aria-pressed='true'] { background: var(--water); border-color: var(--water); color: #fff; }
+	.stack { display: grid; grid-template-columns: minmax(0, 7rem) minmax(0, 1fr); gap: 16px 28px; padding-top: 24px; }
 	.stack[hidden] { display: none; }
-	.stack__mark { position: sticky; top: calc(var(--chrome-h) + 0.75rem); align-self: start; }
-	.stack__year {
-		margin: 0; font-family: var(--display);
-		font-size: clamp(2.1rem, 5vw, 3.4rem);
-		font-variation-settings: 'wght' 800, 'opsz' 36;
-		line-height: 0.9; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
-	}
-	.stack__count {
-		margin: 0.5rem 0 0; font-family: var(--mono); font-size: 0.68rem;
-		letter-spacing: 0.12em; text-transform: uppercase; color: var(--iron);
-	}
-
-	/* Held to a reading column. Run full-bleed and 291 short titles float in a
-	   field of white with the tag stranded at the far edge, which is the
-	   broadsheet look rather than a decision. */
-	.stack__list {
-		margin: 0; padding: 0; list-style: none; max-width: 44rem;
-		border-top: 1px solid var(--ash);
-	}
-	.row { position: relative; border-bottom: 1px solid var(--ash); }
+	.stack__mark { position: sticky; top: calc(var(--chrome-h) + 12px); align-self: start; }
+	.stack__year { margin: 0; color: var(--water); font: 400 clamp(2rem, 4vw, 3rem)/1 var(--font-serif), serif; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+	.stack__count { margin: 6px 0 0; color: #587083; font-size: .8rem; }
+	.stack__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+	.row { position: relative; border-bottom: 1px solid var(--line); }
 	.row[hidden] { display: none; }
-
-	/*
-		The button carries the grid, not the li: the row has to stay a list item
-		for "291 sermons" to be navigable, and the whole width has to be the hit
-		target because a 0.98rem title is a poor thing to ask anyone to hit.
-	*/
-	/*
-		padding 0.62rem left the row at 41px, three short of the 44px target.
-		Closing it costs real page height here (291 rows), and that is a trade
-		taken deliberately: the archive is long either way and search and the year
-		chips are what make it navigable, so a row you can reliably hit is worth
-		more than a marginally shorter wall.
-	*/
-	.row__hit {
-		display: grid; grid-template-columns: 3.9rem minmax(0, 1fr) auto;
-		gap: 1.1rem; align-items: baseline;
-		width: 100%; margin: 0; padding: 0.75rem 0;
-		background: none; border: 0; border-radius: 0;
-		color: inherit; font: inherit; text-align: left; cursor: pointer;
-	}
-	.row__hit:hover .row__title { color: var(--coral); }
-	/* Inset so the ring follows the text block rather than the full bleed row. */
+	.row__hit { display: grid; grid-template-columns: 4.2rem minmax(0, 1fr) auto; gap: 18px; align-items: baseline; width: 100%; margin: 0; padding: 14px 0; background: none; border: 0; border-radius: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+	.row__hit:hover .row__title { color: var(--water); }
 	.row__hit:focus-visible { outline-offset: -2px; }
-
-	/*
-		Playing marker. A coral rule standing in the margin, which is the same
-		device as the page's spine rather than a new one: nothing about the row
-		itself moves, so the list does not reflow when playback moves down it.
-	*/
-	.row[data-playing]::before {
-		content: ''; position: absolute; top: 0; bottom: 0; left: -0.75rem;
-		width: 3px; background: var(--coral);
-	}
-	.row[data-playing] .row__title { color: var(--coral); }
-
-	.row__date {
-		font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
-		text-transform: uppercase; color: var(--iron); font-variant-numeric: tabular-nums;
-	}
-	.row__title { font-size: 0.98rem; line-height: 1.35; text-wrap: pretty; transition: color 0.18s; }
-	/* --ash on --paper is barely a mark on the page; this stays quieter than the
-	   title without dropping out of legibility. */
-	.row__time {
-		font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em;
-		color: color-mix(in srgb, var(--iron) 58%, var(--paper));
-		font-variant-numeric: tabular-nums;
-	}
-	.row mark { background: none; color: var(--coral); font-weight: 600; }
-
-	.roll__empty {
-		margin: 2.5rem 0 0;
-		margin-left: calc(7.5rem + clamp(1rem, 3vw, 2.5rem));
-		max-width: 34ch;
-		font-family: var(--display); font-size: clamp(1.15rem, 2.4vw, 1.6rem);
-		font-variation-settings: 'wght' 500, 'opsz' 24;
-		line-height: 1.3; letter-spacing: -0.025em;
-	}
-	/* Indented into the list's own column so the rule that closes the archive
-	   starts and ends where the sermon rows do. */
-	.roll__origin {
-		margin: clamp(2rem, 4vw, 3rem) 0 0;
-		margin-left: calc(7.5rem + clamp(1rem, 3vw, 2.5rem));
-		padding-top: 1.25rem;
-		border-top: 2px solid var(--ink); max-width: 44rem;
-		font-size: 0.95rem; line-height: 1.6; color: var(--iron);
-	}
-
-	/* ---------- subscribe ---------- */
-
-	.subscribe { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
-
-	/* ---------- appeal ---------- */
-	.appeal { padding-block: clamp(2.5rem, 5vw, 3.5rem) clamp(3rem, 6vw, 4.5rem); }
-	.appeal__head { max-width: 24ch; }
-	.appeal__body { margin: 1rem 0 0; max-width: 54ch; }
-	.appeal__link { display: inline-block; margin-top: clamp(1.25rem, 2.5vw, 1.75rem); }
-	.subscribe__grid {
-		display: grid; gap: 0;
-		grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-		border-top: 1px solid var(--ash);
-	}
-	.port {
-		display: block; padding: 1.35rem 1.35rem 1.5rem 0;
-		border-bottom: 1px solid var(--ash);
-		transition: color 0.18s;
-	}
-	.port__name {
-		display: block; font-family: var(--display); font-size: 1.3rem;
-		font-variation-settings: 'wght' 700; letter-spacing: -0.025em;
-	}
-	.port__note {
-		display: block; margin-top: 0.4rem; max-width: 26ch;
-		font-size: 0.9rem; line-height: 1.5; color: var(--iron);
-	}
-	.port:hover .port__name { color: var(--coral); }
+	.row[data-playing] { background: var(--foam); margin-inline: -12px; padding-inline: 12px; }
+	.row[data-playing] .row__title { color: var(--water); font-weight: 600; }
+	.row__date { color: #587083; font-size: .8rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+	.row__title { font-size: .98rem; line-height: 1.35; text-wrap: pretty; transition: color .18s; }
+	.row__time { color: #7b93a5; font-size: .8rem; font-variant-numeric: tabular-nums; }
+	.row mark { background: none; color: var(--water); font-weight: 600; }
+	.roll__empty { margin: 28px 0 0; padding: 28px; background: var(--foam); }
+	.roll__origin { margin: 32px 0 0; padding-top: 18px; border-top: 1px solid var(--line); color: #587083; font-size: .95rem; line-height: 1.6; }
+	.roll__origin em { color: var(--copper); }
 
 	/* ---------- deck ---------- */
-
-	/*
-		The one piece of furniture on the site that floats. It earns it by being
-		the only thing that has to outlive scrolling: the point of a shared player
-		is that you can keep reading the archive while a sermon runs.
-
-		Ink, like the video screen above it, so the page still has exactly one
-		dark surface family. Coral is spent only on the progress line, which keeps
-		the accent doing the same job here as everywhere else: it marks a line.
-	*/
-	.deck {
-		position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-		background: var(--ink); color: var(--paper);
-		transform: translateY(100%);
-		transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-	}
+	/* Floating card, pinned beside the motion toggle on desktop and above it on phones. */
+	body.has-deck { padding-bottom: calc(var(--deck-h, 76px) + 40px); }
+	.deck { position: fixed; z-index: 45; left: 18px; right: 190px; bottom: 18px; max-width: 900px; background: #fffffff6; border: 1px solid #a5bece; border-radius: 16px; box-shadow: 0 12px 40px #30587326; backdrop-filter: blur(12px); transform: translateY(calc(100% + 24px)); transition: transform .38s cubic-bezier(.22, 1, .36, 1); }
 	.deck[data-open] { transform: none; }
-	.deck__in {
-		display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 1.4rem);
-		padding: 0.85rem var(--flank) 0.85rem var(--edge);
-		max-width: calc(var(--edge) + var(--measure));
-	}
-
-	.deck__toggle {
-		flex: none; display: grid; place-items: center;
-		width: 42px; height: 42px; padding: 0;
-		background: var(--paper); color: var(--ink);
-		border: 0; border-radius: 50%; cursor: pointer;
-		transition: background 0.18s;
-	}
-	.deck__toggle:hover { background: var(--coral); }
-	/* Drawn rather than set as a glyph: ▶ and ❚❚ sit on different baselines and
-	   optical centres in every font, so the button visibly twitches on toggle. */
-	.deck__glyph {
-		width: 12px; height: 13px; background: currentColor;
-		clip-path: polygon(0 0, 100% 50%, 0 100%);
-		margin-left: 2px;
-	}
-	.deck[data-state='playing'] .deck__glyph {
-		clip-path: none; margin-left: 0;
-		background: linear-gradient(90deg, currentColor 0 31%, transparent 31% 69%, currentColor 69% 100%);
-	}
-
+	.deck__in { display: flex; align-items: center; gap: 14px; padding: 12px 14px; }
+	.deck__toggle { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; background: var(--water); color: #fff; border: 0; border-radius: 50%; cursor: pointer; }
+	.deck__glyph { width: 12px; height: 13px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); margin-left: 2px; }
+	.deck[data-state='playing'] .deck__glyph { clip-path: none; background: linear-gradient(90deg, currentColor 0 38%, transparent 38% 62%, currentColor 62%); margin-left: 0; }
 	.deck__body { flex: 1 1 auto; min-width: 0; }
-	.deck__now {
-		display: flex; align-items: baseline; gap: 0.6rem;
-		margin: 0 0 0.15rem; min-width: 0;
-	}
-	.deck__title {
-		font-family: var(--display); font-variation-settings: 'wght' 600, 'opsz' 24;
-		font-size: 1rem; letter-spacing: -0.02em;
-		white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-	}
-	.deck__when {
-		flex: none; font-family: var(--mono); font-size: 0.66rem;
-		letter-spacing: 0.06em; color: var(--ash);
-	}
-	.deck[data-error] .deck__when { color: var(--coral); }
-
+	.deck__now { margin: 0 0 6px; display: flex; gap: 10px; align-items: baseline; min-width: 0; font-size: .9rem; }
+	.deck__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+	.deck__when { color: #587083; white-space: nowrap; font-size: .8rem; }
+	.deck[data-error] .deck__when { color: var(--copper); }
 	.deck__scrub { display: block; }
-	.deck__scrub-label {
-		position: absolute; width: 1px; height: 1px;
-		overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-	}
-	/*
-		A rule with a dot on it, matching the search field above: both are the
-		same instrument, a horizontal you act on. --p is written by the script as
-		a unitless 0 to 1.
-	*/
-	/*
-		The hit area is 44px. The control still LOOKS 14px, and the deck is still
-		the same height, because the extra 30px is taken back as negative margin.
-
-		Why this one gets the fuss: it is the control this entire page exists to
-		provide. A 45 minute sermon that cannot be scrubbed is a 45 minute sermon
-		you have to sit through from the start, and on a phone the old geometry
-		asked a thumb to land on an 11px dot inside a 14px strip. Height alone
-		would have pushed the deck from 64px to ~94px, which is 13% of a phone
-		screen spent on furniture, so the margin gives the layout back.
-
-		It overlaps the title above it, which is deliberate and harmless: the title
-		is a plain span, nothing else in the deck is interactive there, and the
-		result is that the whole width of the deck's middle column seeks.
-	*/
-	.deck__scrub input {
-		-webkit-appearance: none; appearance: none;
-		display: block; width: 100%; height: 44px; margin: -15px 0;
-		background: none; cursor: pointer;
-	}
-	.deck__scrub input::-webkit-slider-runnable-track {
-		height: 2px;
-		background: linear-gradient(
-			to right,
-			var(--coral) calc(var(--p, 0) * 100%),
-			color-mix(in srgb, var(--paper) 26%, transparent) 0
-		);
-	}
-	.deck__scrub input::-moz-range-track {
-		height: 2px;
-		background: linear-gradient(
-			to right,
-			var(--coral) calc(var(--p, 0) * 100%),
-			color-mix(in srgb, var(--paper) 26%, transparent) 0
-		);
-	}
-	/* 11px was a mouse-sized dot. 16px is still a dot against a 2px rule, and it
-	   is something a thumb can actually catch and drag.
-	   margin-top centres it on the track: (track 2px - thumb 16px) / 2. */
-	.deck__scrub input::-webkit-slider-thumb {
-		-webkit-appearance: none; appearance: none;
-		width: 16px; height: 16px; margin-top: -7px;
-		border: 0; border-radius: 50%; background: var(--coral);
-	}
-	.deck__scrub input::-moz-range-thumb {
-		width: 16px; height: 16px;
-		border: 0; border-radius: 50%; background: var(--coral);
-	}
+	.deck__scrub-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+	.deck__scrub input { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px; margin: -15px 0; background: none; cursor: pointer; }
+	.deck__scrub input::-webkit-slider-runnable-track { height: 3px; background: #c5dae7; border-radius: 2px; }
+	.deck__scrub input::-moz-range-track { height: 3px; background: #c5dae7; border-radius: 2px; }
+	.deck__scrub input::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -7px; border: 0; border-radius: 50%; background: var(--water); }
+	.deck__scrub input::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: var(--water); }
 	.deck__scrub input:focus-visible { outline-offset: 2px; }
+	.deck__time { margin: 0; flex: none; color: #587083; font-size: .8rem; font-variant-numeric: tabular-nums; }
+	.deck__slash { padding: 0 .35rem; opacity: .5; }
+	.deck__close { flex: none; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1px solid #a5bece; border-radius: 50%; background: #fff; color: #294f6b; cursor: pointer; }
 
-	.deck__time {
-		flex: none; margin: 0; font-family: var(--mono); font-size: 0.7rem;
-		letter-spacing: 0.06em; color: var(--ash);
-		font-variant-numeric: tabular-nums;
-	}
-	.deck__slash { padding: 0 0.35rem; opacity: 0.5; }
-
-	.deck__close {
-		flex: none; display: grid; place-items: center;
-		width: 30px; height: 30px; padding: 0;
-		background: none; border: 0; border-radius: 50%;
-		color: var(--ash); cursor: pointer; transition: color 0.18s;
-	}
-	.deck__close:hover { color: var(--paper); }
-
-	/* Keeps the last sermon in the archive clear of the deck once it opens.
-	   The block is already is:global, so no :global() wrapper. */
-	body.has-deck { padding-bottom: var(--deck-h, 4.5rem); }
-
-	/* ---------- responsive ---------- */
-
-	@media (max-width: 980px) {
-		.feature { grid-template-columns: 1fr; }
-	}
-
-	@media (max-width: 720px) {
-		.wtop__foot .hours { width: 100%; margin-left: 0; }
-		.seek { grid-template-columns: 1fr; gap: 0.9rem; }
-		.stack { grid-template-columns: 1fr; gap: 0.9rem; }
-		/* The mark becomes a bar the rows slide under, which keeps the year
-		   readable on a phone without stealing a column from the titles. */
-		.stack__mark {
-			display: flex; align-items: baseline; gap: 0.7rem;
-			top: var(--chrome-h);
-			padding: 0.5rem 0 0.4rem;
-			background: var(--paper);
-			z-index: 2;
-		}
+	@media (max-width: 800px) {
+		:root { --chrome-h: 82px; }
+		.stack { grid-template-columns: 1fr; gap: 10px; }
+		.stack__mark { position: static; display: flex; align-items: baseline; gap: 12px; }
 		.stack__count { margin: 0; }
-		/* The runtime stays on phones. The season tag it replaced was dropped here
-		   because it told nobody anything; "44:12" is exactly the thing someone
-		   checks before starting a sermon on a commute, so it keeps its column. */
-		.row__hit { grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 0.8rem; }
-		.roll__origin { margin-left: 0; }
-		.roll__empty { margin-left: 0; }
-
-		/*
-			Two rows would eat a third of a phone screen, so the timecode drops to
-			elapsed-only and the date goes.
-
-			The close button STAYS, and an earlier version of this comment claimed
-			otherwise ("the close control goes: dismissal is the pause button").
-			Nothing in the file ever hid it, and the claim was wrong on its own
-			terms: pause pauses, it does not dismiss, so removing the X would leave
-			the deck with no way to send it away at all. It is 30px, which is over
-			the 24px floor and under the 44px target, and it is the one control
-			here that a mistaken tap costs nothing.
-		*/
-		.deck__in { gap: 0.7rem; padding-block: 0.7rem; }
-		.deck__slash, .deck__time [data-dur] { display: none; }
-		.deck__when { display: none; }
-
-		/*
-			The marker goes. At this width the list sits ~12px off the spine, so a
-			coral rule in that margin lands beside the coral spine and the two read
-			as one stuttering line rather than as a spine and a marker. The coral
-			title carries it instead, and the deck names the same sermon a thumb's
-			width below, so nothing is ambiguous.
-		*/
-		.row[data-playing]::before { display: none; }
+		.row__hit { grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 12px; }
+		.deck { right: 18px; bottom: 76px; }
+		.deck__slash, .deck__time [data-dur], .deck__when { display: none; }
 	}
-
 	@media (prefers-reduced-motion: reduce) {
 		.deck { transition: none; }
-		/* The live dot still appears, it just stops blinking: it is a state
-		   indicator, and the colour and the word beside it carry the meaning.
-		   The poster's hover push-in goes entirely. */
 		.screen[data-live] .screen__dot { animation: none; }
-		.screen__poster { transition: none; }
+		.screen__poster, .screen-play { transition: none; }
 		.screen:hover .screen__poster { transform: none; }
 	}
 </style>
 
 <script>
-	import gsap from 'gsap';
-	import ScrollTrigger from 'gsap/ScrollTrigger';
-	import SplitText from 'gsap/SplitText';
-	import Lenis from 'lenis';
 	import { track } from '../lib/analytics';
-
-	gsap.registerPlugin(ScrollTrigger, SplitText);
 
 	/* ---------- archive filter ---------- */
 
@@ -1066,9 +516,6 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		// A closing line under an empty list reads as a stray sentence.
 		if (origin) origin.hidden = count === 0;
 
-		// Row heights changed, so every trigger below the archive is now measuring
-		// against a stale document height.
-		ScrollTrigger.refresh();
 	}
 
 	let debounce: number;
@@ -1138,7 +585,6 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 			requestAnimationFrame(() => requestAnimationFrame(() => {
 				deck!.setAttribute('data-open', '');
 				reserve();
-				ScrollTrigger.refresh();
 			}));
 		}
 
@@ -1232,7 +678,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 			current = null;
 			deck.removeAttribute('data-open');
 			document.body.classList.remove('has-deck');
-			const done = () => { deck.hidden = true; ScrollTrigger.refresh(); };
+			const done = () => { deck.hidden = true; };
 			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
 			else deck.addEventListener('transitionend', done, { once: true });
 		});
@@ -1453,38 +899,6 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		}, 60_000);
 	}
 
-	/* ---------- motion ---------- */
-
-	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-		const lenis = new Lenis({ duration: 1.05 });
-		lenis.on('scroll', ScrollTrigger.update);
-		gsap.ticker.add((t) => lenis.raf(t * 1000));
-		gsap.ticker.lagSmoothing(0);
-
-		const heading = document.querySelector<HTMLElement>('[data-split]');
-		if (heading) {
-			const split = new SplitText(heading, { type: 'lines', linesClass: 'line', mask: 'lines' });
-			gsap.from(split.lines, {
-				yPercent: 130, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.1,
-			});
-		}
-
-		gsap.from('.wtop .eyebrow, .wtop__foot', {
-			opacity: 0, y: 16, duration: 0.75, ease: 'power2.out', stagger: 0.1, delay: 0.4,
-		});
-
-		// Reveals start high in the viewport so anything below the fold is already
-		// on screen by the time it plays: nothing sits at zero opacity waiting for
-		// a trigger that might never fire. Rows are deliberately NOT animated:
-		// 291 staggered triggers is both a scroll-jank problem and the kind of
-		// scattered motion that makes a page read as machine-made.
-		gsap.utils.toArray<HTMLElement>(
-			'.feature__lead > *, .feature__media, .seek, .roll__origin, .port, .foot > *',
-		).forEach((el) => {
-			gsap.from(el, {
-				opacity: 0, y: 24, duration: 0.7, ease: 'power2.out',
-				scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-			});
-		});
-	}
+	/* Motion (reveals, ribbons, the pause toggle) is Motion.astro's job now; this
+	   script owns playback, search and the live card only. */
 </script>
