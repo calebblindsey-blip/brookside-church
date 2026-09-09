@@ -144,9 +144,17 @@ const ribbon = (line: number) =>
 		<div class="watch-feature">
 			<div class="play-mark" aria-hidden="true"><span>▶</span></div>
 			<div>
-				<p class="eyebrow light">This week's sermon · {longDate(latest.date)}</p>
+				{/*
+					Date and speaker on their own line under the title rather than in
+					the eyebrow: with the full date the eyebrow wrapped to two lines of
+					tracked capitals on a phone. Same meta pattern as /watch. The blurb
+					is desktop-only; the orbit above and the YouTube link below already
+					say when the service streams, so on a phone it was the third copy.
+				*/}
+				<p class="eyebrow light">This week's sermon</p>
 				<h3>{latest.title}</h3>
-				<p>{latest.speaker ? `${latest.speaker}. ` : ''}Every sermon since {new Date(data.oldest).getUTCFullYear()} plays right here, and Sunday worship streams live at 10:45 AM.</p>
+				<p class="watch-meta">{latest.speaker && (<><span>{latest.speaker}</span><span aria-hidden="true">·</span></>)}<span>{longDate(latest.date)}</span></p>
+				<p class="watch-blurb">Every sermon since {new Date(data.oldest).getUTCFullYear()} plays right here, and Sunday worship streams live at 10:45 AM.</p>
 			</div>
 			<a class="button button-light" href="/watch/">Listen to this sermon <span class="arrow" aria-hidden="true">↗</span></a>
 		</div>

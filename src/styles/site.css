@@ -161,6 +161,8 @@ blockquote cite { display: block; margin-top: 34px; font: 600 .8rem/1.6 var(--fo
 .watch-feature .eyebrow { margin-bottom: 10px; }
 .watch-feature h3 { font-size: clamp(1.5rem,2.6vw,2.5rem); line-height: 1.15; font-weight: 550; margin-bottom: 12px; }
 .watch-feature p { margin-bottom: 0; color: #526877; }
+.watch-meta { display: flex; flex-wrap: wrap; gap: 0 .6rem; margin-bottom: 10px; color: #587083; font-size: .95rem; }
+.watch-feature .watch-blurb { margin-bottom: 0; }
 .platform-links { display: grid; grid-template-columns: repeat(3,1fr); margin-top: 35px; gap: 30px; }
 .platform-links a { position: relative; display: grid; grid-template-columns: 1fr auto; padding: 24px 0; border-bottom: 1px solid #a2bed3; font-size: 1.1rem; transition: padding .3s,background .3s; }
 .platform-links a:hover { padding-inline: 10px; background: #ffffff70; }
@@ -367,8 +369,13 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
   .family-practices { justify-content: flex-start; gap: 18px 26px; margin-top: 15px; }
   .live-orbit { width: 82px; flex-shrink: 0; }
   .live-orbit > span { font-size: .75rem; width: 78%; }
-  .watch-feature { grid-template-columns: 1fr; padding: 26px; margin-top: 28px; }
+  .watch-feature { grid-template-columns: 1fr; gap: 22px; padding: 26px; margin-top: 28px; }
   .watch-feature .button { grid-column: auto; }
+  /* Phone: the card keeps what only it can say (title, speaker, date, the button).
+     The play circle is decoration on its own row, and the blurb repeats the
+     livestream time that the orbit above and the YouTube link below carry. */
+  .play-mark, .watch-feature .watch-blurb { display: none; }
+  .watch-feature .watch-meta { margin-bottom: 0; }
   .visit-details article { grid-template-columns: 28px 1fr; gap: 8px 14px; }
   .footer-grid { grid-template-columns: 1fr; gap: 30px; }
   .footer-bottom { flex-direction: column; }
