@@ -5,24 +5,36 @@
  * Run after a Sunday service has finished processing:  npm run live
  *
  * ---------------------------------------------------------------------------
- * WHY THIS DOES NOT DOWNLOAD maxresdefault.jpg
+ * THE POSTER IS YOUTUBE'S OWN THUMBNAIL FIRST, GATED (Caleb's call, 2026-09-09)
  *
- * The obvious version of this script self-hosts i.ytimg.com/vi/<id>/maxresdefault.jpg.
- * That is wrong here and was rejected twice on evidence:
+ * maxresdefault.jpg is whatever the video shows on YouTube: the church's
+ * uploaded thumbnail when there is one, YouTube's head-of-video sample when
+ * there is not. Since September 2026 the church uploads a designed, branded
+ * thumbnail for each service (yKIE5nOxj0k, "Controlled by Emotions", is the
+ * first), and the card should show the same image the congregation sees on
+ * YouTube rather than a frame this script picked.
+ *
+ * It is still downloaded and served from our own origin, never hotlinked:
+ * the /watch card's whole point is that nothing is requested from YouTube
+ * until a visitor clicks (see watch.astro).
+ *
+ * WHY THE GATE AND THE SAMPLED FRAMES STAY
+ *
+ * The default is not safe on its own, and this was measured before the church
+ * started uploading thumbnails:
  *
  *   - imagery-manifest.md tested auto-thumbnails across the 15 most recent
  *     uploads (source SRC-12) and marked them REJECTED: they return in
  *     repeating byte sizes across DIFFERENT videos, which is a reused graphic.
- *   - Measured again 2026-08-26 on the then-newest stream r1f1KsnZdds
- *     ("August 23rd, 2026"): maxresdefault.jpg is 5,680 bytes of PURE BLACK at
- *     1280x720. YouTube samples its default thumbnail near the head of the
- *     video, and every Brookside broadcast opens on black before the camera
- *     cuts in.
+ *   - Measured 2026-08-26 on the then-newest stream r1f1KsnZdds
+ *     ("August 23rd, 2026"): maxresdefault.jpg was 5,680 bytes of PURE BLACK at
+ *     1280x720. YouTube samples its default near the head of the video, and
+ *     every Brookside broadcast opens on black before the camera cuts in.
  *
- * So the naive version would have shipped a black card, which is the exact
- * thing this card exists to stop being. Note the failure is INTERMITTENT: the
- * three streams before that one return real ~90KB frames. It would have passed
- * a spot check and failed on the week it mattered.
+ * So a week with no uploaded thumbnail can hand back a black image, and the
+ * failure is INTERMITTENT: the three streams before that one returned real
+ * ~90KB frames. The gate below catches it and the sampled frames are the
+ * fallback, so the worst week ships a frame of the room, not a black card.
  *
  * ---------------------------------------------------------------------------
  * WHY THIS DOES NOT EXTRACT A FRAME FROM THE VIDEO EITHER
@@ -57,15 +69,17 @@
  *   maxres2         room          room          room          room
  *   maxres3         room          room          room + lyrics room
  *
- * Hence PREFERENCE below: maxres2 first, maxres3 next, and the two that have
- * actually been observed failing last. maxres1 is the church's standing
- * "Welcome" pre-service slide three weeks in four — identical stats on three
- * different videos (content mean 107.9, stdev 47.9), which is SRC-12's
- * repeating-byte-size finding showing up in the pixels.
+ * Hence PREFERENCE below: maxresdefault first (YouTube's own thumbnail, see
+ * above), then maxres2 and maxres3 as the fallback frames, and maxres1 last.
+ * maxres1 is the church's standing "Welcome" pre-service slide three weeks in
+ * four — identical stats on three different videos (content mean 107.9, stdev
+ * 47.9), which is SRC-12's repeating-byte-size finding showing up in the pixels.
  *
- * The gate below is a second line of defence, not the primary mechanism. The
- * preference order is what makes this right; the gate is what stops a bad week
- * from shipping something worse than nothing.
+ * For the default, the gate is the primary mechanism: it is what tells an
+ * uploaded thumbnail (or a usable sample) apart from the black head-of-video
+ * frame. For the fallbacks, the preference order is what makes the pick right
+ * and the gate is what stops a bad week from shipping something worse than
+ * nothing.
  *
  * ---------------------------------------------------------------------------
  * NETWORK NOTE, because this has cost this project time twice:
@@ -91,8 +105,9 @@ const CHANNEL = process.env.YT_CHANNEL_ID || 'UCFVvTNQHSyICAekmJdQ47Eg';
 const UPLOADS = `UU${CHANNEL.slice(2)}`;
 const API = 'https://www.googleapis.com/youtube/v3';
 
-/** Best-first. See the table in the header: this order is measured, not guessed. */
-const PREFERENCE = ['maxres2', 'maxres3', 'maxresdefault', 'maxres1'];
+/** Best-first. YouTube's own thumbnail leads (Caleb's call, 2026-09-09); the
+    fallback order behind it is measured, not guessed. See the header. */
+const PREFERENCE = ['maxresdefault', 'maxres2', 'maxres3', 'maxres1'];
 
 /** The gate. MEAN_MIN is the one that earns its keep: it is what the
     5,680-byte black maxresdefault fails (content mean 0.0, stdev 0.0). */

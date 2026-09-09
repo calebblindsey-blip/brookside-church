@@ -6,6 +6,6 @@
 	"seconds": 4688,
 	"poster": "/live-poster.webp",
 	"posterWidth": 1280,
-	"posterHeight": 676,
-	"source": "maxres2"
+	"posterHeight": 720,
+	"source": "maxresdefault"
 }
