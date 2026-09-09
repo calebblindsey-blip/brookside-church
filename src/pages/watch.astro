@@ -357,8 +357,10 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	.screen:hover .screen__poster { transform: scale(1.02); }
 	.screen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #10283bd9 0%, #10283b8c 38%, #10283b1f 70%, transparent 100%); }
 	.screen--posterless::after { display: none; }
-	.screen > span { position: relative; z-index: 1; }
-	.screen-play { position: absolute; left: 50%; top: 42%; translate: -50% -50%; z-index: 1; width: clamp(64px, 8vw, 96px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--bone); color: var(--water); font-size: 1.4rem; box-shadow: 0 12px 40px #00000055; transition: scale .3s; }
+	/* :not(.screen-play): this rule outranks .screen-play's position: absolute, and
+	   with it the play button flows with the copy and only looks centred by accident. */
+	.screen > span:not(.screen-play) { position: relative; z-index: 1; }
+	.screen-play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 1; width: clamp(64px, 8vw, 96px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--bone); color: var(--water); font-size: 1.4rem; box-shadow: 0 12px 40px #00000055; transition: scale .3s; }
 	.screen-play > span { margin-left: 4px; }
 	.screen:hover .screen-play, .screen:focus-visible .screen-play { scale: 1.06; }
 	.screen__state { display: flex; align-items: center; gap: .5rem; margin-bottom: auto; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 650; color: #c7dfef; }
@@ -437,6 +439,19 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		.row__hit { grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 12px; }
 		.deck { right: 18px; bottom: 76px; }
 		.deck__slash, .deck__time [data-dur], .deck__when { display: none; }
+
+		/*
+			The poster is YouTube's own thumbnail now, which carries the sermon
+			title in large type. On a phone the card is too small to hold that
+			AND the cue and note copy, so the overlay drops to the two things the
+			thumbnail cannot supply: the play affordance and the state line (the
+			date, or LIVE NOW). The button's aria-label still names the service,
+			and the figcaption below the card keeps the "nothing loads until you
+			press play" promise, so nothing is lost from the accessible page.
+		*/
+		.screen__cue, .screen__note { display: none; }
+		.screen__state { margin-bottom: 0; }
+		.screen::after { background: linear-gradient(to top, #10283bcc 0%, #10283b40 34%, transparent 58%); }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.deck { transition: none; }
