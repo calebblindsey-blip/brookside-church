@@ -1,0 +1,174 @@
+# Weekly refresh for the Brookside site.
+#
+# WHY THIS EXISTS
+#
+# Two things on the site are pulled at BUILD time and go stale on their own:
+# the sermon archive (src/data/sermons.json, from the podcast RSS) and the
+# /watch card (src/data/live.json + public/live-poster.webp, from the newest
+# completed YouTube live stream). Without this, /watch names whichever service
+# happened to be newest the last time somebody ran a build.
+#
+# WHY IT RUNS HERE AND NOT ON CALEB'S MAC
+#
+# It used to be a launchd LaunchAgent (Compass repo,
+# engine/scripts/brookside-weekly-refresh.sh, now superseded). launchd replays
+# a calendar slot missed while the Mac is ASLEEP, but not one missed while it is
+# powered OFF (man launchd.plist), and the Mac was off through the 2026-09-07
+# slot. Two Mondays passed with the site on the Aug 23 service and nothing
+# noticed, because no monitor watched that job. GitHub runs this whether or not
+# any machine of Caleb's is on, and emails him when it fails.
+#
+# WHY MONDAY 06:00 CENTRAL
+#
+# The service ends around 12:15 PM Sunday, and YouTube has taken ~12 hours to
+# publish a broadcast after it ended. 11:00 UTC is 06:00 CDT / 05:00 CST; the
+# hour of winter drift is fine.
+#
+# WHAT IT WILL AND WILL NOT DO
+#
+# It deploys on its own to the congregation's live site (Caleb's call,
+# 2026-08-26, reaffirmed 2026-09-09). It will NOT deploy a build that failed,
+# and it skips the deploy when nothing changed. The two data pulls are allowed
+# to fail independently: pull-live.mjs exits non-zero on purpose when no frame
+# clears its quality gate, and that must not stop a new sermon from reaching
+# the site. Any failed step still fails the run at the end, so the email fires.
+#
+# The build runs even on a quiet week on purpose: it is the only regular
+# signal that the site still builds at all.
+#
+# SECRETS (repo settings): YOUTUBE_API_KEY, CLOUDFLARE_API_TOKEN,
+# CLOUDFLARE_ACCOUNT_ID. The Pages Function's own YOUTUBE_API_KEY is a
+# separate secret on the Pages project, not this one.
+
+name: weekly-refresh
+
+on:
+  schedule:
+    - cron: '0 11 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: weekly-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROD: https://brookside-church.pages.dev
+      MIN_PAGES: 8
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: redesign
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Refresh the sermon archive
+        id: sermons
+        continue-on-error: true
+        run: npm run sermons
+
+      - name: Refresh the /watch card and poster
+        id: live
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: npm run live
+
+      - name: Detect changed data
+        id: changed
+        run: |
+          CHANGED="$(git status --porcelain -- src/data public/live-poster.webp | awk '{print $2}' | paste -sd' ' -)"
+          echo "files=${CHANGED}" >> "$GITHUB_OUTPUT"
+          echo "Changed: ${CHANGED:-none}"
+
+      # Always, even on a quiet week: this is the canary. Astro's own tally
+      # rather than a glob, because 404.html is a page and is not an index.html.
+      - name: Build
+        run: |
+          rm -rf dist
+          npm run build 2>&1 | tee build.log
+          test "${PIPESTATUS[0]}" -eq 0
+          PAGES="$(grep -oE '[0-9]+ page\(s\) built' build.log | grep -oE '^[0-9]+' | tail -1)"
+          echo "Astro reports ${PAGES:-0} pages built"
+          if [ "${PAGES:-0}" -lt "$MIN_PAGES" ]; then
+            echo "::error::Build produced ${PAGES:-0} pages, expected at least $MIN_PAGES. Nothing deployed."
+            exit 1
+          fi
+
+      - name: Deploy
+        if: steps.changed.outputs.files != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy --branch main --commit-dirty=true 2>&1 | tee deploy.log
+          grep -q "Deployment complete" deploy.log
+          URL="$(grep -oE 'https://[a-z0-9]+\.brookside-church\.pages\.dev' deploy.log | tail -1)"
+          echo "DEPLOY_URL=$URL" >> "$GITHUB_ENV"
+
+      # The Function is the part most likely to break quietly: a rotated key
+      # still returns HTTP 200, just with degraded:true and the live badge gone.
+      - name: Verify the deploy
+        if: steps.changed.outputs.files != ''
+        run: |
+          sleep 8
+          test "$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$PROD/watch/")" = 200
+          test "$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$PROD/live-poster.webp")" = 200
+          LIVE="$(curl -s --max-time 30 "$PROD/api/live")"
+          echo "/api/live -> $LIVE"
+          case "$LIVE" in
+            *'"degraded":true'*) echo "::error::/api/live is degraded (check the Pages project's YOUTUBE_API_KEY and quota)"; exit 1 ;;
+            *'"live"'*) ;;
+            *) echo "::error::/api/live returned something unexpected"; exit 1 ;;
+          esac
+          LOCAL="$(sha256sum public/live-poster.webp | cut -d' ' -f1)"
+          REMOTE="$(curl -s --max-time 60 "$PROD/live-poster.webp" | sha256sum | cut -d' ' -f1)"
+          if [ "$LOCAL" = "$REMOTE" ]; then
+            echo "Poster hash matches the deploy"
+          else
+            # Pages is eventually consistent per asset; a warning, not proof of a bad deploy.
+            echo "::warning::Poster hash mismatch; re-check before assuming a bad deploy"
+          fi
+
+      # Recorded AFTER the deploy is verified, so the commit describes what is live.
+      - name: Commit the refreshed data
+        if: steps.changed.outputs.files != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/sermons.json src/data/live.json public/live-poster.webp
+          TITLE="$(node -e 'try{console.log(require("./src/data/live.json").title)}catch(e){console.log("unknown")}')"
+          git commit -F - <<MSG
+          chore(data): weekly refresh, poster now "$TITLE"
+
+          Automated by .github/workflows/weekly-refresh.yml. Deployed and
+          verified before this commit was made, so this records what is
+          already live.
+
+          Deploy: ${DEPLOY_URL:-unknown}
+          MSG
+          git push
+
+      - name: Report
+        if: always()
+        run: |
+          echo "sermons: ${{ steps.sermons.outcome }}"
+          echo "live:    ${{ steps.live.outcome }}"
+          echo "changed: ${{ steps.changed.outputs.files || 'none' }}"
+          echo "deploy:  ${DEPLOY_URL:-skipped}"
+          if [ "${{ steps.sermons.outcome }}" != success ] || [ "${{ steps.live.outcome }}" != success ]; then
+            echo "::error::A data pull failed (see above). Anything that did change was still deployed."
+            exit 1
+          fi
