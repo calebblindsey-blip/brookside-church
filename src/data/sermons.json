@@ -1,9 +1,23 @@
 {
 	"feed": "https://anchor.fm/s/115652ca8/podcast/rss",
-	"total": 296,
+	"total": 298,
 	"oldest": "2020-03-18",
-	"newest": "2026-08-24",
+	"newest": "2026-09-07",
 	"recent": [
+		{
+			"title": "Controlled By Emotions",
+			"date": "2026-09-07",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/125330421/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-7%2F7c62b307-748d-4845-3e8b-f7c47ca0a57e.mp3",
+			"seconds": 3413,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "It Is Well With My Soul",
+			"date": "2026-08-31",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/125009640/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-31%2F0e2ae9fb-881e-be90-bbf2-eeb6010b61d2.mp3",
+			"seconds": 2735,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "How To Process The Pain",
 			"date": "2026-08-24",
@@ -31,23 +45,11 @@
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994386/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2F7ed75ce8-d914-328d-5f0a-0bf3bf0b5227.mp3",
 			"seconds": 2649,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "When The Clay Breaks",
-			"date": "2026-08-09",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123994227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-9%2Fd559e7c3-5265-42dc-5a32-ff1f0d2a554c.mp3",
-			"seconds": 3539,
-			"speaker": "Daniel Howard"
-		},
-		{
-			"title": "The Power Of Joy",
-			"date": "2026-07-20",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/123401091/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723913-44100-2-5f3f48625e8b017f.mp3",
-			"seconds": 2652,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-09-07",
+		"2026-08-31",
 		"2026-08-24",
 		"2026-08-21",
 		"2026-08-10",
@@ -346,6 +348,20 @@
 		"2020-03-18"
 	],
 	"episodes": [
+		{
+			"title": "Controlled By Emotions",
+			"date": "2026-09-07",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/125330421/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-7%2F7c62b307-748d-4845-3e8b-f7c47ca0a57e.mp3",
+			"seconds": 3413,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "It Is Well With My Soul",
+			"date": "2026-08-31",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/125009640/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-31%2F0e2ae9fb-881e-be90-bbf2-eeb6010b61d2.mp3",
+			"seconds": 2735,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "How To Process The Pain",
 			"date": "2026-08-24",
