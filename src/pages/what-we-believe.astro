@@ -34,7 +34,9 @@ const articles = [
 	description="The declaration of faith of Brookside Church of God, in full: sixteen articles on Scripture, the Trinity, salvation, sanctification, the Holy Ghost, and the return of Christ."
 >
 	<InteriorHero eyebrow="What we believe">
-		<Fragment slot="title">The faith this<br />church <em>stands on.</em></Fragment>
+		{/* nbsp: "stands on." is one phrase and the copper carries it, so it must never
+		    split. Without it a phone dropped "on." onto a line of its own. */}
+		<Fragment slot="title">The faith this<br />church <em>stands&nbsp;on.</em></Fragment>
 		<p slot="intro">This is the declaration of faith of the Church of God, which Brookside holds without reservation. It is written plainly and it is not long. If you want the shorter description of who we are first, that is on <a class="inline-text-link" href="/about/">the about page</a>.</p>
 	</InteriorHero>
 

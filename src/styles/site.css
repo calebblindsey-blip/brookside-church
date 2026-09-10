@@ -96,7 +96,14 @@ a:hover .arrow { transform: translate(3px,-3px); }
 .flow-lines path { fill: none; stroke: #388cca; stroke-width: 1.25; opacity: .42; }
 .flow-lines path:nth-child(4n) { stroke: #8cc0df; stroke-width: 7; opacity: .23; }
 .hero-christ { font-size: 1.35em; letter-spacing: -.07em; }
-h1 > em { margin-left: 5vw; }
+/* The home hero's stagger, and ONLY that. The em there is a block-level display
+   line (<em class="hero-line"><span>crucified.</span></em>), so 5vw indents the
+   whole third line on purpose. Unscoped, this rule also hit every InteriorHero,
+   whose <em> is an ordinary INLINE child of <h1>: it opened a 72px hole mid-line
+   on /about, /what-we-believe and /404, indented the line on /watch, /visit and
+   /give, and on /knowing-christ and /what-we-believe pushed a word onto a line of
+   its own, breaking the hand-placed <br> the copy was written around. */
+h1 > em.hero-line { margin-left: 5vw; }
 .flow-accent { fill: none; stroke: #c55b3b; stroke-width: 2; stroke-dasharray: 24 16; animation: current-travel 12s linear infinite; opacity: .65; }
 .gather-card { position: relative; align-self: end; margin: 0 0 40px; padding: 28px; z-index: 2; background: #fff; border: 1px solid #c3d6e3; box-shadow: 12px 12px 0 #c7dfed,0 30px 70px #183c5510; transform: rotate(2deg); animation: card-arrive 1.2s .35s both; }
 .gather-card::before { content: ''; position: absolute; inset: -12px 14px 12px -14px; z-index: -1; border: 1px solid #7fa9c7; transform: rotate(-4deg); }
@@ -216,7 +223,22 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 /* Interior pages carry the homepage's light, layered current into quieter reading layouts. */
 .inner-hero { position: relative; min-height: 72svh; padding: clamp(80px,9vw,140px) 9vw; display: grid; grid-template-columns: minmax(0,1.35fr) minmax(260px,.55fr); align-items: end; gap: 7vw; isolation: isolate; overflow: clip; }
 .inner-hero-copy { position: relative; z-index: 3; }
-.inner-hero h1 { max-width: 1000px; font-size: clamp(4rem,8.8vw,9rem); line-height: .9; }
+/* line-height was .9 and the interior headings collided: measured by pixel bands at
+   1440, /watch, /knowing-christ, /404 and /give each rendered as ONE merged ink
+   band, i.e. a descender overlapping the next line's ascenders ('preaching.' into
+   'One subject.'). At 1 every page separates, the tightest being /404 at 4.5px,
+   which is still looser than the home hero's 2.5px. 1.05 also clears but reads
+   airy for display type. The home h1 keeps .91 on purpose: its lines are separate
+   .hero-line blocks and its one descender sits clear to the right of the line
+   below, so it is tight by design rather than colliding. */
+/* 8.8vw was composed against a wider measure than this layout gives. The h1 gets
+   1.35fr of the hero grid, which is 767px at 1440 and NOT the 1000px max-width
+   (that only binds past ~1878px), so /what-we-believe and /visit overflowed their
+   authored <br> and dropped "on." and "can" onto lines of their own. 8.4vw fits
+   every page from 1101 up; below 1100 the hero is single column and roomier. It is
+   not purely scale-invariant, because the aside's minmax(260px,.55fr) floor bites
+   into the headline column near 1100. */
+.inner-hero h1 { max-width: 1000px; font-size: clamp(4rem,8.4vw,9rem); line-height: 1; }
 .inner-hero h1 em { color: var(--copper); }
 .inner-intro { max-width: 680px; margin-top: 38px; font-size: clamp(1.05rem,1.55vw,1.3rem); color: #4f6370; }
 .inner-intro p { margin-bottom: 0; }
@@ -348,7 +370,11 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
   .page-current .current-progress { opacity: .25; }
   .inner-hero,.inner-section { grid-template-columns: 1fr; }
   .inner-hero { min-height: auto; padding-top: 90px; gap: 55px; }
-  .inner-hero h1 { font-size: clamp(4rem,14vw,7rem); }
+  /* 14vw/7rem overflowed the single-column measure on the longest headline, so
+     /what-we-believe broke to three lines between 500 and 800px. Same cause as the
+     desktop clamp above: the authored <br> assumes a wider measure than the layout
+     gives. Below 500px the next rule takes over and three lines are correct there. */
+  .inner-hero h1 { font-size: clamp(4rem,13vw,6.4rem); }
   .inner-aside { width: min(480px,94%); margin-left: auto; }
   .inner-ribbons { inset-inline: 28% -25%; opacity: .48; }
   .method-grid { grid-template-columns: 1fr; }
