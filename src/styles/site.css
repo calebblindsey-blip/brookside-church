@@ -95,16 +95,21 @@ a:hover .arrow { transform: translate(3px,-3px); }
 .hero-flow svg { width: 100%; height: 100%; overflow: visible; }
 .flow-lines path { fill: none; stroke: #388cca; stroke-width: 1.25; opacity: .42; }
 .flow-lines path:nth-child(4n) { stroke: #8cc0df; stroke-width: 7; opacity: .23; }
-/* margin-top rebalances the three hero lines. "Christ" is set 1.35x, and it has a
-   huge ascender with essentially no descender (ink 145.3 up, 2.4 down at 1440), so
-   its ink sits high in its own line box: measured by pixel bands, the gap above it
-   was 2.5px on desktop and 1.0px on a phone while the gap below ran 50.5 and 22.5,
-   a 20x uneven rhythm that read as "Preaching" and "Christ" touching. .11em moves
-   it down into the surplus underneath: 24.5/28.5 desktop, 11.0/12.5 phone. One em
-   value serves both because it resolves against this element's own font size.
-   Nothing else moves: h1 height, intro and actions positions and page height are
-   identical before and after. No margin-bottom needed, .hero-line already has it. */
-.hero-christ { font-size: 1.35em; letter-spacing: -.07em; margin-top: .11em; }
+/* Rebalances the three hero lines. "Christ" is set 1.35x, and .hero-line's
+   padding-bottom:.11em / margin-bottom:-.11em pair resolves against EACH line's own
+   font-size, so this line pulls the one below it up by 22.4px where the others pull
+   16.6px. That is what held "crucified." tighter under "Christ" than "Christ" sits
+   under "Preaching". Symmetric .045em opens both sides equally.
+
+   Measure the gap ONLY over the x-range where two lines actually stack. A whole-width
+   ink-band measure is dominated by the 'g' of "Preaching", which hangs past the right
+   edge of "Christ" and so closes a gap the eye never reads: it reported 2.5px where the
+   stacked columns are 33px, and sent an earlier attempt at this rule to .11em, which
+   made the rhythm visibly worse (55.0 above vs 28.5 below) and grew the h1 478->500px.
+   Measured over the stacked columns: original 33.0/28.5 desktop and 14.5/12.5 phone,
+   now 42.0/41.5 and 18.5/18.5. One em value serves both breakpoints because it resolves
+   against this element's own font size. */
+.hero-christ { font-size: 1.35em; letter-spacing: -.07em; margin-top: .045em; margin-bottom: -.045em; }
 /* The home hero's stagger, and ONLY that. The em there is a block-level display
    line (<em class="hero-line"><span>crucified.</span></em>), so 5vw indents the
    whole third line on purpose. Unscoped, this rule also hit every InteriorHero,
