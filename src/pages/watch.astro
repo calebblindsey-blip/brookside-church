@@ -243,12 +243,19 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 				</div>
 			</div>
 			<div class="roll" data-roll>
-				{years.map((g) => (
-					<section class="stack" data-group={g.year} aria-labelledby={`y-${g.year}`}>
-						<div class="stack__mark">
+				{/* Each year is a disclosure, current year open, the rest closed. All 298 rows
+				    expanded ran /watch to ~23 phone screens and buried the /knowing-christ appeal
+				    that sits under it. <details> rather than a button + aria-expanded so it
+				    toggles with no JS and browser find-in-page can open it. Rows are HIDDEN,
+				    never dropped: the DOM still carries every sermon. */}
+				{years.map((g, i) => (
+					<details class="stack" data-group={g.year} open={i === 0}>
+						<summary class="stack__mark">
 							<h3 class="stack__year" id={`y-${g.year}`}>{g.year}</h3>
-							<p class="stack__count">{g.items.length} sermons</p>
-						</div>
+							{/* data-total survives a filtered render, so the count can go back to
+							    "51 sermons" after reading "3 of 51". */}
+							<span class="stack__count" data-total={g.items.length}>{g.items.length} sermons</span>
+						</summary>
 						{/* The button is inside the li rather than the li being the control, so the list keeps its semantics. */}
 						<ol class="stack__list">
 							{g.items.map((e) => (
@@ -269,7 +276,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 								</li>
 							))}
 						</ol>
-					</section>
+					</details>
 				))}
 				<p class="roll__empty" data-empty hidden></p>
 			</div>
@@ -381,9 +388,34 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 	.chip[aria-pressed='true'] { background: var(--water); border-color: var(--water); color: #fff; }
 	.stack { display: grid; grid-template-columns: minmax(0, 7rem) minmax(0, 1fr); gap: 16px 28px; padding-top: 24px; }
 	.stack[hidden] { display: none; }
-	.stack__mark { position: sticky; top: calc(var(--chrome-h) + 12px); align-self: start; }
+	/* The year is the disclosure control. Keep summary's default display so it keeps
+	   toggling, and reset the marker in both engines rather than by changing display.
+	   min-height is explicit because audit-brookside-mobile.mjs now measures this as a
+	   tap target, and "the year is display type" is not a guarantee it stays one. */
+	.stack__mark { position: sticky; top: calc(var(--chrome-h) + 12px); align-self: start; min-height: 44px; cursor: pointer; list-style: none; }
+	.stack__mark::-webkit-details-marker { display: none; }
+	.stack__mark::marker { content: ''; }
+	.stack__mark:focus-visible { outline-offset: 4px; }
+	.stack__mark:hover .stack__count { color: var(--water); }
 	.stack__year { margin: 0; color: var(--water); font: 400 clamp(2rem, 4vw, 3rem)/1 var(--font-serif), serif; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-	.stack__count { margin: 6px 0 0; color: #587083; font-size: .8rem; }
+	.stack__count { display: block; margin: 6px 0 0; color: #587083; font-size: .8rem; transition: color .18s; }
+	/* The caret is .deck__glyph's shape at archive scale, so the page carries one arrow
+	   rather than two. Rotation is the ONLY motion: ::details-content + interpolate-size
+	   is too new to lean on for a height animation, and an instant toggle matches how the
+	   year chips already behave. site.css kills the transition under reduced motion
+	   globally (*,*::before,*::after { transition: none !important }), so no rule here. */
+	.stack__count::after { content: ''; display: inline-block; width: 7px; height: 8px; margin-left: 9px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); transition: rotate .22s ease; }
+	.stack[open] .stack__count::after { rotate: 90deg; }
+	/* A closed year has no list beside it, so its summary spans both columns and lays
+	   the year and count on one baseline. Left in the rail it was a label stranded
+	   against 542px of empty gutter at 1440, and the click target was only the narrow
+	   column. Full width makes the closed bar read as a rule across the archive, the
+	   same idiom as the rows it stands in for, and the whole width becomes clickable. */
+	.stack:not([open]) .stack__mark { grid-column: 1 / -1; position: static; display: flex; align-items: baseline; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+	.stack:not([open]) .stack__count { display: inline-block; margin: 0; }
+	/* .roll__origin carries its own border-top, so the last bar's rule would land a
+	   hairline above it and open an empty band at the foot of the archive. */
+	.stack:last-of-type .stack__mark { border-bottom: 0; }
 	.stack__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 	.row { position: relative; border-bottom: 1px solid var(--line); }
 	.row[hidden] { display: none; }
@@ -435,7 +467,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		:root { --chrome-h: 82px; }
 		.stack { grid-template-columns: 1fr; gap: 10px; }
 		.stack__mark { position: static; display: flex; align-items: baseline; gap: 12px; }
-		.stack__count { margin: 0; }
+		.stack__count { display: inline-block; margin: 0; }
 		.row__hit { grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 12px; }
 		.deck { right: 18px; bottom: 76px; }
 		.deck__slash, .deck__time [data-dur], .deck__when { display: none; }
@@ -468,7 +500,10 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 
 	const input = document.querySelector<HTMLInputElement>('#seek');
 	const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
-	const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-group]'));
+	const groups = Array.from(document.querySelectorAll<HTMLDetailsElement>('[data-group]'));
+	// Groups are emitted newest-first, so this is the year that ships open. Read from
+	// the DOM rather than hardcoded: the archive refreshes weekly from the feed.
+	const newest = groups[0]?.dataset.group;
 	const rows = Array.from(document.querySelectorAll<HTMLElement>('.row'));
 	const shown = document.querySelector<HTMLElement>('[data-shown]');
 	const empty = document.querySelector<HTMLElement>('[data-empty]');
@@ -505,6 +540,9 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 
 	function apply() {
 		const q = (input?.value || '').trim().toLowerCase();
+		// Either control narrowing the list counts as filtering. Clicking a year chip
+		// with an empty search box still has to open that year, or it reads as a bug.
+		const filtering = q !== '' || year !== 'all';
 		let count = 0;
 
 		for (const item of index) {
@@ -516,9 +554,30 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 			}
 		}
 
-		// A year heading with nothing under it reads as a bug, so groups fold too.
 		for (const g of groups) {
-			g.hidden = !g.querySelector<HTMLElement>('.row:not([hidden])');
+			const hits = g.querySelectorAll('.row:not([hidden])').length;
+
+			// A year heading with nothing under it reads as a bug, so groups fold too.
+			g.hidden = hits === 0;
+
+			// Open state is DERIVED from the filter, never remembered separately. While
+			// something is narrowing the list, every year holding a match opens so no
+			// result can hide behind a closed bar; with the filter cleared the page
+			// returns to its default of the current year only. A year opened by hand
+			// therefore closes again on clear, which is deliberate: two sources of truth
+			// for "is this open" is how a filtered row ends up invisible and uncounted.
+			g.open = filtering ? hits > 0 : g.dataset.group === newest;
+
+			// The header count used to ignore the filter entirely: searching "faith"
+			// left 2025 reading "51 sermons" above 3 visible rows. It matters more now
+			// that a closed bar's count is all a visitor has to go on.
+			const c = g.querySelector<HTMLElement>('.stack__count');
+			// No aria-live here on purpose. Seven of these would announce seven times per
+			// keystroke; .seek__count is already the live region for the total.
+			if (c) {
+				const total = c.dataset.total || '0';
+				c.textContent = filtering ? `${hits} of ${total}` : `${total} sermons`;
+			}
 		}
 
 		if (shown) shown.textContent = String(count);
