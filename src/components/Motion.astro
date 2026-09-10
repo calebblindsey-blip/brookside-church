@@ -25,7 +25,7 @@
  */
 ---
 
-<button type="button" class="motion-toggle" aria-label="Pause site motion" aria-pressed="false">
+<button type="button" class="motion-toggle" aria-label="Pause motion" aria-pressed="false">
 	<span aria-hidden="true" data-glyph>Ⅱ</span><span data-label>Pause motion</span>
 </button>
 
@@ -253,7 +253,15 @@
 			toggle.setAttribute('aria-pressed', String(paused));
 			toggle.disabled = reduce;
 			if (glyph) glyph.textContent = paused ? '▷' : 'Ⅱ';
-			if (label) label.textContent = reduce ? 'Reduced motion' : paused ? 'Enable motion' : 'Pause motion';
+			// aria-label and the visible label are set from ONE string. The button
+			// collapses to its glyph and only shows the text on hover or focus, so the
+			// aria-label is the whole accessible name most of the time; it used to be a
+			// static "Pause site motion" that never moved while the visible text changed
+			// to "Enable motion", which both lies to a screen reader and breaks WCAG
+			// 2.5.3 for voice control ("click Enable motion" would not match the name).
+			const text = reduce ? 'Reduced motion' : paused ? 'Enable motion' : 'Pause motion';
+			if (label) label.textContent = text;
+			toggle.setAttribute('aria-label', text);
 		}
 	}
 
