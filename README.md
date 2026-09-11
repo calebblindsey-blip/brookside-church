@@ -64,11 +64,12 @@ npm run deploy:preview        # build + deploy to a preview branch URL
 npm run deploy                # build + deploy to production
 ```
 
-**The site is deployed and live on `brookside-church.pages.dev`, but it is not yet
-the public website.** The domains are still on Squarespace; the DNS cutover has not
-happened. Check what production is on with
-`npx wrangler pages deployment list --project-name brookside-church` rather than
-trusting a number written here.
+**The site is live at `https://brooksidechurchofgod.com` since 2026-09-11.** Both
+church domains are on Cloudflare DNS; `www` and `brooksidecog.com` 301 to the apex
+through zone redirect rules, and the old podcast feed URL 301s to anchor.fm the same
+way. Squarespace still holds the old site until it is cancelled. Check what production
+is on with `npx wrangler pages deployment list --project-name brookside-church` rather
+than trusting a number written here.
 
 **Build with `rm -rf dist` first.** The repo sits under iCloud-synced `~/Documents`, and
 iCloud writes conflict copies (`visit/index 2.html`, mode 600) into `dist/` at build time.
@@ -91,9 +92,9 @@ Things that trip people up here:
   data. Schedules only see workflows on the default branch, which is why `redesign`
   is the default.
 
-Both domains carry Microsoft 365 email, so the DNS cutover is the risky part and
-has its own step-by-step: `projects/personal/brookside-church-website/dns-cutover-runbook.md`
-in the Compass repo. Read it before changing a nameserver.
+Both domains carry Microsoft 365 email. The cutover runbook, executed 2026-09-11, is
+`projects/personal/brookside-church-website/dns-cutover-runbook.md` in the Compass repo;
+read it before touching a DNS record on either zone.
 
 ### What ships alongside the HTML
 
