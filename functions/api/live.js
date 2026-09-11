@@ -103,6 +103,12 @@ async function askYouTube(key, channel) {
 		: { live: false };
 }
 
+// Uptime monitors send HEAD. Same headers and status as GET, no body.
+export async function onRequestHead(ctx) {
+	const res = await onRequestGet(ctx);
+	return new Response(null, res);
+}
+
 export async function onRequestGet({ env, waitUntil }) {
 	const cached = await caches.default.match(CACHE_KEY);
 	if (cached) return cached;

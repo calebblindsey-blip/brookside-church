@@ -39,12 +39,19 @@ interface Props {
 	description?: string;
 	/** Page-level class on the shell, e.g. "home" for the page current's layout. */
 	class?: string;
+	/**
+	 * The 404 page only. Pages serves /404.html with a 404 status for unknown
+	 * paths, but a direct request for /404 is a 200, so without this Google can
+	 * index "Page not found" as a result. A noindex page carries no canonical.
+	 */
+	noindex?: boolean;
 }
 
 const {
 	title = 'Brookside Church of God',
-	description = 'A Christ-centered church family in Brookside, Alabama. Join us Sunday at 10:45 AM or watch online.',
+	description = 'A Christ-centered church family in Brookside, Alabama. Sunday School at 9:45 AM, Morning Worship at 10:45 AM, or watch online anytime.',
 	class: pageClass,
+	noindex = false,
 } = Astro.props;
 
 const fullTitle =
@@ -201,7 +208,7 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={canonical} />
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
@@ -215,6 +222,9 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 			content="Brookside Church of God on Cardiff Street: a brick building with a white gable, a bell tower, and two crosses against a blue sky."
 		/>
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={fullTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
 		<meta name="theme-color" content="#fcfcf9" />
 		<ChurchSchema />
 	</head>

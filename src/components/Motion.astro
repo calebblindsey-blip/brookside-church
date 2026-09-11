@@ -38,7 +38,14 @@
 	const label = toggle?.querySelector<HTMLElement>('[data-label]');
 	const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+	// The visitor's own pause survives navigation and reload. Before this it was
+	// a plain variable, so pausing on the home page and clicking through to /visit
+	// brought every loop straight back, which is the opposite of what a person who
+	// pressed the button wanted. Storage can throw (private mode, blocked site
+	// data), and a failure here must never break motion, so both calls are guarded.
+	const STORE = 'brookside:motion';
 	let userPaused = false;
+	try { userPaused = localStorage.getItem(STORE) === 'paused'; } catch { /* no storage */ }
 	let stopMotion: (() => void) | null = null;
 	let stopRibbons: (() => void) | null = null;
 
@@ -266,6 +273,10 @@
 	}
 
 	preference.addEventListener('change', apply);
-	toggle?.addEventListener('click', () => { userPaused = !userPaused; apply(); });
+	toggle?.addEventListener('click', () => {
+		userPaused = !userPaused;
+		try { userPaused ? localStorage.setItem(STORE, 'paused') : localStorage.removeItem(STORE); } catch { /* no storage */ }
+		apply();
+	});
 	apply();
 </script>

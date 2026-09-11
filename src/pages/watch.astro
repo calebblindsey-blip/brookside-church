@@ -164,7 +164,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 			*/}
 			<p class="feature__meta">
 				{latest.speaker && (<><span>{latest.speaker}</span><span aria-hidden="true">·</span></>)}
-				<span>{longDate(latest.date)}</span>
+				<span>Posted {longDate(latest.date)}</span>
 				<span aria-hidden="true">·</span>
 				<span class="feature__tag">{clock(latest.seconds)}</span>
 			</p>
@@ -176,7 +176,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 					data-src={latest.url}
 					data-label={latest.title}
 					data-when={longDate(latest.date)}
-				>Play this sermon <span class="arrow" aria-hidden="true">▶</span></button>
+				><span data-cue-label>Play this sermon</span> <span class="arrow" aria-hidden="true">▶</span></button>
 				<a class="text-link" href={APPLE} target="_blank" rel="noopener">Apple Podcasts <span class="arrow" aria-hidden="true">↗</span></a>
 				<a class="text-link" href={SPOTIFY} target="_blank" rel="noopener">Spotify <span class="arrow" aria-hidden="true">↗</span></a>
 			</div>
@@ -667,9 +667,16 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 			}));
 		}
 
+		// The hero button cues the newest sermon and, once it is the current one,
+		// toggles it. Its label follows the audio state so a second click is not a
+		// surprise; any other sermon playing puts it back to "Play".
+		const heroLabel = document.querySelector<HTMLElement>('[data-cue-label]');
+		const heroCue = heroLabel?.closest<HTMLElement>('[data-cue]') ?? null;
+
 		function mark(state: 'playing' | 'paused') {
 			deck!.setAttribute('data-state', state);
 			glyphBtn!.setAttribute('aria-label', state === 'playing' ? 'Pause' : 'Play');
+			if (heroLabel) heroLabel.textContent = current === heroCue && state === 'playing' ? 'Pause this sermon' : 'Play this sermon';
 		}
 
 		function fail(message: string) {
