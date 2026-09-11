@@ -83,8 +83,12 @@ export const CHURCH = {
 		'https://www.youtube.com/@brooksidechurchofgod',
 	],
 
-	/** The line under the name on the lockup, and the site's one-sentence self-description. */
-	tagline: 'Preaching Christ crucified.',
+	/**
+	 * The line under the name on the lockup, and the site's self-description.
+	 * Treated as a TITLE, not a sentence: capital C, no period. Caleb's call,
+	 * 2026-09-11. (Instagram's bio carries an exclamation mark; that is its own form.)
+	 */
+	tagline: 'Preaching Christ Crucified',
 
 	/** Where the sermon podcast is listed. The feed itself is in sermons.json. */
 	applePodcastsUrl: 'https://podcasts.apple.com/us/podcast/id1094539094',

@@ -98,7 +98,7 @@ a:hover .arrow { transform: translate(3px,-3px); }
 /* Rebalances the three hero lines. "Christ" is set 1.35x, and .hero-line's
    padding-bottom:.11em / margin-bottom:-.11em pair resolves against EACH line's own
    font-size, so this line pulls the one below it up by 22.4px where the others pull
-   16.6px. That is what held "crucified." tighter under "Christ" than "Christ" sits
+   16.6px. That is what held "Crucified" tighter under "Christ" than "Christ" sits
    under "Preaching". Symmetric .045em opens both sides equally.
 
    Measure the gap ONLY over the x-range where two lines actually stack. A whole-width
@@ -111,7 +111,7 @@ a:hover .arrow { transform: translate(3px,-3px); }
    against this element's own font size. */
 .hero-christ { font-size: 1.35em; letter-spacing: -.07em; margin-top: .045em; margin-bottom: -.045em; }
 /* The home hero's stagger, and ONLY that. The em there is a block-level display
-   line (<em class="hero-line"><span>crucified.</span></em>), so 5vw indents the
+   line (<em class="hero-line"><span>Crucified</span></em>), so 5vw indents the
    whole third line on purpose. Unscoped, this rule also hit every InteriorHero,
    whose <em> is an ordinary INLINE child of <h1>: it opened a 72px hole mid-line
    on /about, /what-we-believe and /404, indented the line on /watch, /visit and
