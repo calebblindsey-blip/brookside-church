@@ -97,6 +97,11 @@ a:hover .arrow { transform: translate(3px,-3px); }
 .text-link { display: inline-flex; align-items: center; gap: 14px; padding: 10px 0 5px; border-bottom: 1px solid currentColor; font-size: .9rem; font-weight: 600; }
 .hero-flow { position: absolute; z-index: -1; width: 76%; height: 125%; top: -70px; right: -12%; pointer-events: none; transform: translateY(calc(var(--drift,0px) * -1)); }
 .hero-flow svg { width: 100%; height: 100%; overflow: visible; }
+/* The ribbons dissolve toward the seam with the next section rather than being
+   cut flat by its background. The seam sits at about 86% of this box (the box is
+   125% of the hero, shifted up 70px), so the fade runs out just above it while the
+   creek fades in along the same ribbon (Motion.astro, the lead). */
+.hero-flow { -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 86%); mask-image: linear-gradient(to bottom, #000 58%, transparent 86%); }
 .flow-lines path { fill: none; stroke: #388cca; stroke-width: 1.25; opacity: .42; }
 .flow-lines path:nth-child(4n) { stroke: #8cc0df; stroke-width: 7; opacity: .23; }
 /* Rebalances the three hero lines. "Christ" is set 1.35x, and .hero-line's

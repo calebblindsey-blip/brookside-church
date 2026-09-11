@@ -43,11 +43,33 @@ const ribbon = (line: number) =>
 						<stop offset=".94" stop-color="#667d8f" />
 						<stop offset="1" stop-color="#ac432b" />
 					</linearGradient>
+					{/*
+						Fades, in page pixels (userSpaceOnUse); Motion.astro sets y1/y2 and
+						the stop offsets from the routed geometry. The line fades in over
+						the ribbon lead; the banks also fade out before the footer lockup.
+					*/}
+					<linearGradient id="creek-line-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#fff" stop-opacity="0" />
+						<stop offset=".05" stop-color="#fff" />
+						<stop offset="1" stop-color="#fff" />
+					</linearGradient>
+					<linearGradient id="creek-bank-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#fff" stop-opacity="0" />
+						<stop offset=".05" stop-color="#fff" />
+						<stop offset=".95" stop-color="#fff" />
+						<stop offset="1" stop-color="#fff" stop-opacity="0" />
+					</linearGradient>
+					<mask id="creek-line-mask" maskUnits="userSpaceOnUse"><rect fill="url(#creek-line-fade)" /></mask>
+					<mask id="creek-bank-mask" maskUnits="userSpaceOnUse"><rect fill="url(#creek-bank-fade)" /></mask>
 				</defs>
-				<path class="current-shallows" d="M0 0" />
-				<path class="current-bank" pathLength="1" d={currentPath} />
-				<path class="current-track" pathLength="1" d={currentPath} />
-				<path class="current-progress" pathLength="1" d={currentPath} />
+				<g mask="url(#creek-bank-mask)">
+					<path class="current-shallows" d="M0 0" />
+					<path class="current-bank" pathLength="1" d={currentPath} />
+				</g>
+				<g mask="url(#creek-line-mask)">
+					<path class="current-track" pathLength="1" d={currentPath} />
+					<path class="current-progress" pathLength="1" d={currentPath} />
+				</g>
 			</svg>
 		</div>
 	</Fragment>
