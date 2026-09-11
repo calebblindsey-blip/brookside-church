@@ -65,6 +65,14 @@
 		const stage = document.querySelector<HTMLElement>('[data-site]') ?? document.querySelector('main');
 		const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section, .site-footer'));
 		let riverSamples: number[] = [];
+		// The arrival. Once the footer's lead is in view the current finishes its
+		// run into the cross on its own (`finale` climbs to 1 over ~0.9s) and the
+		// words follow in sequence (site.css, .is-arrived). While the footer is in
+		// view the drawn progress is the greater of scroll and finale; scrolling
+		// back up hands control back to the scroll.
+		let scrollProgress = 0;
+		let finale = 0;
+		let footerVisible = false;
 
 		const updateRiverProgress = () => {
 			if (!stage) return;
@@ -72,10 +80,11 @@
 			// and document scroll percentage differ because of the river's bends. In
 			// the final stretch, let the viewport complete the current into Brookside.
 			const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-			const scrollProgress = Math.min(1, window.scrollY / maxScroll);
-			const endingPull = Math.max(0, Math.min(1, (scrollProgress - 0.82) / 0.18));
+			const scrolled = Math.min(1, window.scrollY / maxScroll);
+			const endingPull = Math.max(0, Math.min(1, (scrolled - 0.82) / 0.18));
 			const readingY = window.scrollY + window.innerHeight * (0.6 + endingPull * 0.4) - stage.offsetTop;
-			root.style.setProperty('--page-progress', String(progressAtY(riverSamples, readingY)));
+			scrollProgress = progressAtY(riverSamples, readingY);
+			root.style.setProperty('--page-progress', String(footerVisible ? Math.max(scrollProgress, finale) : scrollProgress));
 		};
 
 		/*
@@ -567,8 +576,10 @@
 			return () => { clearTimeout(relayout); resizeObserver.disconnect(); };
 		}
 
+		// .footer-lead is not in this list any more: the footer has its own
+		// sequence below, keyed to the current's arrival rather than to scrolling.
 		const items = Array.from(document.querySelectorAll<HTMLElement>(
-			'.section-pad h2, blockquote, .scripture-note, .layered-card, .visit-details article, .watch-feature, .platform-links a, .mission-grid, .inner-section h2, .detail-list article, .method-grid article, .identity-list article, .leader-list article, .gospel-grid article, .belief-list li, .platform-cards a, .archive-panel, .footer-lead',
+			'.section-pad h2, blockquote, .scripture-note, .layered-card, .visit-details article, .watch-feature, .platform-links a, .mission-grid, .inner-section h2, .detail-list article, .method-grid article, .identity-list article, .leader-list article, .gospel-grid article, .belief-list li, .platform-cards a, .archive-panel',
 		));
 		items.forEach((item, index) => {
 			item.classList.add('motion-item');
@@ -599,6 +610,34 @@
 		};
 		root.classList.add('motion-active');
 
+		// The footer arrival: creek first, then the words, then the lockup.
+		const footer = document.querySelector<HTMLElement>('.site-footer');
+		const lead = footer?.querySelector<HTMLElement>('.footer-lead');
+		let finaleFrame = 0;
+		const runFinale = () => {
+			const from = Math.min(scrollProgress, finale);
+			const began = performance.now();
+			const step = (now: number) => {
+				const u = Math.min(1, (now - began) / 900);
+				finale = from + (1 - from) * (1 - Math.pow(1 - u, 3));
+				updateRiverProgress();
+				// The words start once the tip is well inside the footer, so the
+				// last of the creek and the first of the words overlap by a beat.
+				if (u >= 0.6) footer?.classList.add('is-arrived');
+				if (u < 1) finaleFrame = requestAnimationFrame(step);
+				else { finale = 1; finaleFrame = 0; }
+			};
+			finaleFrame = requestAnimationFrame(step);
+		};
+		const arrival = lead
+			? new IntersectionObserver((entries) => {
+				footerVisible = entries[0].isIntersecting;
+				if (footerVisible && !finaleFrame && finale < 1) runFinale();
+				updateRiverProgress();
+			}, { threshold: 0.25 })
+			: null;
+		if (lead && arrival) arrival.observe(lead);
+
 		let frame = 0;
 		const update = () => {
 			const height = window.innerHeight;
@@ -622,6 +661,9 @@
 		window.addEventListener('resize', schedule);
 		return () => {
 			observer.disconnect();
+			arrival?.disconnect();
+			cancelAnimationFrame(finaleFrame);
+			footer?.classList.remove('is-arrived');
 			clearTimeout(relayout);
 			resizeObserver.disconnect();
 			cancelAnimationFrame(frame);

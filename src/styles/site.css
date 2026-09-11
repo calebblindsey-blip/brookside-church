@@ -224,6 +224,17 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 .footer-invitation { width: 100%; max-width: 900px; margin: 0; line-height: .82; }
 .footer-come { display: block; color: var(--copper); font: 400 clamp(3.2rem,5vw,5.2rem)/.86 var(--font-serif),serif; letter-spacing: -.04em; }
 .footer-brookside { display: block; width: 100%; }
+/* The footer arrival, in sequence: the creek lands first, then "There is a place"
+   and "for you here.", then "Come to", then the lockup. Motion.astro adds
+   .is-arrived to the footer as the current runs into the cross. With motion
+   paused or reduced, .motion-active is absent and everything simply shows. */
+.motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow span,
+.motion-active .site-footer:not(.is-arrived) .footer-come,
+.motion-active .site-footer:not(.is-arrived) .footer-invitation { opacity: 0; translate: 0 16px; }
+.site-footer .footer-call > .eyebrow span,.site-footer .footer-come,.site-footer .footer-invitation { transition: opacity .65s ease,translate .65s cubic-bezier(.2,.7,.2,1); }
+.site-footer.is-arrived .footer-call > .eyebrow span:nth-child(2) { transition-delay: .18s; }
+.site-footer.is-arrived .footer-come { transition-delay: .42s; }
+.site-footer.is-arrived .footer-invitation { transition-delay: .78s; }
 .footer-primary-wordmark { display: block; width: 100%; height: auto; }
 .footer-grid { display: grid; grid-template-columns: 1.1fr 1.25fr .9fr .8fr 1.15fr; gap: 4vw; padding: 40px 0 65px; border-top: 1px solid #a2bed3; }
 .footer-grid strong { display: block; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px; color: #365976; }
@@ -483,6 +494,7 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
   html { scroll-behavior: auto; }
   *,*::before,*::after { animation: none !important; transition: none !important; }
   .motion-active .motion-item { opacity: 1; translate: none; }
+  .motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow span,.motion-active .site-footer:not(.is-arrived) .footer-come,.motion-active .site-footer:not(.is-arrived) .footer-invitation { opacity: 1; translate: none; }
   .hero-flow { transform: none !important; }
   .motion-active .layered-card { rotate: none; }
   .layered-card { position: relative; top: auto; }
