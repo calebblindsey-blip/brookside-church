@@ -367,6 +367,42 @@
 				return simplify(pts.slice(0, at + 1), epsilon).slice(0, -1).concat(simplify(pts.slice(at), epsilon));
 			};
 
+			// Smooth the routed rows before anything else sees them. The router
+			// changes direction one 24px row at a time and the spline honoured every
+			// change, which read as jagged. A Gaussian over ±6 rows (sigma 2.6) turns
+			// those steps into curves; the ends stay put. The verify loop still has
+			// the final say: if smoothing pulls a corner into a word, the padding
+			// grows and it routes again.
+			const relax = (pts: Array<{ x: number; y: number }>, light = false) => {
+				const sigma = light ? 1.1 : phone ? 1.2 : 2.6;
+				const reach = light ? 3 : phone ? 3 : 6;
+				const weights = Array.from({ length: reach * 2 + 1 }, (_, k) => Math.exp(-((k - reach) ** 2) / (2 * sigma * sigma)));
+				return pts.map((pt, i) => {
+					if (i === 0 || i === pts.length - 1) return pt;
+					let sum = 0, total = 0;
+					for (let k = -reach; k <= reach; k++) {
+						const j = Math.min(pts.length - 1, Math.max(0, i + k));
+						sum += pts[j].x * weights[k + reach];
+						total += weights[k + reach];
+					}
+					return { x: sum / total, y: pt.y };
+				});
+			};
+
+			const clampToLanes = (pts: Array<{ x: number; y: number }>, lanes: Array<Array<[number, number]>>) =>
+				pts.map((pt, i) => {
+					if (i === 0 || i === pts.length - 1 || !lanes[i]?.length) return pt;
+					if (lanes[i].some(([a, c]) => pt.x >= a && pt.x <= c)) return pt;
+					let best = pt.x, gap = Infinity;
+					for (const [a, c] of lanes[i]) {
+						for (const edgeX of [a + 1, c - 1]) {
+							const d = Math.abs(edgeX - pt.x);
+							if (d < gap) { gap = d; best = edgeX; }
+						}
+					}
+					return { x: best, y: pt.y };
+				});
+
 			// A gentle meander where there is room for one, so a long straight run
 			// down a margin still reads as water. Skipped on a phone, where the lane
 			// is the margin itself and has no room to wander.
@@ -419,7 +455,7 @@
 				const handle = (i: number) => {
 					const dir = { x: p[i + 1].x - p[i - 1].x, y: p[i + 1].y - p[i - 1].y };
 					const len = Math.hypot(dir.x, dir.y) || 1;
-					const reach = Math.min(dist(p[i - 1], p[i]), dist(p[i], p[i + 1])) / 3;
+					const reach = Math.min(dist(p[i - 1], p[i]), dist(p[i], p[i + 1])) / 2.4;
 					return { x: (dir.x / len) * reach, y: (dir.y / len) * reach };
 				};
 				let d = `M${p[1].x.toFixed(1)} ${p[1].y.toFixed(1)}`;
@@ -442,16 +478,26 @@
 			};
 
 			const progressPath = svg.querySelector<SVGPathElement>('.current-progress');
-			let padX = phone ? 12 : 30;
+			// Desktop padding carries slack for the smoothing, so the relaxed line
+			// rarely has to be clamped back to a lane edge (each clamp is a corner).
+			let padX = phone ? 12 : 42;
 			let padY = 16;
-			let epsilon = phone ? 6 : 7;
+			let epsilon = phone ? 6 : 10;
 			let path = '';
 			let shallows = '';
 			let attempt = 0;
 			let points: Array<{ x: number; y: number }> = [];
 			for (; attempt < 5; attempt++) {
 				const routed = route(padX, padY);
-				points = simplify(meander(routed.points, routed.lanes), epsilon);
+				// Relax, then put every row back inside its lane, three times over:
+				// smoothing alone cut the tight phone crossings into the words.
+				let relaxed = routed.points;
+				for (let pass = 0; pass < 3; pass++) relaxed = clampToLanes(relax(relaxed), routed.lanes);
+				// A last light pass without the clamp rounds off the clamp's own corners;
+				// the verify loop below catches it if that reaches a word. Not on a
+				// phone: there the lane is 6px wide and any unclamped pass leaves it.
+				if (!phone) relaxed = relax(relaxed, true);
+				points = simplify(meander(relaxed, routed.lanes), epsilon);
 				const drawn = toPath(points);
 				path = drawn.d;
 				shallows = drawn.shallows;
