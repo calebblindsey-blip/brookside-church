@@ -176,7 +176,7 @@ const ogImage = new URL('/og-brookside.jpg', Astro.site ?? Astro.url).href;
 				if (!a) return;
 				var href = a.getAttribute('href') || '';
 				/* An explicit name wins over sniffing. The giving links go to
-				   Church Center and PayPal, and matching those by hostname would
+				   Church Center, and matching that by hostname would
 				   put a vendor list in here that rots the day the church changes
 				   processor. A link that knows what it is says so. */
 				var name = a.getAttribute('data-ga-event');

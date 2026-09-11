@@ -1,12 +1,13 @@
 ---
 /**
  * Give, in Codex's design (Round 4 of the port). Layout follows app/give/page.tsx.
- * Every payment path the Astro page listed is kept: Planning Center, PayPal (the
- * church's hosted button), the Church Center app on both stores, in person, and
- * the P.O. Box. The street address is NOT interchangeable with the box; mail to
+ * Payment paths: Planning Center, the Church Center app on both stores, in
+ * person, and the P.O. Box. PayPal (the church's old hosted button) was removed
+ * 2026-09-11, Caleb's call, once it was confirmed on the church's own portal that
+ * a visitor with no account can give through Planning Center as a guest. The street address is NOT interchangeable with the box; mail to
  * the street may not arrive.
  *
- * `data-ga-event="give_click"` marks the three links that leave the site to give.
+ * `data-ga-event="give_click"` marks the two links that leave the site to give.
  * They are the last observable moment of giving intent, and the delegated
  * listener in SiteLayout reads the attribute. The two app-store links are
  * deliberately not give_click: installing an app is a different intent from
@@ -18,14 +19,13 @@ import InteriorHero from '../components/InteriorHero.astro';
 import { CHURCH } from '../data/church';
 
 const CHURCH_CENTER = 'https://brooksidechurchofgod.churchcenter.com/giving';
-const PAYPAL = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FART3Y3N8DTHA';
 const APP_IOS = 'https://apps.apple.com/us/app/church-center-app/id1357742931';
 const APP_ANDROID = 'https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter';
 ---
 
 <SiteLayout
 	title="Give"
-	description="Give to Brookside Church of God online through Planning Center or PayPal, in the Church Center app, in person on a Sunday, or by mail."
+	description="Give to Brookside Church of God online through Planning Center, in the Church Center app, in person on a Sunday, or by mail."
 >
 	<InteriorHero eyebrow="Give · Brookside Church of God">
 		<Fragment slot="title">One church,<br /><em>kept going</em><br />by its people.</Fragment>
@@ -41,7 +41,6 @@ const APP_ANDROID = 'https://play.google.com/store/apps/details?id=com.ministryc
 				<h3>Online</h3>
 				<p>Our secure giving portal runs on Planning Center, the same system the church uses for its groups and scheduling. Give once or set giving to repeat, with a card or straight from a bank account.</p>
 				<a class="text-link" data-ga-event="give_click" href={CHURCH_CENTER} target="_blank" rel="noopener">Planning Center <span class="arrow" aria-hidden="true">↗</span></a>
-				<a class="text-link" data-ga-event="give_click" href={PAYPAL} target="_blank" rel="noopener">PayPal <span class="arrow" aria-hidden="true">↗</span></a>
 			</article>
 			<article>
 				<span>02</span>
