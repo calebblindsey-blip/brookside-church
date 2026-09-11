@@ -69,6 +69,10 @@ a:focus-visible,button:focus-visible { outline: 3px solid var(--water); outline-
 .page-current svg { width: 100%; height: 100%; overflow: visible; }
 .page-current path { fill: none; stroke-linecap: round; }
 .page-current .current-bank { stroke: #68a9d5; stroke-width: 30; opacity: .09; }
+/* The shallows: a broad, soft bank drawn only where the creek has open ground
+   (Motion.astro decides, by clearance), so it widens like water does and stays a
+   thin line beside anything readable. */
+.page-current .current-shallows { stroke: #68a9d5; stroke-width: 64; opacity: .07; filter: blur(12px); }
 .current-track { stroke: #579dce; stroke-width: 1; opacity: .35; }
 .current-progress { stroke: url(#current-to-cross); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .52; }
 .motion-active .current-progress { stroke-dashoffset: calc(1 - var(--page-progress,0)); transition: stroke-dashoffset .18s linear; }
@@ -364,6 +368,12 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 @keyframes follow { 50% { transform: scaleX(.55); } }
 @keyframes word-current { from { transform: translateX(-6%); } to { transform: translateX(-35%); } }
 
+/* Room for the creek. From the family cards to the mission grid the content's
+   right edge is the only lane it has, so on wide screens those four sections
+   give up 72px of their right padding to it. The router uses the space. */
+@media (min-width:1200px) {
+  .family-section,.visit-section,.watch-section,.mission-section { padding-right: calc(9vw + 72px); }
+}
 @media (max-width:1100px) {
   .hero { grid-template-columns: minmax(0,1fr) minmax(250px,.65fr); gap: 25px; }
   .gather-card { padding: 22px; }

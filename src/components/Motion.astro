@@ -182,6 +182,17 @@
 				? { x: dest.left + (dest.right - dest.left) * 0.104, y: dest.top + (dest.bottom - dest.top) * 0.318 }
 				: { x: width * 0.1, y: height - 520 };
 
+			// A deliberate crossing: the creek passes BETWEEN the last two words of the
+			// practices row ("Community · Calling") rather than around the row, the one
+			// place it comes over to the reader's side of the page on purpose.
+			let crossing: { x: number; y: number } | null = null;
+			const practices = Array.from(stage.querySelectorAll<HTMLElement>('.family-practices li'));
+			if (!phone && practices.length >= 2) {
+				const a = toStage(practices[practices.length - 2].getBoundingClientRect());
+				const b = toStage(practices[practices.length - 1].getBoundingClientRect());
+				if (b.left - a.right >= 80 && Math.abs(a.top - b.top) < 4) crossing = { x: (a.right + b.left) / 2, y: (a.top + a.bottom) / 2 };
+			}
+
 			// 4. Route, then verify, growing the padding if smoothing clipped a word.
 			const edge = phone ? 10 : 24;
 			const stepY = 24;
@@ -240,7 +251,11 @@
 				// nothing else is open. Nothing here rewards sitting in the centre of a
 				// lane: that produced a hook every time a lane narrowed for a few rows
 				// (beside "Calling", beside the orbit). The padding keeps the distance.
-				const laneCost = (_i: number, x: number) => (Math.abs(x - width / 2) / width) * 40;
+				const laneCost = (i: number, x: number) => {
+					let cost = (Math.abs(x - width / 2) / width) * 40;
+					if (crossing && Math.abs(start.y + i * dy - crossing.y) < 60) cost += 0.9 * Math.abs(x - crossing.x);
+					return cost;
+				};
 				let prevCost = [0];
 				const back: Int32Array[] = [];
 				for (let i = 1; i <= rows; i++) {
@@ -299,15 +314,36 @@
 			// down a margin still reads as water. Skipped on a phone, where the lane
 			// is the margin itself and has no room to wander.
 			const meander = (pts: Array<{ x: number; y: number }>, lanes: Array<Array<[number, number]>>) => {
-				const amplitude = phone ? 0 : 16;
-				if (!amplitude) return pts;
+				if (phone) return pts;
+				// Room on either side of the routed x in its lane, capped at 40px,
+				// then averaged over neighbouring rows so a word boundary does not
+				// snap the amplitude.
+				const room = pts.map((pt, i) => {
+					const lane = lanes[i]?.find(([a, c]) => pt.x >= a && pt.x <= c);
+					return lane ? Math.max(0, Math.min(40, pt.x - lane[0] - 6, lane[1] - pt.x - 6)) : 0;
+				});
+				const smooth = room.map((_, i) => {
+					let sum = 0, n = 0;
+					for (let k = Math.max(0, i - 5); k <= Math.min(room.length - 1, i + 5); k++) { sum += room[k]; n++; }
+					return sum / n;
+				});
 				return pts.map((pt, i) => {
 					if (i === 0 || i === pts.length - 1) return pt;
-					const dx = amplitude * Math.sin((pt.y / 520) * Math.PI * 2);
-					const x = pt.x + dx;
-					const ok = lanes[i]?.some(([a, c]) => x >= a + 4 && x <= c - 4);
-					return ok ? { x, y: pt.y } : pt;
+					return { x: pt.x + smooth[i] * Math.sin((pt.y / 560) * Math.PI * 2), y: pt.y };
 				});
+			};
+
+			// How far the creek could move sideways at this point before meeting a
+			// word, a card or the page edge. Open ground gets the wide bank.
+			const clearance = (pt: { x: number; y: number }) => {
+				let best = Math.min(pt.x - edge, width - edge - pt.x);
+				for (const b of words.concat(solids)) {
+					if (pt.y < b.top || pt.y > b.bottom) continue;
+					if (pt.x < b.left) best = Math.min(best, b.left - pt.x);
+					else if (pt.x > b.right) best = Math.min(best, pt.x - b.right);
+					else best = 0;
+				}
+				return best;
 			};
 
 			const toPath = (pts: Array<{ x: number; y: number }>) => {
@@ -325,13 +361,22 @@
 					return { x: (dir.x / len) * reach, y: (dir.y / len) * reach };
 				};
 				let d = `M${p[1].x.toFixed(1)} ${p[1].y.toFixed(1)}`;
+				let shallows = '';
+				let open = false;
 				for (let i = 1; i < p.length - 2; i++) {
 					const h1 = handle(i), h2 = handle(i + 1);
 					const c1 = { x: p[i].x + h1.x, y: p[i].y + h1.y };
 					const c2 = { x: p[i + 1].x - h2.x, y: p[i + 1].y - h2.y };
-					d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p[i + 1].x.toFixed(1)} ${p[i + 1].y.toFixed(1)}`;
+					const seg = ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p[i + 1].x.toFixed(1)} ${p[i + 1].y.toFixed(1)}`;
+					d += seg;
+					const wide = !phone && Math.min(clearance(p[i]), clearance(p[i + 1])) >= 90;
+					if (wide) {
+						if (!open) shallows += `M${p[i].x.toFixed(1)} ${p[i].y.toFixed(1)}`;
+						shallows += seg;
+					}
+					open = wide;
 				}
-				return d;
+				return { d, shallows };
 			};
 
 			const progressPath = svg.querySelector<SVGPathElement>('.current-progress');
@@ -339,12 +384,15 @@
 			let padY = 16;
 			let epsilon = phone ? 6 : 7;
 			let path = '';
+			let shallows = '';
 			let attempt = 0;
 			let points: Array<{ x: number; y: number }> = [];
 			for (; attempt < 5; attempt++) {
 				const routed = route(padX, padY);
 				points = simplify(meander(routed.points, routed.lanes), epsilon);
-				path = toPath(points);
+				const drawn = toPath(points);
+				path = drawn.d;
+				shallows = drawn.shallows;
 				if (!progressPath) break;
 				progressPath.setAttribute('d', path);
 				const length = progressPath.getTotalLength();
@@ -362,7 +410,8 @@
 			// Left for the measurement script and for anyone debugging by hand.
 			(window as unknown as { __creek?: unknown }).__creek = { width, height, start, tangent, target, words: words.length, solids: solids.length, attempts: attempt + 1, padX, padY, epsilon, points, ms: Math.round(performance.now() - began) };
 
-			svg.querySelectorAll('path').forEach((line) => line.setAttribute('d', path));
+			svg.querySelectorAll('path:not(.current-shallows)').forEach((line) => line.setAttribute('d', path));
+			svg.querySelector('.current-shallows')?.setAttribute('d', shallows || 'M0 0');
 			if (progressPath) {
 				const length = progressPath.getTotalLength();
 				riverSamples = Array.from({ length: 513 }, (_, index) => progressPath.getPointAtLength((length * index) / 512).y);
