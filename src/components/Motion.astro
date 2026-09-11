@@ -49,6 +49,14 @@
 	let stopMotion: (() => void) | null = null;
 	let stopRibbons: (() => void) | null = null;
 
+	/**
+	 * One hero ribbon. The same formula index.astro renders at rest (wave and
+	 * sway both 0); the sway loop feeds it live values. The creek's start probe
+	 * uses the rest shape, which is why this is shared rather than repeated.
+	 */
+	const ribbonPath = (offset: number, wave = 0, sway = 0) =>
+		`M${350 + offset + wave} -100 C${-80 + offset + sway} 180 ${890 + offset - wave} 230 ${410 + offset + sway} 500 S${190 + offset - wave} 820 ${770 + offset + sway} 1000`;
+
 	/** Everything scroll-linked. Returns its own teardown. */
 	function startMotion(paused: boolean): () => void {
 		root.classList.toggle('motion-paused', paused);
@@ -70,53 +78,291 @@
 			root.style.setProperty('--page-progress', String(progressAtY(riverSamples, readingY)));
 		};
 
-		// Follow actual section boundaries, beginning in the hero's creek and ending
-		// beneath the cross inside the opening B at every screen size.
+		/*
+			THE CREEK. Caleb's rule, 2026-09-11: it never runs behind words, it is
+			visible in every section, it starts where the hero's ribbons leave off,
+			and it ends on the cross of the footer lockup.
+
+			Earlier versions zig-zagged between fixed x positions at each section's
+			bottom edge, which put the stroke straight through the scripture, the
+			family cards and "Hear the message", and two sections hid it behind their
+			own background. This version routes around what is actually on the page:
+
+			  1. The start is where the RESTING middle ribbon crosses the hero's bottom
+			     edge, and the first tangent is that ribbon's direction there, so the
+			     single strand reads as one line continuing out of the bundle.
+			  2. Every run of text on the page (Range rects, so the words themselves
+			     and not their grid cells) and every card is an obstacle, padded for
+			     the bank and for the things that move: sticky cards are widened to
+			     the whole band they slide through, drift is inside the padding.
+			  3. A dynamic programme walks down the page a row at a time, choosing an
+			     x in free space that keeps the line smooth and centred in its lane,
+			     and forced to the start and to the cross at the ends.
+			  4. The rows become one Catmull-Rom curve, then the result is re-checked
+			     against the unpadded words; if smoothing clipped a corner, the
+			     padding grows and it runs again.
+
+			The same code serves every width: on a phone the free lanes are the page
+			margins, so the creek keeps to the edge and crosses in the gaps between
+			sections; on a desktop it uses the gutters the layout already has.
+		*/
+		type Box = { left: number; right: number; top: number; bottom: number };
 		const layoutRiver = () => {
 			if (!stage || sections.length < 2) return;
+			const began = performance.now();
 			const svg = document.querySelector<SVGSVGElement>('.page-current svg');
 			if (!svg) return;
-			const heroFlow = document.querySelector<HTMLElement>('.hero-flow');
-			const destination = document.querySelector<HTMLElement>('[data-current-destination]');
-			const stageRect = stage.getBoundingClientRect();
-			const flowRect = heroFlow?.getBoundingClientRect();
-			const destinationRect = destination?.getBoundingClientRect();
 			const storySections = sections.filter((section) => section.tagName === 'SECTION');
 			if (!storySections.length) return;
+			const stageRect = stage.getBoundingClientRect();
 			const width = stage.clientWidth;
 			const height = stage.offsetHeight;
 			svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+			const phone = width < 800;
+			const toStage = (r: DOMRect): Box => ({ left: r.left - stageRect.left, right: r.right - stageRect.left, top: r.top - stageRect.top, bottom: r.bottom - stageRect.top });
 
-			// The start sits inside the lower edge of the animated ribbon field, so the
-			// narrow page current reads as one strand flowing out of the wider creek.
-			let x = flowRect
-				? Math.max(0, Math.min(width, flowRect.left - stageRect.left + flowRect.width * 0.7))
-				: width * 0.78;
-			let y = storySections[0].offsetTop + storySections[0].offsetHeight - 24;
-			let path = `M${x} ${y}`;
+			// 1. Start: where the resting middle ribbon leaves the hero.
+			const hero = storySections[0];
+			const heroBottom = hero.offsetTop + hero.offsetHeight;
+			let start = { x: width * 0.5, y: heroBottom };
+			let tangent = { x: 0, y: 1 };
+			const flowSvg = document.querySelector<SVGSVGElement>('.hero-flow svg');
+			if (flowSvg) {
+				const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+				probe.setAttribute('d', ribbonPath(11 * 15));
+				flowSvg.appendChild(probe);
+				const ctm = probe.getScreenCTM();
+				if (ctm) {
+					const total = probe.getTotalLength();
+					let prev: { x: number; y: number } | null = null;
+					for (let d = 0; d <= total; d += 6) {
+						const p = probe.getPointAtLength(d).matrixTransform(ctm);
+						const here = { x: p.x - stageRect.left, y: p.y - stageRect.top };
+						if (here.y >= heroBottom && prev) {
+							const len = Math.hypot(here.x - prev.x, here.y - prev.y) || 1;
+							tangent = { x: (here.x - prev.x) / len, y: Math.max(0.35, (here.y - prev.y) / len) };
+							start = { x: Math.max(12, Math.min(width - 12, here.x)), y: heroBottom };
+							break;
+						}
+						prev = here;
+					}
+				}
+				probe.remove();
+			}
 
-			storySections.slice(1).forEach((section, index) => {
-				const nextX = width * (index % 2 === 0 ? 0.055 : 0.945);
-				const nextY = section.offsetTop + section.offsetHeight - 50;
-				const bend = Math.max(100, (nextY - y) * 0.7);
-				path += ` C${x} ${y + bend} ${nextX} ${nextY - bend} ${nextX} ${nextY}`;
-				x = nextX;
-				y = nextY;
-			});
+			// 2. Obstacles: words and cards, in stage space.
+			const words: Box[] = [];
+			const solids: Box[] = [];
+			const walker = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
+			let node: Node | null;
+			while ((node = walker.nextNode())) {
+				if (!node.textContent || !node.textContent.trim()) continue;
+				const el = node.parentElement;
+				if (!el || el.closest('[aria-hidden="true"], .page-current, .site-header, .sr-only, .motion-toggle')) continue;
+				const range = document.createRange();
+				range.selectNodeContents(node);
+				for (const r of Array.from(range.getClientRects())) {
+					if (r.width > 0 && r.height > 0) words.push(toStage(r));
+				}
+			}
+			for (const el of Array.from(stage.querySelectorAll<HTMLElement>('.layered-card, .watch-feature, .live-orbit, .gather-card'))) {
+				const box = toStage(el.getBoundingClientRect());
+				// A sticky card slides down its stack as the reader scrolls; the creek
+				// has to clear the whole band, not the card's resting place.
+				if (getComputedStyle(el).position === 'sticky' && el.parentElement) {
+					box.bottom = Math.max(box.bottom, toStage(el.parentElement.getBoundingClientRect()).bottom);
+				}
+				solids.push(box);
+			}
 
-			// Meet the centre of the cross's top edge in the 1384 x 420 lockup:
-			// x=143.49 / y=133.72 after its embedded transform.
-			const targetX = destinationRect
-				? destinationRect.left - stageRect.left + destinationRect.width * 0.104
-				: width * 0.1;
-			const targetY = destinationRect
-				? destinationRect.top - stageRect.top + destinationRect.height * 0.318
-				: height - 520;
-			const finalDistance = Math.max(120, targetY - y);
-			path += ` C${x} ${y + finalDistance * 0.42} ${targetX} ${targetY - finalDistance * 0.38} ${targetX} ${targetY}`;
+			// 3. Target: the centre of the cross's top edge in the 1384 x 420 lockup.
+			const destination = document.querySelector<HTMLElement>('[data-current-destination]');
+			const dest = destination ? toStage(destination.getBoundingClientRect()) : null;
+			const target = dest
+				? { x: dest.left + (dest.right - dest.left) * 0.104, y: dest.top + (dest.bottom - dest.top) * 0.318 }
+				: { x: width * 0.1, y: height - 520 };
+
+			// 4. Route, then verify, growing the padding if smoothing clipped a word.
+			const edge = phone ? 10 : 24;
+			const stepY = 24;
+			const stepX = phone ? 6 : 12;
+			// A phone crosses in the gaps between sections, which are short, so it is
+			// allowed a steeper diagonal there.
+			const maxDx = phone ? 110 : 84;
+			const rows = Math.max(2, Math.round((target.y - start.y) / stepY));
+			const dy = (target.y - start.y) / rows;
+			const tolerance = phone ? 8 : 15;
+
+			const clear = (x: number, y: number, boxes: Box[], padX: number, padY: number) =>
+				boxes.every((b) => x < b.left - padX || x > b.right + padX || y < b.top - padY || y > b.bottom + padY);
+
+			const route = (padX: number, padY: number) => {
+				const obstacles = words.concat(solids);
+				const candidates: number[][] = [];
+				const lanes: Array<Array<[number, number]>> = [];
+				const freeAt = (y: number, px: number, py: number) => {
+					let free: Array<[number, number]> = [[edge, width - edge]];
+					for (const b of obstacles) {
+						if (y < b.top - py || y > b.bottom + py) continue;
+						const next: Array<[number, number]> = [];
+						for (const [a, c] of free) {
+							if (b.right + px < a || b.left - px > c) { next.push([a, c]); continue; }
+							if (b.left - px > a) next.push([a, b.left - px]);
+							if (b.right + px < c) next.push([b.right + px, c]);
+						}
+						free = next;
+					}
+					return free.filter(([a, c]) => c - a >= 3);
+				};
+				for (let i = 0; i <= rows; i++) {
+					const y = start.y + i * dy;
+					// Free intervals across this row. On a phone the margins are often
+					// the only lane, and a padding wider than the margin would close
+					// them, so a closed row retries with less padding before it gives up
+					// and takes the bare margin strips.
+					let free = freeAt(y, padX, padY);
+					if (!free.length) free = freeAt(y, Math.floor(padX / 2), Math.floor(padY / 2));
+					if (!free.length) free = freeAt(y, 2, 0);
+					if (!free.length) free = [[edge, edge + 3], [width - edge - 3, width - edge]];
+					lanes.push(free);
+					if (i === 0) { candidates.push([start.x]); continue; }
+					if (i === rows) { candidates.push([target.x]); continue; }
+					const xs: number[] = [];
+					for (const [a, c] of free) {
+						xs.push((a + c) / 2);
+						for (let x = Math.ceil(a / stepX) * stepX; x <= c; x += stepX) xs.push(x);
+					}
+					// A row with nothing free (should not happen): carry the previous row.
+					candidates.push(xs.length ? xs : candidates[i - 1]);
+				}
+				// Cost per row: a pull toward the middle of the page, so the creek uses
+				// a gutter when the layout has one and keeps to a margin only when
+				// nothing else is open. Nothing here rewards sitting in the centre of a
+				// lane: that produced a hook every time a lane narrowed for a few rows
+				// (beside "Calling", beside the orbit). The padding keeps the distance.
+				const laneCost = (_i: number, x: number) => (Math.abs(x - width / 2) / width) * 40;
+				let prevCost = [0];
+				const back: Int32Array[] = [];
+				for (let i = 1; i <= rows; i++) {
+					const xs = candidates[i];
+					const prevXs = candidates[i - 1];
+					const cost = new Array<number>(xs.length).fill(Infinity);
+					const from = new Int32Array(xs.length).fill(-1);
+					for (let j = 0; j < xs.length; j++) {
+						const lc = laneCost(i, xs[j]);
+						for (let k = 0; k < prevXs.length; k++) {
+							const dx = Math.abs(xs[j] - prevXs[k]);
+							if (dx > maxDx && i !== rows) continue;
+							// Mostly linear in the move, so a bend costs the same however it is
+							// spread and the creek holds a line then turns, rather than drifting
+							// diagonally for a whole section; the small square keeps a turn gentle.
+							const c = prevCost[k] + 1.5 * dx + (0.5 * dx * dx) / dy + lc;
+							if (c < cost[j]) { cost[j] = c; from[j] = k; }
+						}
+						if (from[j] < 0) {
+							// Nothing reachable within maxDx: take the nearest anyway.
+							let best = 0;
+							for (let k = 1; k < prevXs.length; k++) if (Math.abs(xs[j] - prevXs[k]) < Math.abs(xs[j] - prevXs[best])) best = k;
+							cost[j] = prevCost[best] + 1e6; from[j] = best;
+						}
+					}
+					prevCost = cost;
+					back.push(from);
+				}
+				const points: Array<{ x: number; y: number }> = [];
+				let j = 0;
+				for (let i = rows; i >= 1; i--) {
+					points.unshift({ x: candidates[i][j], y: start.y + i * dy });
+					j = back[i - 1][j];
+				}
+				points.unshift({ x: start.x, y: start.y });
+				return { points, lanes };
+			};
+
+			// Ramer-Douglas-Peucker: keep only the rows that shape the line. One
+			// control point per 24px row makes a plotted route; a creek has a few bends.
+			const simplify = (pts: Array<{ x: number; y: number }>, epsilon: number): Array<{ x: number; y: number }> => {
+				if (pts.length < 3) return pts;
+				const a = pts[0], b = pts[pts.length - 1];
+				const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+				let worst = 0, at = 0;
+				for (let i = 1; i < pts.length - 1; i++) {
+					const p = pts[i];
+					const dist = Math.abs((b.x - a.x) * (a.y - p.y) - (a.x - p.x) * (b.y - a.y)) / len;
+					if (dist > worst) { worst = dist; at = i; }
+				}
+				if (worst <= epsilon) return [a, b];
+				return simplify(pts.slice(0, at + 1), epsilon).slice(0, -1).concat(simplify(pts.slice(at), epsilon));
+			};
+
+			// A gentle meander where there is room for one, so a long straight run
+			// down a margin still reads as water. Skipped on a phone, where the lane
+			// is the margin itself and has no room to wander.
+			const meander = (pts: Array<{ x: number; y: number }>, lanes: Array<Array<[number, number]>>) => {
+				const amplitude = phone ? 0 : 16;
+				if (!amplitude) return pts;
+				return pts.map((pt, i) => {
+					if (i === 0 || i === pts.length - 1) return pt;
+					const dx = amplitude * Math.sin((pt.y / 520) * Math.PI * 2);
+					const x = pt.x + dx;
+					const ok = lanes[i]?.some(([a, c]) => x >= a + 4 && x <= c - 4);
+					return ok ? { x, y: pt.y } : pt;
+				});
+			};
+
+			const toPath = (pts: Array<{ x: number; y: number }>) => {
+				// A cardinal spline through the kept points, with the ribbon's tangent
+				// at the start and a vertical arrival at the cross. Each handle is
+				// capped at a third of the SHORTER neighbouring segment: plain
+				// Catmull-Rom scales handles by the whole chord, and a 100px bend next
+				// to a 5000px run threw a control point 800px back up into the hero.
+				const p = [{ x: pts[0].x - tangent.x * 40, y: pts[0].y - tangent.y * 40 }, ...pts, { x: target.x, y: target.y + 40 }];
+				const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(b.x - a.x, b.y - a.y);
+				const handle = (i: number) => {
+					const dir = { x: p[i + 1].x - p[i - 1].x, y: p[i + 1].y - p[i - 1].y };
+					const len = Math.hypot(dir.x, dir.y) || 1;
+					const reach = Math.min(dist(p[i - 1], p[i]), dist(p[i], p[i + 1])) / 3;
+					return { x: (dir.x / len) * reach, y: (dir.y / len) * reach };
+				};
+				let d = `M${p[1].x.toFixed(1)} ${p[1].y.toFixed(1)}`;
+				for (let i = 1; i < p.length - 2; i++) {
+					const h1 = handle(i), h2 = handle(i + 1);
+					const c1 = { x: p[i].x + h1.x, y: p[i].y + h1.y };
+					const c2 = { x: p[i + 1].x - h2.x, y: p[i + 1].y - h2.y };
+					d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p[i + 1].x.toFixed(1)} ${p[i + 1].y.toFixed(1)}`;
+				}
+				return d;
+			};
+
+			const progressPath = svg.querySelector<SVGPathElement>('.current-progress');
+			let padX = phone ? 12 : 30;
+			let padY = 16;
+			let epsilon = phone ? 6 : 7;
+			let path = '';
+			let attempt = 0;
+			let points: Array<{ x: number; y: number }> = [];
+			for (; attempt < 5; attempt++) {
+				const routed = route(padX, padY);
+				points = simplify(meander(routed.points, routed.lanes), epsilon);
+				path = toPath(points);
+				if (!progressPath) break;
+				progressPath.setAttribute('d', path);
+				const length = progressPath.getTotalLength();
+				let clipped = false;
+				for (let d = 0; d <= length && !clipped; d += 6) {
+					const pt = progressPath.getPointAtLength(d);
+					if (pt.y <= start.y + 1 || pt.y >= target.y - 1) continue;
+					if (!clear(pt.x, pt.y, words, tolerance, 0) || !clear(pt.x, pt.y, solids, 2, 0)) clipped = true;
+				}
+				if (!clipped) break;
+				padX += 8;
+				padY += 4;
+				epsilon = Math.max(2, epsilon * 0.6);
+			}
+			// Left for the measurement script and for anyone debugging by hand.
+			(window as unknown as { __creek?: unknown }).__creek = { width, height, start, tangent, target, words: words.length, solids: solids.length, attempts: attempt + 1, padX, padY, epsilon, points, ms: Math.round(performance.now() - began) };
 
 			svg.querySelectorAll('path').forEach((line) => line.setAttribute('d', path));
-			const progressPath = svg.querySelector<SVGPathElement>('.current-progress');
 			if (progressPath) {
 				const length = progressPath.getTotalLength();
 				riverSamples = Array.from({ length: 513 }, (_, index) => progressPath.getPointAtLength((length * index) / 512).y);
@@ -125,6 +371,7 @@
 		};
 
 		layoutRiver();
+		document.fonts?.ready.then(layoutRiver);
 		const resizeObserver = new ResizeObserver(layoutRiver);
 		if (stage) resizeObserver.observe(stage);
 
@@ -217,7 +464,7 @@
 					const offset = index * 15;
 					const wave = Math.sin(phase + index * 0.085) * 55;
 					const sway = Math.cos(phase * 0.7 + index * 0.07) * 35 + cursor;
-					ribbon.setAttribute('d', `M${350 + offset + wave} -100 C${-80 + offset + sway} 180 ${890 + offset - wave} 230 ${410 + offset + sway} 500 S${190 + offset - wave} 820 ${770 + offset + sway} 1000`);
+					ribbon.setAttribute('d', ribbonPath(offset, wave, sway));
 				});
 			}
 			frame = requestAnimationFrame(animate);
