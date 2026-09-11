@@ -372,12 +372,18 @@
 
 		layoutRiver();
 		document.fonts?.ready.then(layoutRiver);
-		const resizeObserver = new ResizeObserver(layoutRiver);
+		// Routing costs ~150ms at desktop width, so coalesce the burst of size
+		// changes a window drag or a font swap produces into one run.
+		let relayout = 0;
+		const resizeObserver = new ResizeObserver(() => {
+			clearTimeout(relayout);
+			relayout = window.setTimeout(layoutRiver, 150);
+		});
 		if (stage) resizeObserver.observe(stage);
 
 		if (paused) {
 			root.classList.remove('motion-active');
-			return () => resizeObserver.disconnect();
+			return () => { clearTimeout(relayout); resizeObserver.disconnect(); };
 		}
 
 		const items = Array.from(document.querySelectorAll<HTMLElement>(
@@ -435,6 +441,7 @@
 		window.addEventListener('resize', schedule);
 		return () => {
 			observer.disconnect();
+			clearTimeout(relayout);
 			resizeObserver.disconnect();
 			cancelAnimationFrame(frame);
 			window.removeEventListener('scroll', schedule);
