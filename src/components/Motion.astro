@@ -65,6 +65,14 @@
 		const stage = document.querySelector<HTMLElement>('[data-site]') ?? document.querySelector('main');
 		const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section, .site-footer'));
 		let riverSamples: number[] = [];
+		// The arrival. Once the footer's lead is in view the current finishes its
+		// run into the cross on its own (`finale` climbs to 1 over ~0.9s) and the
+		// words follow in sequence (site.css, .is-arrived). While the footer is in
+		// view the drawn progress is the greater of scroll and finale; scrolling
+		// back up hands control back to the scroll.
+		let scrollProgress = 0;
+		let finale = 0;
+		let footerVisible = false;
 
 		const updateRiverProgress = () => {
 			if (!stage) return;
@@ -72,10 +80,11 @@
 			// and document scroll percentage differ because of the river's bends. In
 			// the final stretch, let the viewport complete the current into Brookside.
 			const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-			const scrollProgress = Math.min(1, window.scrollY / maxScroll);
-			const endingPull = Math.max(0, Math.min(1, (scrollProgress - 0.82) / 0.18));
+			const scrolled = Math.min(1, window.scrollY / maxScroll);
+			const endingPull = Math.max(0, Math.min(1, (scrolled - 0.82) / 0.18));
 			const readingY = window.scrollY + window.innerHeight * (0.6 + endingPull * 0.4) - stage.offsetTop;
-			root.style.setProperty('--page-progress', String(progressAtY(riverSamples, readingY)));
+			scrollProgress = progressAtY(riverSamples, readingY);
+			root.style.setProperty('--page-progress', String(footerVisible ? Math.max(scrollProgress, finale) : scrollProgress));
 		};
 
 		/*
@@ -121,35 +130,6 @@
 			const phone = width < 800;
 			const toStage = (r: DOMRect): Box => ({ left: r.left - stageRect.left, right: r.right - stageRect.left, top: r.top - stageRect.top, bottom: r.bottom - stageRect.top });
 
-			// 1. Start: where the resting middle ribbon leaves the hero.
-			const hero = storySections[0];
-			const heroBottom = hero.offsetTop + hero.offsetHeight;
-			let start = { x: width * 0.5, y: heroBottom };
-			let tangent = { x: 0, y: 1 };
-			const flowSvg = document.querySelector<SVGSVGElement>('.hero-flow svg');
-			if (flowSvg) {
-				const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-				probe.setAttribute('d', ribbonPath(11 * 15));
-				flowSvg.appendChild(probe);
-				const ctm = probe.getScreenCTM();
-				if (ctm) {
-					const total = probe.getTotalLength();
-					let prev: { x: number; y: number } | null = null;
-					for (let d = 0; d <= total; d += 6) {
-						const p = probe.getPointAtLength(d).matrixTransform(ctm);
-						const here = { x: p.x - stageRect.left, y: p.y - stageRect.top };
-						if (here.y >= heroBottom && prev) {
-							const len = Math.hypot(here.x - prev.x, here.y - prev.y) || 1;
-							tangent = { x: (here.x - prev.x) / len, y: Math.max(0.35, (here.y - prev.y) / len) };
-							start = { x: Math.max(12, Math.min(width - 12, here.x)), y: heroBottom };
-							break;
-						}
-						prev = here;
-					}
-				}
-				probe.remove();
-			}
-
 			// 2. Obstacles: words and cards, in stage space.
 			const words: Box[] = [];
 			const solids: Box[] = [];
@@ -175,12 +155,99 @@
 				solids.push(box);
 			}
 
+			// 1. Start: the creek IS the resting middle ribbon for a stretch. It
+			// begins inside the hero, some way above the seam, follows that ribbon's
+			// own curve through the seam and a little past it, and only then does the
+			// router take over. The ribbons fade out over the same stretch (the
+			// .hero-flow mask in site.css) while the creek fades in (the SVG masks
+			// below), so many lines dissolve into one instead of being cut flat by
+			// the next section's edge. On a phone the lead starts at the seam: the
+			// gather card sits where the ribbon runs, and the creek must not cross it.
+			const hero = storySections[0];
+			const heroBottom = hero.offsetTop + hero.offsetHeight;
+			// A phone has no room for a lead past the seam: the eyebrow of the next
+			// section is 90px below it and the margin is 140px to the side, so the
+			// router must start turning at the seam itself.
+			const leadAbove = phone ? 40 : 180;
+			const leadBelow = phone ? 0 : 110;
+			let lead: Array<{ x: number; y: number }> = [];
+			// Nothing in the hero may sit on the lead: at 1100px the gather card's
+			// bottom edge reached into it. Its top is clamped below any card or word
+			// the ribbon's exit column overlaps.
+			let leadTop = heroBottom - leadAbove;
+			const flowSvg = document.querySelector<SVGSVGElement>('.hero-flow svg');
+			if (flowSvg) {
+				const probe = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+				probe.setAttribute('d', ribbonPath(11 * 15));
+				flowSvg.appendChild(probe);
+				const ctm = probe.getScreenCTM();
+				if (ctm) {
+					const total = probe.getTotalLength();
+					// The column the ribbon occupies where it crosses the seam, not
+					// where the path ends (that is off to the right, past the page).
+					let column = width * 0.5;
+					for (let d = 0; d <= total; d += 4) {
+						const p = probe.getPointAtLength(d).matrixTransform(ctm);
+						if (p.y - stageRect.top >= heroBottom) { column = p.x - stageRect.left; break; }
+					}
+					for (const b of words.concat(solids)) {
+						if (b.top < heroBottom && b.bottom > leadTop && column + 60 > b.left && column - 60 < b.right) leadTop = Math.max(leadTop, b.bottom + 16);
+					}
+					let lastY = -Infinity;
+					for (let d = 0; d <= total; d += 4) {
+						const p = probe.getPointAtLength(d).matrixTransform(ctm);
+						const here = { x: Math.max(12, Math.min(width - 12, p.x - stageRect.left)), y: p.y - stageRect.top };
+						if (here.y < leadTop || here.y <= lastY + 24) continue;
+						if (here.y > heroBottom + leadBelow) break;
+						lead.push(here);
+						lastY = here.y;
+					}
+				}
+				probe.remove();
+			}
+			if (lead.length < 2) lead = [{ x: lead[0]?.x ?? width * 0.5, y: heroBottom }, { x: lead[0]?.x ?? width * 0.5, y: heroBottom + leadBelow }];
+			// Ease the ribbon's direction out to vertical over a few rows so the
+			// handover to the router is a bend, not a corner: the ribbon leaves the
+			// seam heading down and to one side while the first lane is usually
+			// straight below.
+			{
+				const a = lead[lead.length - 2], b = lead[lead.length - 1];
+				let slope = (b.x - a.x) / Math.max(1, b.y - a.y);
+				const steps = phone ? 0 : 6;
+				let x = b.x, y = b.y;
+				for (let k = 1; k <= steps; k++) {
+					const t = 1 - k / steps;
+					x += slope * 24 * t * t;
+					y += 24;
+					lead.push({ x: Math.max(12, Math.min(width - 12, x)), y });
+				}
+			}
+			const start = lead[lead.length - 1];
+			const tangentOf = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+				const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+				return { x: (b.x - a.x) / len, y: Math.max(0.35, (b.y - a.y) / len) };
+			};
+			const tangent = tangentOf(lead[lead.length - 2], lead[lead.length - 1]);
+			if (phone) tangent.x *= 0.3;
+			const leadTangent = tangentOf(lead[0], lead[1]);
+
 			// 3. Target: the centre of the cross's top edge in the 1384 x 420 lockup.
 			const destination = document.querySelector<HTMLElement>('[data-current-destination]');
 			const dest = destination ? toStage(destination.getBoundingClientRect()) : null;
 			const target = dest
 				? { x: dest.left + (dest.right - dest.left) * 0.104, y: dest.top + (dest.bottom - dest.top) * 0.318 }
 				: { x: width * 0.1, y: height - 520 };
+
+			// A deliberate crossing: the creek passes BETWEEN the last two words of the
+			// practices row ("Community · Calling") rather than around the row, the one
+			// place it comes over to the reader's side of the page on purpose.
+			let crossing: { x: number; y: number } | null = null;
+			const practices = Array.from(stage.querySelectorAll<HTMLElement>('.family-practices li'));
+			if (!phone && practices.length >= 2) {
+				const a = toStage(practices[practices.length - 2].getBoundingClientRect());
+				const b = toStage(practices[practices.length - 1].getBoundingClientRect());
+				if (b.left - a.right >= 80 && Math.abs(a.top - b.top) < 4) crossing = { x: (a.right + b.left) / 2, y: (a.top + a.bottom) / 2 };
+			}
 
 			// 4. Route, then verify, growing the padding if smoothing clipped a word.
 			const edge = phone ? 10 : 24;
@@ -228,7 +295,11 @@
 					if (i === 0) { candidates.push([start.x]); continue; }
 					if (i === rows) { candidates.push([target.x]); continue; }
 					const xs: number[] = [];
-					for (const [a, c] of free) {
+					// The last 200px drop straight into the cross: one candidate, the
+					// target's own column, whenever a lane still contains it. The grid
+					// would otherwise hover a few pixels either side and jog at the end.
+					if (target.y - y < (phone ? 60 : 120) && free.some(([a, c]) => target.x >= a && target.x <= c)) xs.push(target.x);
+					else for (const [a, c] of free) {
 						xs.push((a + c) / 2);
 						for (let x = Math.ceil(a / stepX) * stepX; x <= c; x += stepX) xs.push(x);
 					}
@@ -240,7 +311,17 @@
 				// nothing else is open. Nothing here rewards sitting in the centre of a
 				// lane: that produced a hook every time a lane narrowed for a few rows
 				// (beside "Calling", beside the orbit). The padding keeps the distance.
-				const laneCost = (_i: number, x: number) => (Math.abs(x - width / 2) / width) * 40;
+				const laneCost = (i: number, x: number) => {
+					let cost = (Math.abs(x - width / 2) / width) * 40;
+					const y = start.y + i * dy;
+					if (crossing && Math.abs(y - crossing.y) < 60) cost += 0.9 * Math.abs(x - crossing.x);
+					// Arrive from directly above the cross: over the last 320px the creek
+					// is drawn toward the target's column, so it drops in rather than
+					// meeting the lockup at an angle.
+					const arriving = Math.max(0, 1 - (target.y - y) / 360);
+					if (arriving > 0) cost += (phone ? 0.4 : 1.2) * arriving * Math.abs(x - target.x);
+					return cost;
+				};
 				let prevCost = [0];
 				const back: Int32Array[] = [];
 				for (let i = 1; i <= rows; i++) {
@@ -295,19 +376,80 @@
 				return simplify(pts.slice(0, at + 1), epsilon).slice(0, -1).concat(simplify(pts.slice(at), epsilon));
 			};
 
+			// Smooth the routed rows before anything else sees them. The router
+			// changes direction one 24px row at a time and the spline honoured every
+			// change, which read as jagged. A Gaussian over ±6 rows (sigma 2.6) turns
+			// those steps into curves; the ends stay put. The verify loop still has
+			// the final say: if smoothing pulls a corner into a word, the padding
+			// grows and it routes again.
+			const relax = (pts: Array<{ x: number; y: number }>, light = false) => {
+				const sigma = light ? 1.1 : phone ? 1.2 : 2.6;
+				const reach = light ? 3 : phone ? 3 : 6;
+				const weights = Array.from({ length: reach * 2 + 1 }, (_, k) => Math.exp(-((k - reach) ** 2) / (2 * sigma * sigma)));
+				return pts.map((pt, i) => {
+					if (i === 0 || i === pts.length - 1) return pt;
+					let sum = 0, total = 0;
+					for (let k = -reach; k <= reach; k++) {
+						const j = Math.min(pts.length - 1, Math.max(0, i + k));
+						sum += pts[j].x * weights[k + reach];
+						total += weights[k + reach];
+					}
+					return { x: sum / total, y: pt.y };
+				});
+			};
+
+			const clampToLanes = (pts: Array<{ x: number; y: number }>, lanes: Array<Array<[number, number]>>) =>
+				pts.map((pt, i) => {
+					if (i === 0 || i === pts.length - 1 || !lanes[i]?.length) return pt;
+					if (lanes[i].some(([a, c]) => pt.x >= a && pt.x <= c)) return pt;
+					let best = pt.x, gap = Infinity;
+					for (const [a, c] of lanes[i]) {
+						for (const edgeX of [a + 1, c - 1]) {
+							const d = Math.abs(edgeX - pt.x);
+							if (d < gap) { gap = d; best = edgeX; }
+						}
+					}
+					return { x: best, y: pt.y };
+				});
+
 			// A gentle meander where there is room for one, so a long straight run
 			// down a margin still reads as water. Skipped on a phone, where the lane
 			// is the margin itself and has no room to wander.
 			const meander = (pts: Array<{ x: number; y: number }>, lanes: Array<Array<[number, number]>>) => {
-				const amplitude = phone ? 0 : 16;
-				if (!amplitude) return pts;
+				if (phone) return pts;
+				// Room on either side of the routed x in its lane, capped at 40px,
+				// then averaged over neighbouring rows so a word boundary does not
+				// snap the amplitude.
+				const room = pts.map((pt, i) => {
+					const lane = lanes[i]?.find(([a, c]) => pt.x >= a && pt.x <= c);
+					return lane ? Math.max(0, Math.min(40, pt.x - lane[0] - 6, lane[1] - pt.x - 6)) : 0;
+				});
+				const smooth = room.map((_, i) => {
+					let sum = 0, n = 0;
+					for (let k = Math.max(0, i - 5); k <= Math.min(room.length - 1, i + 5); k++) { sum += room[k]; n++; }
+					return sum / n;
+				});
+				const ease = (t: number) => { const u = Math.max(0, Math.min(1, t)); return u * u * (3 - 2 * u); };
 				return pts.map((pt, i) => {
 					if (i === 0 || i === pts.length - 1) return pt;
-					const dx = amplitude * Math.sin((pt.y / 520) * Math.PI * 2);
-					const x = pt.x + dx;
-					const ok = lanes[i]?.some(([a, c]) => x >= a + 4 && x <= c - 4);
-					return ok ? { x, y: pt.y } : pt;
+					// No wandering in the first 320px (it is still leaving the ribbons)
+					// or the last 520px (it is arriving at the cross).
+					const taper = ease((pt.y - start.y) / 320) * ease((target.y - pt.y) / 520);
+					return { x: pt.x + smooth[i] * taper * Math.sin((pt.y / 560) * Math.PI * 2), y: pt.y };
 				});
+			};
+
+			// How far the creek could move sideways at this point before meeting a
+			// word, a card or the page edge. Open ground gets the wide bank.
+			const clearance = (pt: { x: number; y: number }) => {
+				let best = Math.min(pt.x - edge, width - edge - pt.x);
+				for (const b of words.concat(solids)) {
+					if (pt.y < b.top || pt.y > b.bottom) continue;
+					if (pt.x < b.left) best = Math.min(best, b.left - pt.x);
+					else if (pt.x > b.right) best = Math.min(best, pt.x - b.right);
+					else best = 0;
+				}
+				return best;
 			};
 
 			const toPath = (pts: Array<{ x: number; y: number }>) => {
@@ -316,53 +458,101 @@
 				// capped at a third of the SHORTER neighbouring segment: plain
 				// Catmull-Rom scales handles by the whole chord, and a 100px bend next
 				// to a 5000px run threw a control point 800px back up into the hero.
-				const p = [{ x: pts[0].x - tangent.x * 40, y: pts[0].y - tangent.y * 40 }, ...pts, { x: target.x, y: target.y + 40 }];
+				const all = lead.slice(0, -1).concat(pts);
+				const p = [{ x: all[0].x - leadTangent.x * 40, y: all[0].y - leadTangent.y * 40 }, ...all, { x: target.x, y: target.y + 160 }];
 				const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(b.x - a.x, b.y - a.y);
 				const handle = (i: number) => {
 					const dir = { x: p[i + 1].x - p[i - 1].x, y: p[i + 1].y - p[i - 1].y };
 					const len = Math.hypot(dir.x, dir.y) || 1;
-					const reach = Math.min(dist(p[i - 1], p[i]), dist(p[i], p[i + 1])) / 3;
+					const reach = Math.min(dist(p[i - 1], p[i]), dist(p[i], p[i + 1])) / 2.4;
 					return { x: (dir.x / len) * reach, y: (dir.y / len) * reach };
 				};
 				let d = `M${p[1].x.toFixed(1)} ${p[1].y.toFixed(1)}`;
+				let shallows = '';
+				let open = false;
 				for (let i = 1; i < p.length - 2; i++) {
 					const h1 = handle(i), h2 = handle(i + 1);
 					const c1 = { x: p[i].x + h1.x, y: p[i].y + h1.y };
 					const c2 = { x: p[i + 1].x - h2.x, y: p[i + 1].y - h2.y };
-					d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p[i + 1].x.toFixed(1)} ${p[i + 1].y.toFixed(1)}`;
+					const seg = ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p[i + 1].x.toFixed(1)} ${p[i + 1].y.toFixed(1)}`;
+					d += seg;
+					const wide = !phone && Math.min(clearance(p[i]), clearance(p[i + 1])) >= 90;
+					if (wide) {
+						if (!open) shallows += `M${p[i].x.toFixed(1)} ${p[i].y.toFixed(1)}`;
+						shallows += seg;
+					}
+					open = wide;
 				}
-				return d;
+				return { d, shallows };
 			};
 
 			const progressPath = svg.querySelector<SVGPathElement>('.current-progress');
-			let padX = phone ? 12 : 30;
+			// Desktop padding carries slack for the smoothing, so the relaxed line
+			// rarely has to be clamped back to a lane edge (each clamp is a corner).
+			let padX = phone ? 12 : 42;
 			let padY = 16;
-			let epsilon = phone ? 6 : 7;
+			let epsilon = phone ? 6 : 10;
 			let path = '';
+			let shallows = '';
 			let attempt = 0;
 			let points: Array<{ x: number; y: number }> = [];
 			for (; attempt < 5; attempt++) {
 				const routed = route(padX, padY);
-				points = simplify(meander(routed.points, routed.lanes), epsilon);
-				path = toPath(points);
+				// Relax, then put every row back inside its lane, three times over:
+				// smoothing alone cut the tight phone crossings into the words.
+				let relaxed = routed.points;
+				for (let pass = 0; pass < 3; pass++) relaxed = clampToLanes(relax(relaxed), routed.lanes);
+				// A last light pass without the clamp rounds off the clamp's own corners;
+				// the verify loop below catches it if that reaches a word. Not on a
+				// phone: there the lane is 6px wide and any unclamped pass leaves it.
+				if (!phone) relaxed = relax(relaxed, true);
+				points = simplify(meander(relaxed, routed.lanes), epsilon);
+				const drawn = toPath(points);
+				path = drawn.d;
+				shallows = drawn.shallows;
 				if (!progressPath) break;
 				progressPath.setAttribute('d', path);
 				const length = progressPath.getTotalLength();
 				let clipped = false;
 				for (let d = 0; d <= length && !clipped; d += 6) {
 					const pt = progressPath.getPointAtLength(d);
+					// The lead is fixed (it is the ribbon), so re-routing cannot change it;
+					// only the routed part is checked here. The measurer checks it all.
 					if (pt.y <= start.y + 1 || pt.y >= target.y - 1) continue;
 					if (!clear(pt.x, pt.y, words, tolerance, 0) || !clear(pt.x, pt.y, solids, 2, 0)) clipped = true;
 				}
 				if (!clipped) break;
-				padX += 8;
+				// On a phone the margin IS the lane, so widening the padding only
+				// closes it; there the retry works through padY and epsilon alone.
+				padX += phone ? 0 : 8;
 				padY += 4;
 				epsilon = Math.max(2, epsilon * 0.6);
 			}
 			// Left for the measurement script and for anyone debugging by hand.
 			(window as unknown as { __creek?: unknown }).__creek = { width, height, start, tangent, target, words: words.length, solids: solids.length, attempts: attempt + 1, padX, padY, epsilon, points, ms: Math.round(performance.now() - began) };
 
-			svg.querySelectorAll('path').forEach((line) => line.setAttribute('d', path));
+			// Fade the line in over the lead and fade the banks out before the
+			// lockup, so only the thin copper line arrives on the cross. The masks
+			// and gradients are in index.astro; here they get their geometry.
+			const y0 = lead[0].y;
+			const span = Math.max(1, target.y - y0);
+			const fadeIn = Math.min(0.5, (leadAbove + leadBelow + 80) / span);
+			const fadeOut = Math.min(0.5, 260 / span);
+			for (const id of ['creek-line-fade', 'creek-bank-fade']) {
+				const grad = svg.querySelector<SVGLinearGradientElement>(`#${id}`);
+				if (!grad) continue;
+				grad.setAttribute('y1', String(y0));
+				grad.setAttribute('y2', String(target.y));
+				const stops = grad.querySelectorAll('stop');
+				stops[1]?.setAttribute('offset', String(fadeIn));
+				if (id === 'creek-bank-fade') stops[2]?.setAttribute('offset', String(1 - fadeOut));
+			}
+			svg.querySelectorAll<SVGElement>('mask, mask rect').forEach((el) => {
+				el.setAttribute('x', '0'); el.setAttribute('y', '0');
+				el.setAttribute('width', String(width)); el.setAttribute('height', String(height));
+			});
+			svg.querySelectorAll('path:not(.current-shallows)').forEach((line) => line.setAttribute('d', path));
+			svg.querySelector('.current-shallows')?.setAttribute('d', shallows || 'M0 0');
 			if (progressPath) {
 				const length = progressPath.getTotalLength();
 				riverSamples = Array.from({ length: 513 }, (_, index) => progressPath.getPointAtLength((length * index) / 512).y);
@@ -386,8 +576,10 @@
 			return () => { clearTimeout(relayout); resizeObserver.disconnect(); };
 		}
 
+		// .footer-lead is not in this list any more: the footer has its own
+		// sequence below, keyed to the current's arrival rather than to scrolling.
 		const items = Array.from(document.querySelectorAll<HTMLElement>(
-			'.section-pad h2, blockquote, .scripture-note, .layered-card, .visit-details article, .watch-feature, .platform-links a, .mission-grid, .inner-section h2, .detail-list article, .method-grid article, .identity-list article, .leader-list article, .gospel-grid article, .belief-list li, .platform-cards a, .archive-panel, .footer-lead',
+			'.section-pad h2, blockquote, .scripture-note, .layered-card, .visit-details article, .watch-feature, .platform-links a, .mission-grid, .inner-section h2, .detail-list article, .method-grid article, .identity-list article, .leader-list article, .gospel-grid article, .belief-list li, .platform-cards a, .archive-panel',
 		));
 		items.forEach((item, index) => {
 			item.classList.add('motion-item');
@@ -418,6 +610,34 @@
 		};
 		root.classList.add('motion-active');
 
+		// The footer arrival: creek first, then the words, then the lockup.
+		const footer = document.querySelector<HTMLElement>('.site-footer');
+		const lead = footer?.querySelector<HTMLElement>('.footer-lead');
+		let finaleFrame = 0;
+		const runFinale = () => {
+			const from = Math.min(scrollProgress, finale);
+			const began = performance.now();
+			const step = (now: number) => {
+				const u = Math.min(1, (now - began) / 900);
+				finale = from + (1 - from) * (1 - Math.pow(1 - u, 3));
+				updateRiverProgress();
+				// The words start once the tip is well inside the footer, so the
+				// last of the creek and the first of the words overlap by a beat.
+				if (u >= 0.6) footer?.classList.add('is-arrived');
+				if (u < 1) finaleFrame = requestAnimationFrame(step);
+				else { finale = 1; finaleFrame = 0; }
+			};
+			finaleFrame = requestAnimationFrame(step);
+		};
+		const arrival = lead
+			? new IntersectionObserver((entries) => {
+				footerVisible = entries[0].isIntersecting;
+				if (footerVisible && !finaleFrame && finale < 1) runFinale();
+				updateRiverProgress();
+			}, { threshold: 0.25 })
+			: null;
+		if (lead && arrival) arrival.observe(lead);
+
 		let frame = 0;
 		const update = () => {
 			const height = window.innerHeight;
@@ -441,6 +661,9 @@
 		window.addEventListener('resize', schedule);
 		return () => {
 			observer.disconnect();
+			arrival?.disconnect();
+			cancelAnimationFrame(finaleFrame);
+			footer?.classList.remove('is-arrived');
 			clearTimeout(relayout);
 			resizeObserver.disconnect();
 			cancelAnimationFrame(frame);

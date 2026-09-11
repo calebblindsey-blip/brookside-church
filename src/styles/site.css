@@ -69,6 +69,10 @@ a:focus-visible,button:focus-visible { outline: 3px solid var(--water); outline-
 .page-current svg { width: 100%; height: 100%; overflow: visible; }
 .page-current path { fill: none; stroke-linecap: round; }
 .page-current .current-bank { stroke: #68a9d5; stroke-width: 30; opacity: .09; }
+/* The shallows: a broad, soft bank drawn only where the creek has open ground
+   (Motion.astro decides, by clearance), so it widens like water does and stays a
+   thin line beside anything readable. */
+.page-current .current-shallows { stroke: #68a9d5; stroke-width: 64; opacity: .07; filter: blur(12px); }
 .current-track { stroke: #579dce; stroke-width: 1; opacity: .35; }
 .current-progress { stroke: url(#current-to-cross); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .52; }
 .motion-active .current-progress { stroke-dashoffset: calc(1 - var(--page-progress,0)); transition: stroke-dashoffset .18s linear; }
@@ -93,6 +97,11 @@ a:hover .arrow { transform: translate(3px,-3px); }
 .text-link { display: inline-flex; align-items: center; gap: 14px; padding: 10px 0 5px; border-bottom: 1px solid currentColor; font-size: .9rem; font-weight: 600; }
 .hero-flow { position: absolute; z-index: -1; width: 76%; height: 125%; top: -70px; right: -12%; pointer-events: none; transform: translateY(calc(var(--drift,0px) * -1)); }
 .hero-flow svg { width: 100%; height: 100%; overflow: visible; }
+/* The ribbons dissolve toward the seam with the next section rather than being
+   cut flat by its background. The seam sits at about 86% of this box (the box is
+   125% of the hero, shifted up 70px), so the fade runs out just above it while the
+   creek fades in along the same ribbon (Motion.astro, the lead). */
+.hero-flow { -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 86%); mask-image: linear-gradient(to bottom, #000 58%, transparent 86%); }
 .flow-lines path { fill: none; stroke: #388cca; stroke-width: 1.25; opacity: .42; }
 .flow-lines path:nth-child(4n) { stroke: #8cc0df; stroke-width: 7; opacity: .23; }
 /* Rebalances the three hero lines. "Christ" is set 1.35x, and .hero-line's
@@ -210,11 +219,36 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 .footer-lead,.footer-grid,.footer-bottom { position: relative; z-index: 3; }
 .footer-lead { display: grid; grid-template-columns: minmax(220px,.56fr) minmax(0,1.44fr); align-items: center; gap: clamp(45px,6vw,105px); padding-bottom: clamp(70px,7vw,105px); }
 .footer-call { align-self: center; }
-.footer-call > .eyebrow { max-width: 250px; margin: 0 0 clamp(22px,2.4vw,36px); padding-top: 17px; border-top: 2px solid var(--copper); line-height: 1.75; }
+.footer-call > .eyebrow { position: relative; max-width: 250px; margin: 0 0 clamp(22px,2.4vw,36px); padding-top: 17px; line-height: 1.75; }
+/* The copper rule is a pseudo-element rather than a border so it can draw in
+   with "There is a place" during the footer's arrival. */
+.footer-call > .eyebrow::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--copper); transform-origin: left center; }
 .footer-call > .eyebrow span { display: block; }
 .footer-invitation { width: 100%; max-width: 900px; margin: 0; line-height: .82; }
 .footer-come { display: block; color: var(--copper); font: 400 clamp(3.2rem,5vw,5.2rem)/.86 var(--font-serif),serif; letter-spacing: -.04em; }
 .footer-brookside { display: block; width: 100%; }
+.footer-primary-wordmark { display: block; width: 100%; height: auto; }
+/* The footer arrival, in sequence: the creek lands on the cross and the cross
+   appears; then the copper rule and "There is a place", "for you here.",
+   "Come to"; then the B closes around the cross and BROOKSIDE / CHURCH OF GOD
+   follow. Motion.astro adds .is-arrived to the footer as the current runs in.
+   With motion paused or reduced, .motion-active is absent and everything shows.
+   .footer-invitation itself stays visible (the audit asserts it); its PARTS move. */
+.motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow span,
+.motion-active .site-footer:not(.is-arrived) .footer-come { opacity: 0; translate: 0 16px; }
+.motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow::before { transform: scaleX(0); }
+.motion-active .site-footer:not(.is-arrived) [data-part] { opacity: 0; }
+.motion-active .site-footer:not(.is-arrived) [data-part="b"] { transform: scale(1.04); }
+.site-footer .footer-call > .eyebrow span,.site-footer .footer-come { transition: opacity .65s ease,translate .65s cubic-bezier(.2,.7,.2,1); }
+.site-footer .footer-call > .eyebrow::before { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+.site-footer [data-part] { transition: opacity .6s ease,transform .8s cubic-bezier(.2,.7,.2,1); transform-box: fill-box; transform-origin: 8% 50%; }
+.site-footer.is-arrived [data-part="cross"] { transition-delay: .25s; }
+.site-footer.is-arrived .footer-call > .eyebrow::before,.site-footer.is-arrived .footer-call > .eyebrow span:first-child { transition-delay: .55s; }
+.site-footer.is-arrived .footer-call > .eyebrow span:nth-child(2) { transition-delay: .73s; }
+.site-footer.is-arrived .footer-come { transition-delay: .95s; }
+.site-footer.is-arrived [data-part="b"] { transition-delay: 1.2s; }
+.site-footer.is-arrived [data-part="wordmark"] { transition-delay: 1.45s; }
+.site-footer.is-arrived [data-part="subline"] { transition-delay: 1.6s; }
 .footer-primary-wordmark { display: block; width: 100%; height: auto; }
 .footer-grid { display: grid; grid-template-columns: 1.1fr 1.25fr .9fr .8fr 1.15fr; gap: 4vw; padding: 40px 0 65px; border-top: 1px solid #a2bed3; }
 .footer-grid strong { display: block; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px; color: #365976; }
@@ -364,6 +398,12 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
 @keyframes follow { 50% { transform: scaleX(.55); } }
 @keyframes word-current { from { transform: translateX(-6%); } to { transform: translateX(-35%); } }
 
+/* Room for the creek. From the family cards to the mission grid the content's
+   right edge is the only lane it has, so on wide screens those four sections
+   give up 72px of their right padding to it. The router uses the space. */
+@media (min-width:1200px) {
+  .family-section,.visit-section,.watch-section,.mission-section { padding-right: calc(9vw + 72px); }
+}
 @media (max-width:1100px) {
   .hero { grid-template-columns: minmax(0,1fr) minmax(250px,.65fr); gap: 25px; }
   .gather-card { padding: 22px; }
@@ -468,6 +508,8 @@ footer { position: relative; padding: 110px 9vw 90px; background: #d8eaf5; color
   html { scroll-behavior: auto; }
   *,*::before,*::after { animation: none !important; transition: none !important; }
   .motion-active .motion-item { opacity: 1; translate: none; }
+  .motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow span,.motion-active .site-footer:not(.is-arrived) .footer-come,.motion-active .site-footer:not(.is-arrived) [data-part] { opacity: 1; translate: none; transform: none; }
+  .motion-active .site-footer:not(.is-arrived) .footer-call > .eyebrow::before { transform: none; }
   .hero-flow { transform: none !important; }
   .motion-active .layered-card { rotate: none; }
   .layered-card { position: relative; top: auto; }
