@@ -110,14 +110,16 @@ a:hover .arrow { transform: translate(3px,-3px); }
    now 42.0/41.5 and 18.5/18.5. One em value serves both breakpoints because it resolves
    against this element's own font size. */
 .hero-christ { font-size: 1.35em; letter-spacing: -.07em; margin-top: .045em; margin-bottom: -.045em; }
-/* The home hero's stagger, and ONLY that. The em there is a block-level display
-   line (<em class="hero-line"><span>Crucified</span></em>), so 5vw indents the
-   whole third line on purpose. Unscoped, this rule also hit every InteriorHero,
-   whose <em> is an ordinary INLINE child of <h1>: it opened a 72px hole mid-line
-   on /about, /what-we-believe and /404, indented the line on /watch, /visit and
-   /give, and on /knowing-christ and /what-we-believe pushed a word onto a line of
-   its own, breaking the hand-placed <br> the copy was written around. */
-h1 > em.hero-line { margin-left: 5vw; }
+/* The home hero is FLUSH LEFT, all three lines. Codex's design indented the third
+   line 5vw (<em class="hero-line"><span>Crucified</span></em> is a block-level
+   display line, so a margin moved the whole line). Caleb's call 2026-09-11, from
+   a side-by-side render of current / flush / full stagger (reviews/hero-variants.mjs):
+   the single indent read as neither aligned nor staggered, the italic serif in
+   copper already carries the emphasis, and every other hero on the site is flush.
+   The rule stays, at zero, so the scoping lesson is not lost: unscoped, a margin on
+   `h1 > em` also hits every InteriorHero, whose <em> is an ordinary INLINE child of
+   <h1>, and it opened a 72px hole mid-line on /about, /what-we-believe and /404. */
+h1 > em.hero-line { margin-left: 0; }
 .flow-accent { fill: none; stroke: #c55b3b; stroke-width: 2; stroke-dasharray: 24 16; animation: current-travel 12s linear infinite; opacity: .65; }
 .gather-card { position: relative; align-self: end; margin: 0 0 40px; padding: 28px; z-index: 2; background: #fff; border: 1px solid #c3d6e3; box-shadow: 12px 12px 0 #c7dfed,0 30px 70px #183c5510; transform: rotate(2deg); animation: card-arrive 1.2s .35s both; }
 .gather-card::before { content: ''; position: absolute; inset: -12px 14px 12px -14px; z-index: -1; border: 1px solid #7fa9c7; transform: rotate(-4deg); }
