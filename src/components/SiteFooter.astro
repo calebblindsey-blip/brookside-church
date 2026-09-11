@@ -6,6 +6,28 @@
  * Motion.astro measures to land it. Keep the attribute on the wordmark image.
  */
 import { CHURCH } from '../data/church';
+import lockupSource from '../../public/images/brookside-primary.svg?raw';
+
+/*
+ * The lead lockup is INLINE so its parts can arrive in sequence on the home
+ * page (the cross first, then the words around it; see Motion.astro and the
+ * .is-arrived rules in site.css). The paths are the brand file's, byte for
+ * byte: this reads public/images/brookside-primary.svg at build time and only
+ * ADDS attributes. The file's four paths are, in order, the B (ink), the cross
+ * (copper), BROOKSIDE (ink) and CHURCH OF GOD (slate); that order is asserted
+ * so a regenerated file with a different structure fails the build rather
+ * than animating the wrong part. The header and the footer's bottom lockup
+ * stay as <img>, so the invariant on the built HTML is two references per page
+ * plus the inline geometry.
+ */
+const parts = ['b', 'cross', 'wordmark', 'subline'];
+let index = 0;
+const lockup = lockupSource
+	.replace(/<title[^>]*>.*?<\/title>\s*/s, '')
+	.replace('<svg ', '<svg class="footer-primary-wordmark" data-current-destination aria-hidden="true" focusable="false" ')
+	.replace(/ role="img" aria-labelledby="t"/, '')
+	.replace(/<path /g, () => `<path data-part="${parts[index++]}" `);
+if (index !== 4) throw new Error(`brookside-primary.svg has ${index} paths, expected 4 (B, cross, wordmark, subline)`);
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const here = (href: string) => (href.replace(/\/+$/, '') || '/') === path;
@@ -35,7 +57,7 @@ const year = new Date().getFullYear();
 		</div>
 		<h2 class="footer-invitation">
 			<span class="sr-only">Come to {CHURCH.name}</span>
-			<span class="footer-brookside" aria-hidden="true"><img class="footer-primary-wordmark" data-current-destination src="/images/brookside-primary.svg" width="1384" height="420" alt="" loading="lazy" /></span>
+			<span class="footer-brookside" aria-hidden="true"><Fragment set:html={lockup} /></span>
 		</h2>
 	</div>
 	<div class="footer-grid">
