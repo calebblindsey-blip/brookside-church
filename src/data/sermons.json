@@ -1,9 +1,23 @@
 {
 	"feed": "https://anchor.fm/s/115652ca8/podcast/rss",
-	"total": 300,
+	"total": 302,
 	"oldest": "2020-03-18",
-	"newest": "2026-09-21",
+	"newest": "2026-10-05",
 	"recent": [
+		{
+			"title": "Man's Dual Nature",
+			"date": "2026-10-05",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/126882853/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-5%2F53a98a05-d96e-2851-2de9-cb396c6f5327.mp3",
+			"seconds": 3288,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "How Big Is Your God?",
+			"date": "2026-09-28",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/126450438/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-28%2F73a6b065-1ab1-9033-442b-431def54c1d5.mp3",
+			"seconds": 2602,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "Generational Faith",
 			"date": "2026-09-21",
@@ -31,23 +45,11 @@
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/125009640/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-31%2F0e2ae9fb-881e-be90-bbf2-eeb6010b61d2.mp3",
 			"seconds": 2735,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "How To Process The Pain",
-			"date": "2026-08-24",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/124679974/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-24%2F7f052aa0-0e0f-77c1-ecac-8f02b9110b32.mp3",
-			"seconds": 2848,
-			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "In The Day Of Judgement",
-			"date": "2026-08-21",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/124537227/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-7-21%2Fc7cdc147-1bf1-999d-bd8f-afa1ea1915c5.mp3",
-			"seconds": 3086,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-10-05",
+		"2026-09-28",
 		"2026-09-21",
 		"2026-09-14",
 		"2026-09-07",
@@ -350,6 +352,20 @@
 		"2020-03-18"
 	],
 	"episodes": [
+		{
+			"title": "Man's Dual Nature",
+			"date": "2026-10-05",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/126882853/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-5%2F53a98a05-d96e-2851-2de9-cb396c6f5327.mp3",
+			"seconds": 3288,
+			"speaker": "Brad Lindsey"
+		},
+		{
+			"title": "How Big Is Your God?",
+			"date": "2026-09-28",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/126450438/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-28%2F73a6b065-1ab1-9033-442b-431def54c1d5.mp3",
+			"seconds": 2602,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "Generational Faith",
 			"date": "2026-09-21",
