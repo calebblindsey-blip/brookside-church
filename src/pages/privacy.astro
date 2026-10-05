@@ -1,0 +1,87 @@
+---
+/**
+ * Privacy policy. Added 2026-10 because Google will not move the church's YouTube
+ * API project (brookside-youtube) out of "Testing" without a privacy policy on an
+ * authorized domain, and in Testing its sign-in expires every seven days, which is
+ * what silently broke the Sunday video pipeline in September. The YouTube section is
+ * therefore load-bearing: YouTube API Services policy requires it to say what the
+ * tool accesses, link Google's privacy policy and YouTube's terms, and say how to
+ * revoke access. Keep those four in place when editing.
+ *
+ * Every claim here has to stay true of the site as built: GA4 is the only cookie
+ * (SiteLayout.astro), there are no forms, giving leaves for Church Center
+ * (give.astro), and sermon audio streams from the podcast host (watch.astro).
+ * If any of that changes, this page changes with it.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import InteriorHero from '../components/InteriorHero.astro';
+import { CHURCH } from '../data/church';
+
+const UPDATED = 'October 5, 2026';
+---
+
+<SiteLayout
+	title="Privacy"
+	description="What the Brookside Church of God website and our YouTube tools collect, what we do with it, and how to reach us with questions."
+>
+	<InteriorHero eyebrow="Privacy">
+		<Fragment slot="title">What we collect,<br />and what we <em>don't.</em></Fragment>
+		<p slot="intro">This website has no accounts and no sign-up forms, and we never sell or share personal information. Below is everything the site and our video tools do with information, written plainly. Last updated {UPDATED}.</p>
+	</InteriorHero>
+
+	<section class="inner-section inner-blue" aria-labelledby="site-heading">
+		<div><p class="eyebrow">On this website</p><h2 id="site-heading">Short, because we collect very little.</h2></div>
+		<div class="detail-list">
+			<article>
+				<span>01</span>
+				<h3>Counting visits</h3>
+				<p>We use Google Analytics to understand how the site is used: which pages are visited, roughly where visitors are (city level), what kind of device they use, how they found us, and which links they tap, such as directions, the phone number or giving. It sets cookies in your browser to do this. It does not tell us who you are, and we keep this information for 14 months. You can block these cookies in your browser settings or with Google's <a class="inline-text-link" href="https://tools.google.com/dlpage/gaoptout">opt-out add-on</a>.</p>
+			</article>
+			<article>
+				<span>02</span>
+				<h3>Sermons and links</h3>
+				<p>When you play a sermon here, the audio streams from our podcast host, Spotify for Creators. Links to YouTube, Facebook, Instagram, Apple Podcasts and Spotify take you to those services, and their own privacy policies apply once you are there. The site itself is hosted by Cloudflare, which keeps short technical logs to protect it from attacks.</p>
+			</article>
+			<article>
+				<span>03</span>
+				<h3>Giving</h3>
+				<p>Online giving happens in Church Center, run by Planning Center, not on this website. Your payment details go to Planning Center and its payment processor and never pass through this site. <a class="inline-text-link" href="https://www.planningcenter.com/privacy">Planning Center's privacy policy</a> covers that information.</p>
+			</article>
+			<article>
+				<span>04</span>
+				<h3>When you contact us</h3>
+				<p>If you email or call the church, we use what you send only to answer you and to care for you. It stays with the church staff who need it.</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="inner-section split-section" aria-labelledby="youtube-heading">
+		<div><p class="eyebrow">Our YouTube channel</p><h2 id="youtube-heading">How our video tools use YouTube.</h2></div>
+		<div>
+			<p class="lead">Our media team uses YouTube API Services, through a small tool of our own, to manage the Brookside Church of God YouTube channel: adding titles, descriptions, chapters, captions and thumbnails to our service videos, and checking that they published correctly.</p>
+			<p>The tool works only on our own channel, with permission from the Google account that owns it. It does not collect, store or share any information about people who watch our videos. What it receives from Google stays on church staff computers and is used only to manage the channel. The use and transfer of information received from Google APIs follows the <a class="inline-text-link" href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+			<p>Watching our videos on YouTube is covered by <a class="inline-text-link" href="https://www.youtube.com/t/terms">YouTube's Terms of Service</a> and the <a class="inline-text-link" href="https://policies.google.com/privacy">Google Privacy Policy</a>. The owner of a Google account can remove the tool's access at any time from the account's <a class="inline-text-link" href="https://myaccount.google.com/permissions">security settings</a>.</p>
+		</div>
+	</section>
+
+	<section class="inner-section inner-blue" aria-labelledby="else-heading">
+		<div><p class="eyebrow">Everything else</p><h2 id="else-heading">Children, changes and questions.</h2></div>
+		<div class="detail-list">
+			<article>
+				<span>05</span>
+				<h3>Children</h3>
+				<p>This site does not ask anyone, of any age, for personal information, and we do not knowingly collect it from children.</p>
+			</article>
+			<article>
+				<span>06</span>
+				<h3>Changes</h3>
+				<p>If what we collect changes, we will update this page and the date at the top.</p>
+			</article>
+			<article>
+				<span>07</span>
+				<h3>Questions</h3>
+				<p>Email <a class="inline-text-link" href={CHURCH.emailHref}>{CHURCH.email}</a> or call <a class="inline-text-link" href={CHURCH.phoneHref}>{CHURCH.phone}</a>, and someone from the church will answer you.</p>
+			</article>
+		</div>
+	</section>
+</SiteLayout>
