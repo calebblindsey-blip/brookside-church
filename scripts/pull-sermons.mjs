@@ -42,14 +42,18 @@ function toSeconds(raw) {
  * others). /watch used to hardcode "Brad Lindsey" on the most-recent sermon,
  * which credited the pastor for other people's preaching about 20% of the time.
  *
- * Descriptions read "A sermon taught by NAME on ...", so the name ends at the
- * first lowercase word. Returns null rather than guessing when there is no
- * match — 44 episodes name nobody, and the page omits the line instead of
- * inventing an attribution.
+ * Older descriptions read "A sermon taught by NAME on ...", so the name ends at
+ * the first lowercase word. Newer ones (every episode Compass writes, and most
+ * since mid-2024) carry a "Speaker: Pastor Brad Lindsey" line instead; the line
+ * ends at a tag or a newline, never a space. Returns null rather than guessing when
+ * there is no match — 44 episodes name nobody, and the page omits the line
+ * instead of inventing an attribution.
  */
 function toSpeaker(raw) {
 	const text = String(raw ?? '');
-	const m = text.match(/taught by ([A-Z][\w.'-]*(?: [A-Z][\w.'-]*){0,2})/);
+	const m =
+		text.match(/taught by ([A-Z][\w.'-]*(?: [A-Z][\w.'-]*){0,2})/) ??
+		text.match(/Speaker:[ \t]*([A-Z][\w.'-]*(?: [A-Z][\w.'-]*){0,3})/);
 	if (!m) return null;
 	const name = m[1]
 		// "Brad Lindsey." carries a trailing period on five episodes.
