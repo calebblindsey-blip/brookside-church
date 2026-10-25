@@ -1,9 +1,23 @@
 {
 	"feed": "https://anchor.fm/s/115652ca8/podcast/rss",
-	"total": 303,
+	"total": 305,
 	"oldest": "2020-03-18",
-	"newest": "2026-10-12",
+	"newest": "2026-10-25",
 	"recent": [
+		{
+			"title": "The Value of a Gift",
+			"date": "2026-10-25",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/128064187/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-25%2Fba82e894-2558-21e2-caa0-c66ca0e1b58d.mp3",
+			"seconds": 3640,
+			"speaker": "Daniel Howard"
+		},
+		{
+			"title": "Get Ready to Walk on Water",
+			"date": "2026-10-19",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/127740130/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-19%2Fcb746ed4-e1cb-3e34-da78-9161f4a54737.mp3",
+			"seconds": 2743,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "Changing From The Carnal Mind To The Spiritual Mind",
 			"date": "2026-10-12",
@@ -31,23 +45,11 @@
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/126082277/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-21%2F3af02daf-52e2-caf4-4b3f-cf9d445c23f4.mp3",
 			"seconds": 2189,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Joseph: Healing The Past Without Becoming Bitter",
-			"date": "2026-09-14",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/125718223/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-14%2F8bc46623-0999-3356-6ca6-9b40f3675455.mp3",
-			"seconds": 2942,
-			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Controlled By Emotions",
-			"date": "2026-09-07",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/125330421/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-7%2F7c62b307-748d-4845-3e8b-f7c47ca0a57e.mp3",
-			"seconds": 3413,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-10-25",
+		"2026-10-19",
 		"2026-10-12",
 		"2026-10-05",
 		"2026-09-28",
@@ -354,6 +356,20 @@
 	],
 	"episodes": [
 		{
+			"title": "The Value of a Gift",
+			"date": "2026-10-25",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/128064187/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-25%2Fba82e894-2558-21e2-caa0-c66ca0e1b58d.mp3",
+			"seconds": 3640,
+			"speaker": "Daniel Howard"
+		},
+		{
+			"title": "Get Ready to Walk on Water",
+			"date": "2026-10-19",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/127740130/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-19%2Fcb746ed4-e1cb-3e34-da78-9161f4a54737.mp3",
+			"seconds": 2743,
+			"speaker": "Brad Lindsey"
+		},
+		{
 			"title": "Changing From The Carnal Mind To The Spiritual Mind",
 			"date": "2026-10-12",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/127351834/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-12%2Ff0632c60-8265-7217-6e9f-28ff121640fc.mp3",
@@ -382,14 +398,14 @@
 			"speaker": "Brad Lindsey"
 		},
 		{
-			"title": "Joseph: Healing The Past Without Becoming Bitter",
+			"title": "Joseph: Healing the Past Without Becoming Bitter",
 			"date": "2026-09-14",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/125718223/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-14%2F8bc46623-0999-3356-6ca6-9b40f3675455.mp3",
 			"seconds": 2942,
 			"speaker": "Brad Lindsey"
 		},
 		{
-			"title": "Controlled By Emotions",
+			"title": "Controlled by Emotions",
 			"date": "2026-09-07",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/125330421/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-7%2F7c62b307-748d-4845-3e8b-f7c47ca0a57e.mp3",
 			"seconds": 3413,
@@ -508,7 +524,7 @@
 			"speaker": "Brad Lindsey"
 		},
 		{
-			"title": "Darker World, Brighter Church",
+			"title": "Darker World, Brighter Church: Stand Strong",
 			"date": "2026-05-05",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/123400973/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723760-44100-2-a047a4fd1573fdec.mp3",
 			"seconds": 3105,
@@ -722,7 +738,7 @@
 			"date": "2025-09-02",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/123400820/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723660-44100-2-5a3c5ebc01bba4bc.mp3",
 			"seconds": 1382,
-			"speaker": null
+			"speaker": "Brad Lindsey"
 		},
 		{
 			"title": "The Forgotten Blood Of The Lamb",
@@ -736,7 +752,7 @@
 			"date": "2025-08-18",
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/123401081/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-6-27%2F428723896-44100-2-006ee4b4cc864646.mp3",
 			"seconds": 2793,
-			"speaker": null
+			"speaker": "Richard Crowder"
 		},
 		{
 			"title": "Following Jesus Has A Cost",
