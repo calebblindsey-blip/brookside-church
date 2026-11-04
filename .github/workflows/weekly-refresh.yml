@@ -28,10 +28,11 @@
 #
 # It deploys on its own to the congregation's live site (Caleb's call,
 # 2026-08-26, reaffirmed 2026-09-09). It will NOT deploy a build that failed,
-# and it skips the deploy when nothing changed. The two data pulls are allowed
-# to fail independently: pull-live.mjs exits non-zero on purpose when no frame
-# clears its quality gate, and that must not stop a new sermon from reaching
-# the site. Any failed step still fails the run at the end, so the email fires.
+# and it skips the deploy when nothing changed (unless dispatched with force).
+# The two data pulls are allowed to fail independently: pull-live.mjs exits
+# non-zero on purpose when no frame clears its quality gate, and that must not
+# stop a new sermon from reaching the site. Any failed step still fails the run
+# at the end, so the email fires.
 #
 # The build runs even on a quiet week on purpose: it is the only regular
 # signal that the site still builds at all.
@@ -45,7 +46,15 @@ name: weekly-refresh
 on:
   schedule:
     - cron: '0 11 * * 1'
+  # force: deploy and verify even when no data changed, so a code-only change
+  # (a redirect, a copy fix) can ship from here without a local wrangler login.
+  # Run it with: gh workflow run weekly-refresh.yml -f force=true
   workflow_dispatch:
+    inputs:
+      force:
+        description: Deploy even if no data changed
+        type: boolean
+        default: false
 
 concurrency:
   group: weekly-refresh
@@ -108,7 +117,7 @@ jobs:
           fi
 
       - name: Deploy
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.files != '' || inputs.force
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -121,7 +130,7 @@ jobs:
       # The Function is the part most likely to break quietly: a rotated key
       # still returns HTTP 200, just with degraded:true and the live badge gone.
       - name: Verify the deploy
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.files != '' || inputs.force
         run: |
           sleep 8
           test "$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$PROD/watch/")" = 200
