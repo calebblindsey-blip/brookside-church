@@ -81,6 +81,12 @@
 /brookside-main-worship-podcast      /watch/        301
 /brookside-main-worship-podcast/*    /watch/        301
 
+# The sitemap. @astrojs/sitemap writes /sitemap-index.xml (plus /sitemap-0.xml),
+# and robots.txt and Search Console both point there, so Google never needed
+# this. Some third-party SEO tools only try /sitemap.xml and report "no sitemap"
+# on the 404. Added 2026-11-03 after the 53-day SEO check.
+/sitemap.xml                         /sitemap-index.xml   301
+
 # NOT HANDLED HERE, deliberately:
 #
 #   www -> apex. Pages serves whatever custom domains are attached to the
