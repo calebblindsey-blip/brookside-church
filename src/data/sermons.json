@@ -1,9 +1,16 @@
 {
 	"feed": "https://anchor.fm/s/115652ca8/podcast/rss",
-	"total": 306,
+	"total": 307,
 	"oldest": "2020-03-18",
-	"newest": "2026-11-02",
+	"newest": "2026-11-08",
 	"recent": [
+		{
+			"title": "A Place Called Wit's End",
+			"date": "2026-11-08",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/129064030/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-8%2Fe8764c8a-7040-465e-ffec-d06da9ecde97.mp3",
+			"seconds": 2847,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "The Blame Game",
 			"date": "2026-11-02",
@@ -38,16 +45,10 @@
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/126882853/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-5%2F53a98a05-d96e-2851-2de9-cb396c6f5327.mp3",
 			"seconds": 3288,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "How Big Is Your God?",
-			"date": "2026-09-28",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/126450438/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-8-28%2F73a6b065-1ab1-9033-442b-431def54c1d5.mp3",
-			"seconds": 2602,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-11-08",
 		"2026-11-02",
 		"2026-10-25",
 		"2026-10-19",
@@ -356,6 +357,13 @@
 		"2020-03-18"
 	],
 	"episodes": [
+		{
+			"title": "A Place Called Wit's End",
+			"date": "2026-11-08",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/129064030/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-8%2Fe8764c8a-7040-465e-ffec-d06da9ecde97.mp3",
+			"seconds": 2847,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "The Blame Game",
 			"date": "2026-11-02",
