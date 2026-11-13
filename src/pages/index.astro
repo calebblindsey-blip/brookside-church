@@ -14,6 +14,7 @@
  * the date stands alone.
  */
 import SiteLayout from '../layouts/SiteLayout.astro';
+import EventNotice from '../components/EventNotice.astro';
 import { CHURCH } from '../data/church';
 import data from '../data/sermons.json';
 
@@ -99,6 +100,8 @@ const ribbon = (line: number) =>
 		</aside>
 		<a class="scroll-note" href="#about"><span>Follow the current</span><i aria-hidden="true"></i></a>
 	</section>
+
+	<EventNotice />
 
 	<section id="about" class="scripture-section section-pad">
 		<p class="eyebrow">Christ · Our center</p>

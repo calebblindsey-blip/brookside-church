@@ -97,3 +97,29 @@ export const CHURCH = {
 	mapsUrl:
 		'https://www.google.com/maps/search/?api=1&query=200+Cardiff+Street+Brookside+AL+35036',
 } as const;
+
+/**
+ * A one-off, time-boxed event notice (issue #4). Kept OUT of CHURCH on purpose:
+ * the name, date, time and place are confirmed from the church's own Thanksgiving
+ * preview emails, and the description is the confirmed Oct 31 social post
+ * wording. Do not add other details (childcare, meal, speakers) from guesswork.
+ *
+ * `hideAt` is 8:00 PM America/Chicago on Nov 22, 2026 (CST, UTC-6) = 02:00Z Nov 23.
+ * The notice is skipped at build time after this instant AND hidden in the
+ * browser after it, because the site is static and a deployed page would
+ * otherwise keep showing it. Delete this object after the event.
+ */
+export const THANKSGIVING_SERVICE = {
+	name: 'Thanksgiving Community Service',
+	dateLabel: 'Sunday, November 22, 2026',
+	timeLabel: '6:30 PM to 8:00 PM',
+	hideAt: '2026-11-23T02:00:00Z',
+	/** Event venue. Not the regular gathering address in CHURCH. */
+	street: '2347 Brookside Coalburg Rd',
+	city: 'Brookside',
+	state: 'AL',
+	zip: '35214',
+	/** Confirmed wording from the Oct 31 social post. */
+	description:
+		'All of the churches in Brookside gather to worship as one congregation. Pastors from around the community will share, and the worship teams from each church will lead us in song. Come be part of it.',
+} as const;
