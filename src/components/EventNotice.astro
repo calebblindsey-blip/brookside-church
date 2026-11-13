@@ -21,7 +21,7 @@ const expired = Date.now() >= Date.parse(EV.hideAt);
 			<h2>{EV.name}</h2>
 			<p>{EV.dateLabel}, {EV.timeLabel}. This service is hosted at {EV.street}, {EV.city}, {EV.state} {EV.zip}. It is not at our church building on {CHURCH.street}.</p>
 			<p>Sunday morning worship is still at our building as usual.</p>
-			<p class="event-notice-pending">{EV.pending}</p>
+			<p>{EV.description}</p>
 		</div>
 	</aside>
 	<script>

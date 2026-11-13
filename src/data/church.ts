@@ -101,9 +101,8 @@ export const CHURCH = {
 /**
  * A one-off, time-boxed event notice (issue #4). Kept OUT of CHURCH on purpose:
  * the name, date, time and place are confirmed from the church's own Thanksgiving
- * preview emails, but everything in `pending` is NOT confirmed. Pending items
- * render as visible placeholders until Pastor Brad verifies them. Do not fill
- * them in from guesswork.
+ * preview emails, and the description is the confirmed Oct 31 social post
+ * wording. Do not add other details (childcare, meal, speakers) from guesswork.
  *
  * `hideAt` is 8:00 PM America/Chicago on Nov 22, 2026 (CST, UTC-6) = 02:00Z Nov 23.
  * The notice is skipped at build time after this instant AND hidden in the
@@ -120,6 +119,7 @@ export const THANKSGIVING_SERVICE = {
 	city: 'Brookside',
 	state: 'AL',
 	zip: '35214',
-	/** Not confirmed. Shown as a visible placeholder; remove once verified. */
-	pending: '[TO CONFIRM WITH PASTOR BRAD] childcare, meal, speakers and order of service',
+	/** Confirmed wording from the Oct 31 social post. */
+	description:
+		'All of the churches in Brookside gather to worship as one congregation. Pastors from around the community will share, and the worship teams from each church will lead us in song. Come be part of it.',
 } as const;
