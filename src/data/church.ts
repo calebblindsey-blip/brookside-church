@@ -115,6 +115,11 @@ export const THANKSGIVING_SERVICE = {
 	dateLabel: 'Sunday, November 22, 2026',
 	timeLabel: '6:30 PM to 8:00 PM',
 	hideAt: '2026-11-23T02:00:00Z',
+	/** Event venue. Not the regular gathering address in CHURCH. */
+	street: '2347 Brookside Coalburg Rd',
+	city: 'Brookside',
+	state: 'AL',
+	zip: '35214',
 	/** Not confirmed. Shown as a visible placeholder; remove once verified. */
 	pending: '[TO CONFIRM WITH PASTOR BRAD] childcare, meal, speakers and order of service',
 } as const;
