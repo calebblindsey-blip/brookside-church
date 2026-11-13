@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-	/* Brookside — Reverent & Modern palette */
+	/* Brookside — Reverent & Modern palette (legacy, used by Home + Visit) */
 	--color-bone: #FAF7F2;
 	--color-stone: #E8E3D8;
 	--color-muted: #6E6A63;
@@ -11,9 +11,19 @@
 	--color-oxblood: #6B2D2D;
 	--color-oxblood-hover: #5A2626;
 
+	/* Brookside — Quiet Waters palette (new chrome + About) */
+	--color-stone-warm: #EBE5D9;
+	--color-midnight: #12202B;
+	--color-slate-deep: #34404A;
+	--color-moss: #7C8A5E;
+	--color-paper: #F2EDE2;
+	--color-ink-blue: #1C2630;
+	--color-linen: #8C8578;
+
 	/* Typography */
 	--font-display: "Fraunces", ui-serif, Georgia, serif;
 	--font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+	--font-tight: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
 	/* Display scale tuned for Fraunces */
