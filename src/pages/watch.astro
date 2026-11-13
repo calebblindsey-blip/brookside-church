@@ -31,11 +31,13 @@ import PodcastSchema from '../components/PodcastSchema.astro';
 import InteriorHero from '../components/InteriorHero.astro';
 import data from '../data/sermons.json';
 import live from '../data/live.json';
+import { CHURCH } from '../data/church';
 
-const APPLE = 'https://podcasts.apple.com/us/podcast/id1094539094';
-const SPOTIFY = 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76';
-const YOUTUBE = 'https://www.youtube.com/channel/UCFVvTNQHSyICAekmJdQ47Eg';
-const YOUTUBE_LIVE = `${YOUTUBE}/live`;
+const APPLE = CHURCH.applePodcastsUrl;
+const SPOTIFY = CHURCH.spotifyUrl;
+const YOUTUBE = CHURCH.profiles[2];
+// The live link keeps the channel-ID form; see youtubeChannelId in church.ts.
+const YOUTUBE_LIVE = `https://www.youtube.com/channel/${CHURCH.youtubeChannelId}/live`;
 
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const longDate = (iso: string) => {
@@ -495,6 +497,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 
 <script>
 	import { track } from '../lib/analytics';
+	import { CHURCH } from '../data/church';
 
 	/* ---------- archive filter ---------- */
 
@@ -831,7 +834,7 @@ const streamDate = live.startedAt ? inChicago.format(new Date(live.startedAt)) :
 		 - The playlist id is the channel id with UC swapped for UU. Deriving it
 		   keeps the two from drifting apart.
 	*/
-	const CHANNEL = 'UCFVvTNQHSyICAekmJdQ47Eg';
+	const CHANNEL: string = CHURCH.youtubeChannelId;
 	const UPLOADS = `UU${CHANNEL.slice(2)}`;
 
 	const screen = document.querySelector<HTMLButtonElement>('[data-play]');

@@ -43,6 +43,17 @@ export const CHURCH = {
 		return `${this.street}, ${this.locality}, ${this.region} ${this.postalCode}`;
 	},
 
+	/**
+	 * MAIL GOES HERE, NOT TO THE STREET ADDRESS. Mail sent to the building
+	 * (`street` above) may not arrive. Locality, region and ZIP are shared with
+	 * the street address.
+	 */
+	poBox: 'P.O. Box 24',
+	/** One line, for display: "P.O. Box 24, Brookside, AL 35036". */
+	get mailingAddressLine(): string {
+		return `${this.poBox}, ${this.locality}, ${this.region} ${this.postalCode}`;
+	},
+
 	/** Display form. The Facebook and Yelp listings carry (205) 674-6969, which is wrong. */
 	phone: '(205) 675-0703',
 	/** E.164, for tel: hrefs and schema.org. */
@@ -93,6 +104,15 @@ export const CHURCH = {
 	/** Where the sermon podcast is listed. The feed itself is in sermons.json. */
 	applePodcastsUrl: 'https://podcasts.apple.com/us/podcast/id1094539094',
 	spotifyUrl: 'https://open.spotify.com/show/6KxGfsUUCpUN6xyVMPEy76',
+
+	/**
+	 * The public YouTube link is `profiles[2]` (the handle). The channel ID is
+	 * kept only because the handle cannot do two jobs on the Watch page: the
+	 * embedded player needs the uploads playlist, whose id is this ID with "UC"
+	 * swapped for "UU", and the "Watch live" link uses /channel/<id>/live. Do not
+	 * use it for any other visible link.
+	 */
+	youtubeChannelId: 'UCFVvTNQHSyICAekmJdQ47Eg',
 
 	mapsUrl:
 		'https://www.google.com/maps/search/?api=1&query=200+Cardiff+Street+Brookside+AL+35036',

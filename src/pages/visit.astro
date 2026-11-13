@@ -23,7 +23,7 @@ import EventNotice from '../components/EventNotice.astro';
 import { CHURCH } from '../data/church';
 
 const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(CHURCH.addressLine)}`;
-const mailing = 'P.O. Box 24, Brookside, AL 35036';
+const mailing = CHURCH.mailingAddressLine;
 ---
 
 <SiteLayout
