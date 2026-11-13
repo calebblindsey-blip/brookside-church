@@ -1,0 +1,29 @@
+---
+/**
+ * Time-boxed Thanksgiving Community Service band (issue #4). Facts come from
+ * THANKSGIVING_SERVICE in church.ts; the address is CHURCH's. Regular
+ * gathering times are untouched: this does not replace Sunday morning worship.
+ *
+ * Gating is twofold: not rendered at build time once hideAt has passed, and
+ * the inline script below hides it client-side after hideAt for pages that
+ * were built earlier and are still being served.
+ */
+import { CHURCH, THANKSGIVING_SERVICE as EV } from '../data/church';
+
+const expired = Date.now() >= Date.parse(EV.hideAt);
+---
+
+{!expired && (
+	<aside class="event-notice" data-hide-at={EV.hideAt} aria-label={EV.name}>
+		<p class="eyebrow">Special evening service</p>
+		<div class="event-notice-body">
+			<h2>{EV.name}</h2>
+			<p>{EV.dateLabel}, {EV.timeLabel}, at {CHURCH.name}, {CHURCH.addressLine}. This is in addition to Sunday morning worship.</p>
+			<p class="event-notice-pending">{EV.pending}</p>
+		</div>
+	</aside>
+	<script>
+		const el = document.querySelector<HTMLElement>('.event-notice[data-hide-at]');
+		if (el && Date.now() >= Date.parse(el.dataset.hideAt ?? '')) el.remove();
+	</script>
+)}

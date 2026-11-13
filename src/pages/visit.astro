@@ -19,6 +19,7 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import InteriorHero from '../components/InteriorHero.astro';
 import Times from '../components/Times.astro';
+import EventNotice from '../components/EventNotice.astro';
 import { CHURCH } from '../data/church';
 
 const appleMaps = `https://maps.apple.com/?q=${encodeURIComponent(CHURCH.addressLine)}`;
@@ -40,6 +41,8 @@ const mailing = 'P.O. Box 24, Brookside, AL 35036';
 		</Fragment>
 		<Fragment slot="aside"><p class="eyebrow">When we meet</p><Times /></Fragment>
 	</InteriorHero>
+
+	<EventNotice />
 
 	<section class="inner-section inner-blue" id="kids" aria-labelledby="kids-heading">
 		<div>

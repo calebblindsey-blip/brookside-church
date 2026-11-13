@@ -97,3 +97,24 @@ export const CHURCH = {
 	mapsUrl:
 		'https://www.google.com/maps/search/?api=1&query=200+Cardiff+Street+Brookside+AL+35036',
 } as const;
+
+/**
+ * A one-off, time-boxed event notice (issue #4). Kept OUT of CHURCH on purpose:
+ * the name, date, time and place are confirmed from the church's own Thanksgiving
+ * preview emails, but everything in `pending` is NOT confirmed. Pending items
+ * render as visible placeholders until Pastor Brad verifies them. Do not fill
+ * them in from guesswork.
+ *
+ * `hideAt` is 8:00 PM America/Chicago on Nov 22, 2026 (CST, UTC-6) = 02:00Z Nov 23.
+ * The notice is skipped at build time after this instant AND hidden in the
+ * browser after it, because the site is static and a deployed page would
+ * otherwise keep showing it. Delete this object after the event.
+ */
+export const THANKSGIVING_SERVICE = {
+	name: 'Thanksgiving Community Service',
+	dateLabel: 'Sunday, November 22, 2026',
+	timeLabel: '6:30 PM to 8:00 PM',
+	hideAt: '2026-11-23T02:00:00Z',
+	/** Not confirmed. Shown as a visible placeholder; remove once verified. */
+	pending: '[TO CONFIRM WITH PASTOR BRAD] childcare, meal, speakers and order of service',
+} as const;
