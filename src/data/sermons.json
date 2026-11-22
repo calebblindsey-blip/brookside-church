@@ -1,9 +1,16 @@
 {
 	"feed": "https://anchor.fm/s/115652ca8/podcast/rss",
-	"total": 308,
+	"total": 309,
 	"oldest": "2020-03-18",
-	"newest": "2026-11-15",
+	"newest": "2026-11-22",
 	"recent": [
+		{
+			"title": "Feasting on the Battlefield",
+			"date": "2026-11-22",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/129915941/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-22%2F2f78e12c-d30b-0963-433d-6baf3297f5b0.mp3",
+			"seconds": 2949,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "The Collapse of the Economic System",
 			"date": "2026-11-15",
@@ -38,16 +45,10 @@
 			"url": "https://anchor.fm/s/115652ca8/podcast/play/127740130/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-19%2Fcb746ed4-e1cb-3e34-da78-9161f4a54737.mp3",
 			"seconds": 2743,
 			"speaker": "Brad Lindsey"
-		},
-		{
-			"title": "Changing From The Carnal Mind To The Spiritual Mind",
-			"date": "2026-10-12",
-			"url": "https://anchor.fm/s/115652ca8/podcast/play/127351834/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-12%2Ff0632c60-8265-7217-6e9f-28ff121640fc.mp3",
-			"seconds": 2883,
-			"speaker": "Brad Lindsey"
 		}
 	],
 	"dates": [
+		"2026-11-22",
 		"2026-11-15",
 		"2026-11-08",
 		"2026-11-02",
@@ -358,6 +359,13 @@
 		"2020-03-18"
 	],
 	"episodes": [
+		{
+			"title": "Feasting on the Battlefield",
+			"date": "2026-11-22",
+			"url": "https://anchor.fm/s/115652ca8/podcast/play/129915941/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-22%2F2f78e12c-d30b-0963-433d-6baf3297f5b0.mp3",
+			"seconds": 2949,
+			"speaker": "Brad Lindsey"
+		},
 		{
 			"title": "The Collapse of the Economic System",
 			"date": "2026-11-15",
